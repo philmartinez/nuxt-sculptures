@@ -1,17 +1,17 @@
 <template>
 
     <div class="sculpture-slideshow">
+
         <canvas></canvas>
+
         <div class="sculptures">
-            <div class="sculpture" v-for="item in this.items">
-                
-                <div class="images">
-                    <img v-for="image in item.images" :src="image" :alt="item.name" />
-                </div>
-                
+            <div class="sculpture" v-for="item in this.items" :id="`sculpture-${item.id}`">
+                <img :src="item.image" :alt="item.name" />
                 <h2 class="name">{{ item.name }}</h2>
+                <span class="type">{{ item.type }}</span>
             </div>
         </div>
+
     </div>
 
 </template>
@@ -26,31 +26,46 @@ data() {
         return {
             items: [
                 {
-                    name: 'Fish AX',
-                    images: ['book.jpg','food.jpg'],
-                    bg_color: '#f3f3f3',
-                    font_color: 'red',
+                    name: 'X',
+                    type: 'Fish',
+                    image: 'book.jpg',
+                    bg_color: '#f1e8da',
+                    font_color: '#f4bb51',
                     id: 1
                 },
                 {
-                    name: 'Whale HL',
-                    images: ['food.jpg','book.jpg'],
+                    name: 'Q9',
+                    type: 'Whale',
+                    image: 'food.jpg',
                     bg_color: '#000',
                     font_color: 'blue',
                     id: 2
-                }
+                },
+                {
+                    name: 'H4',
+                    type: 'Fish',
+                    image: 'book.jpg',
+                    bg_color: '#ffe1d6',
+                    font_color: '#ff561a',
+                    id: 3
+                },
             ]
         }
     },
+    methods: {
+        createSlideshow() {
+            const scene = new Scene()
+            const slideshow = new Slideshow(scene, this.items)
+        }
+    },
     mounted() {
-       const scene = new Scene()
-       const slideshow = new Slideshow()
+       this.createSlideshow()
     }
 }
 
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
     @mixin expand {
         height: 100%;
@@ -60,14 +75,38 @@ data() {
     }
 
     .sculpture-slideshow {
+        background-color: #fff;
         position: fixed;
         @include expand;
         .sculpture, canvas {
             position: absolute;
             @include expand;
         }
-        .images {
+        img, .name {
             visibility: hidden;
+            pointer-events: none;
+        }
+
+    }
+
+    .sculpture-type {
+        font-weight: 400;
+        font-family: 'Playfair Display';
+        font-size: 24vh;
+        width:100%;
+        top: 50%;
+        color: #000;
+        text-align: center;
+        left: 0;
+        transform: translate3d(0, -50%, 0);
+        position: absolute;
+
+        > span:not(:nth-child(1)) {
+            position: absolute;
+            text-align: center;
+            width: 100%;
+            top: 0;
+            left: 0;
         }
     }
 

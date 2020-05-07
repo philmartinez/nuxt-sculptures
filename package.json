@@ -13,7 +13,8 @@
   "dependencies": {
     "gsap": "^3.2.6",
     "nuxt": "^2.0.0",
-    "three": "^0.116.1"
+    "three": "^0.116.1",
+    "tiny-emitter": "^2.1.0"
   },
   "devDependencies": {
     "node-sass": "^4.14.1",
