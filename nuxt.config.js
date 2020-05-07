@@ -46,6 +46,7 @@ export default {
     /*
     ** You can extend webpack config here
     */
+    transpile: ['GLTFLoader.js', 'TransformControls.js','TextureLoader.js'],
     extend (config, ctx) {
     }
   }
