@@ -1,6 +1,6 @@
 # nuxt-sculptures
 
-> sculptures ecommerce
+> eCommerce site for mechanical fish sculptures
 
 ## Build Setup
 
