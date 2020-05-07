@@ -1,4 +1,7 @@
 <template>
+
+
+
     <div class="sculpture-slideshow">
         <canvas></canvas>
         <div class="sculptures">
@@ -12,6 +15,9 @@
             </div>
         </div>
     </div>
+
+
+    
 </template>
 
 <script>
