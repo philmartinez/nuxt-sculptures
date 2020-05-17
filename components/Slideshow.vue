@@ -12,9 +12,19 @@
         </div>
 
         <div class="sculpture-meta">
-            <div class="sculpture-link" v-for="item in this.items">
-                <nuxt-link :to="getURL(item)" class="name-link">Model <span class="name">{{ item.name }}</span></nuxt-link>
-                <nuxt-link :to="getURL(item)" class="detail-link">View Detail</nuxt-link>
+            <div class="text">
+                <div class="model">
+                    <span>Model</span>
+                    <span class="name-wrap">
+                        <span class="inner">
+                            <span class="name" v-for="item in this.items" :key="item.id">{{ item.name }}</span>
+                        </span>
+                    </span>
+                </div>
+                <div class="view-detail">View Detail</div>
+                <div class="link">
+                    <nuxt-link v-for="item in this.items" :key="item.id" :to="getURL(item)" class="detail-link"></nuxt-link>
+                </div>
             </div>
         </div>
 
@@ -32,7 +42,7 @@ data() {
         return {
             items: [
                 {
-                    name: 'X',
+                    name: 'X1',
                     type: 'snapper',
                     image: 'book.jpg',
                     bg_color: '#f1e8da',
@@ -83,6 +93,8 @@ data() {
         top: 0;
     }
 
+    $meta-font-size: 16px;
+
     .sculpture-slideshow {
         background-color: #fff;
         position: fixed;
@@ -131,43 +143,111 @@ data() {
             display: block;
             transform-origin: top;
             opacity: 0;
-            transform: translateY(-30vh) rotateY(-50deg);
+            transform: rotateY(-50deg);
+            //transform: translateY(-30vh) rotateY(-50deg);
         }
     }
 
     .sculpture-meta {
+
         position: absolute;
-        bottom: 60px;
         width: 100%;
         display: flex;
+        flex-wrap: wrap;
+        bottom: 60px;
+        align-items: flex-end;
         justify-content: center;
+        
+        .text {
+            position: relative;
+            -webkit-user-select: none;
+            user-select: none;
+            .link, .link a {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 10;
+                display: block;
+                a:not(.active) {
+                    display: none;
+                }
+            }
 
-        > div:not(:first-child) {
-            position: absolute;
-        }
-        .sculpture-link {
-            text-align: center;
-        }
-
-        .name-link {
-            font-weight: 700;
-            font-size: 32px;
-            margin-bottom: 15px;
-            display: block;
-            opacity: 0;
-        }
-
-        .detail-link {
-            opacity: 0.6
-        }
-
-        .sculpture-link:not(.active) {
-            pointer-events: none;
+            .model {
+                font-size: 34px;
+                font-weight: 700;
+                margin-bottom: 15px;
+                line-height: 34px;
+                .name-wrap {
+                    display: inline-block;
+                    height: 34px;
+                    margin-left: 10px;
+                    overflow: hidden;
+                    .inner {
+                        display: block;
+                    }
+                    span {
+                        display: block;
+                        margin-bottom: 25px;
+                    }
+                }
+            }
+            .view-detail {
+                font-size: $meta-font-size;
+            }
+            .view-detail, .model {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
         }
 
         a {
             color: #000;
             text-decoration: none;
+        }
+
+    }
+
+    .progress {
+        position: absolute;
+        left: 50px;
+        line-height: 20px;
+        font-weight: 700;
+        font-size: $meta-font-size;
+        
+        .indicator {
+            height: 2px;
+            background-color: rgba(0,0,0,0.3);
+            width: 30px;
+            margin: 0 2px;
+            position: relative;
+            display: inline-block;
+
+            span {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background-color: #000;
+                display: block;
+                transform: scaleX(0)
+            }
+        }
+        .current {
+            overflow: hidden;
+            height: 16px;
+            display: inline-block;
+
+            .inner {
+                display: block;
+            }
+            .inner span {
+                display: block;
+                margin-bottom: 10px;
+            }
+        
         }
     }
 

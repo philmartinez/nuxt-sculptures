@@ -3,7 +3,7 @@ import gsap from 'gsap'
 
 gsap.defaults({
     ease: "power2.inOut", 
-    duration: 1.5
+    duration: 1.4
 });
 
 export default class Slideshow {
@@ -18,16 +18,20 @@ export default class Slideshow {
             parent: document.querySelector('.sculpture-slideshow'),
             slides: document.querySelectorAll('.sculpture-slideshow .sculpture'),
             slideType: document.querySelector('.sculpture-slideshow .sculpture-type'),
-            sculptureMetaLinks: document.querySelectorAll('.sculpture-slideshow .sculpture-meta > div'),
-            sculptureBGtext: {}
+            sculptureMetaLinks: Array.from(document.querySelectorAll('.sculpture-slideshow .sculpture-meta .link a')),
+            sculptureMetaNamesInner: document.querySelector('.sculpture-slideshow .sculpture-meta .name-wrap .inner'),
+            sculptureBGtext: {},
+            sculptureTracking: {}
         }
 
         this.state = {
             activeSlide: 0,
             activeSlideIndex: 0,
-            duration: 0,
+            prevSlideIndex: -1,
             prevSlideType: 0,
+            duration: 0,
             changingSlides: false,
+            direction: 'down'
         }
 
         this.setup()
@@ -41,24 +45,50 @@ export default class Slideshow {
 
         this.createMarkup()
 
+        this.modelNameHeight   = this.getElHeight('.sculpture-meta .text .inner .name')
+        this.trackingNumHeight = this.getElHeight('.sculpture-meta .progress .inner span')
+
         this.changeSlide(0)
-        this.state.duration = 1.3
+        this.state.duration = 1.4
     }
 
     events() {
 
-        document.addEventListener('click',() => {
+        document.addEventListener('wheel', (e) => {
 
-            if( !this.state.changingSlides ) {
+            if( this.state.changingSlides ) return
+            
+            // next
+            if( e.deltaY > 0 ) {
+
+                this.state.direction = 'down'
 
                 if( this.state.activeSlideIndex < this.slides.length - 1 ) {
-                    this.state.activeSlideIndex += 1
+                    this.state.activeSlideIndex++
                 } else {
                     this.state.activeSlideIndex = 0
                 }
+                
+            } 
+            // prev
+            else {
+                
+                this.state.direction = 'up'
 
-                this.changeSlide(this.state.activeSlideIndex)
+                if( this.state.activeSlideIndex != 0) {
+                    this.state.activeSlideIndex--
+                } else {
+                    this.state.activeSlideIndex = this.slides.length - 1
+                }
+    
             }
+
+            this.changeSlide(this.state.activeSlideIndex)
+
+            this.state.prevSlideIndex = this.state.activeSlideIndex
+        })
+
+        document.addEventListener('resize',() => {
             
         })
     }
@@ -97,13 +127,47 @@ export default class Slideshow {
             <span>d</span>
         </span>`
 
+        // Total count
+        let totalMarkup = document.createElement('div')
+        totalMarkup.classList.add('progress')
+        totalMarkup.innerHTML = `
+            <span class="number">No.</span>
+            <span class="current">
+                <span class="inner"></span>
+            </span>
+            <span class="indicator"><span></span></span>
+            <span class="total">${this.slides.length}</span>`
+
+        // Duplicate for wrap loops.
+        let duplicateName = this.els.sculptureMetaNamesInner.querySelector('span:last-child').cloneNode(true)
+        this.els.sculptureMetaNamesInner.prepend(duplicateName)
+        
+
         // Cache els.
         this.els.sculptureBGtext.whale   = this.els.sculptureType.querySelector('.whale')
         this.els.sculptureBGtext.grouper = this.els.sculptureType.querySelector('.grouper')
         this.els.sculptureBGtext.snapper = this.els.sculptureType.querySelector('.snapper')
 
+
         // Append els.
         this.els.parent.appendChild(this.els.sculptureType)
+        this.els.parent.querySelector('.sculpture-meta').prepend(totalMarkup)
+ 
+        this.slides.forEach( (el, index) => { 
+
+            if( index === 0) {
+                let wrappingNum = document.createElement('span')
+                wrappingNum.innerHTML = this.slides.length
+                this.els.parent.querySelector('.current .inner').appendChild(wrappingNum) 
+            }
+
+            let number = document.createElement('span')
+            number.innerHTML = index + 1
+            this.els.parent.querySelector('.current .inner').appendChild(number) 
+        })
+
+        this.els.sculptureTracking.numberInner = this.els.parent.querySelector('.current .inner')
+        this.els.sculptureTracking.indicator   = this.els.parent.querySelector('.indicator span')
 
     }
 
@@ -114,20 +178,23 @@ export default class Slideshow {
 
         this.updateSculptureColors()
         this.updateSculptureText()
-
+        this.updateSculptureLink()
+        
         this.state.changingSlides = true
-        setTimeout( () => { this.state.changingSlides = false }, 1500 )
+        setTimeout( () => { this.state.changingSlides = false }, 1400 )
     }
 
+    
     updateSculptureText() {
 
         let tl = gsap.timeline()
-        let duration = this.state.duration === 0 ? 0 : '0.8'
+        let duration = this.state.duration === 0 ? 0 : '0.68'
 
-        // BG Text.
+
         if( this.state.prevSlideType !== this.state.activeSlide.type ) {
 
-            // Out.
+            // BG Text.
+            //// Out.
             if( this.state.prevSlideType !== 0 ) {
 
                 let typeOut = this.els.sculptureBGtext[this.state.prevSlideType]
@@ -135,11 +202,11 @@ export default class Slideshow {
                 tl.fromTo(typeOut.querySelectorAll('span'), {
                     opacity: 1,
                     rotateY: 0,
-                    y: '0vh'
+                    //y: '0vh'
                 },{
                     opacity: 0,
                     rotateY: -25,
-                    y: '-20vh',
+                    //y: '-20vh',
                     stagger: 0.03,
                     duration: duration,
                     ease: "power1.in"
@@ -147,59 +214,68 @@ export default class Slideshow {
 
             }
 
-            // In.
+            //// In.
             let typeIn = this.els.sculptureBGtext[this.state.activeSlide.type]
             
             tl.fromTo(typeIn.querySelectorAll('span'), {
                 opacity: 0,
                 rotateY: 25,
-                y: '20vh'
+               // y: '20vh'
             },{
                 opacity: 1,
                 rotateY: 0,
-                y: '0vh',
+                //y: '0vh',
                 stagger: 0.03,
                 duration: duration,
                 ease: "power2.out"
-            },'-=0.1')
+            },'-=0')
+
+
+            // Bottom Meta Name
+            this.updateVerticalOverflowSelection(this.modelNameHeight, this.els.sculptureMetaNamesInner)
+
+            // Tracking Number
+            this.updateVerticalOverflowSelection(this.trackingNumHeight, this.els.sculptureTracking.numberInner)
 
         }
 
-  
-        // Store previous type
-        this.state.prevSlideType = this.state.activeSlide.type
+         // Store previous type
+         this.state.prevSlideType = this.state.activeSlide.type
+        
+
+     }
 
 
-        // Bottom Meta
-        let meta_tl = gsap.timeline()
-        this.els.sculptureMetaLinks.forEach((el) => {
+     updateVerticalOverflowSelection(elHeight, elContainerInner) {
 
-             let nameText = el.querySelector('.name').textContent
-             let nameEl   = el.querySelector('.name-link')
+        let deltaY = ( this.state.direction == 'down' ) ? "-=" : "+="; //up or down
+     
+        let wrapAmount = (elHeight * this.slides.length) * -1 
+        let containerWrap = gsap.utils.wrap(0, wrapAmount)
 
-             if( nameText === this.state.activeSlide.name ) {
-                
-                el.classList.add('active')
-                meta_tl.to( nameEl, {
-                    y: 0,
-                    opacity: 1,
-                    duration: '0.4'
-                })
+        let duration = this.state.duration === 0 ? 0 : '1.4'
 
-            } else {
-                
-                el.classList.remove('active')
-                meta_tl.to( nameEl, {
-                    y: -20,
-                    opacity: 0,
-                    duration: '0.4'
-                },'-=0.2')
-
-           }
-       
-
+        gsap.to(elContainerInner, {
+            y: deltaY + elHeight,
+            duration: duration,
+            modifiers: {
+                y: function(y) {
+                    return containerWrap(parseFloat(y)) + 'px'
+                }
+            }
         })
 
+     }
+
+     updateSculptureLink() {
+
+        this.els.sculptureMetaLinks.forEach((el, index) => {
+            if( index === this.state.activeSlideIndex) {
+                this.els.sculptureMetaLinks[index].classList.add('active')
+            } else {
+                this.els.sculptureMetaLinks[index].classList.remove('active')
+            }
+        })
      }
  
      updateSculptureColors() {
@@ -216,6 +292,13 @@ export default class Slideshow {
          })
      }
 
+     getElHeight(elSelector) {
+
+         let name = this.els.parent.querySelector(elSelector)
+         let nameStyle = window.getComputedStyle(name)
+
+        return name.clientHeight + parseInt(nameStyle.marginBottom)
+    }
 
     getSlides() {
         
