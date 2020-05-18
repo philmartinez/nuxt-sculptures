@@ -1,9 +1,10 @@
 
 import gsap from 'gsap'
+import { WebGLShadowMap } from 'three';
 
 gsap.defaults({
     ease: "power2.inOut", 
-    duration: 1.4
+    duration: 1.1
 });
 
 export default class Slideshow {
@@ -19,7 +20,7 @@ export default class Slideshow {
             slides: document.querySelectorAll('.sculpture-slideshow .sculpture'),
             slideType: document.querySelector('.sculpture-slideshow .sculpture-type'),
             sculptureMetaLinks: Array.from(document.querySelectorAll('.sculpture-slideshow .sculpture-meta .link a')),
-            sculptureMetaNamesInner: document.querySelector('.sculpture-slideshow .sculpture-meta .name-wrap .inner'),
+            sculptureMetaName: document.querySelector('.sculpture-slideshow .sculpture-meta .name-wrap .inner .name'),
             sculptureBGtext: {},
             sculptureTracking: {}
         }
@@ -45,11 +46,10 @@ export default class Slideshow {
 
         this.createMarkup()
 
-        this.modelNameHeight   = this.getElHeight('.sculpture-meta .text .inner .name')
-        this.trackingNumHeight = this.getElHeight('.sculpture-meta .progress .inner span')
+        this.state.prevSlideType = this.slides[0].type
 
         this.changeSlide(0)
-        this.state.duration = 1.4
+        this.state.duration = 1.1
     }
 
     events() {
@@ -62,7 +62,6 @@ export default class Slideshow {
             if( e.deltaY > 0 ) {
 
                 this.state.direction = 'down'
-
                 if( this.state.activeSlideIndex < this.slides.length - 1 ) {
                     this.state.activeSlideIndex++
                 } else {
@@ -74,7 +73,6 @@ export default class Slideshow {
             else {
                 
                 this.state.direction = 'up'
-
                 if( this.state.activeSlideIndex != 0) {
                     this.state.activeSlideIndex--
                 } else {
@@ -133,15 +131,10 @@ export default class Slideshow {
         totalMarkup.innerHTML = `
             <span class="number">No.</span>
             <span class="current">
-                <span class="inner"></span>
+                <span class="inner">1</span>
             </span>
             <span class="indicator"><span></span></span>
             <span class="total">${this.slides.length}</span>`
-
-        // Duplicate for wrap loops.
-        let duplicateName = this.els.sculptureMetaNamesInner.querySelector('span:last-child').cloneNode(true)
-        this.els.sculptureMetaNamesInner.prepend(duplicateName)
-        
 
         // Cache els.
         this.els.sculptureBGtext.whale   = this.els.sculptureType.querySelector('.whale')
@@ -152,21 +145,7 @@ export default class Slideshow {
         // Append els.
         this.els.parent.appendChild(this.els.sculptureType)
         this.els.parent.querySelector('.sculpture-meta').prepend(totalMarkup)
- 
-        this.slides.forEach( (el, index) => { 
-
-            if( index === 0) {
-                let wrappingNum = document.createElement('span')
-                wrappingNum.innerHTML = this.slides.length
-                this.els.parent.querySelector('.current .inner').appendChild(wrappingNum) 
-            }
-
-            let number = document.createElement('span')
-            number.innerHTML = index + 1
-            this.els.parent.querySelector('.current .inner').appendChild(number) 
-        })
-
-        this.els.sculptureTracking.numberInner = this.els.parent.querySelector('.current .inner')
+        this.els.sculptureTracking.number = this.els.parent.querySelector('.current .inner')
         this.els.sculptureTracking.indicator   = this.els.parent.querySelector('.indicator span')
 
     }
@@ -177,92 +156,92 @@ export default class Slideshow {
         this.state.activeSlide = this.slides[index]
 
         this.updateSculptureColors()
-        this.updateSculptureText()
+        this.updateSculptureText(index)
         this.updateSculptureLink()
         
         this.state.changingSlides = true
-        setTimeout( () => { this.state.changingSlides = false }, 1400 )
+        setTimeout( () => { this.state.changingSlides = false }, 1100 )
     }
 
     
-    updateSculptureText() {
+    updateSculptureText(index) {
 
         let tl = gsap.timeline()
-        let duration = this.state.duration === 0 ? 0 : '0.68'
+        let duration = this.state.duration === 0 ? 0 : '1'
 
 
-        if( this.state.prevSlideType !== this.state.activeSlide.type ) {
+        // BG Text.
+        let typeOut = this.els.sculptureBGtext[this.state.prevSlideType]
+        let typeIn = this.els.sculptureBGtext[this.state.activeSlide.type]
+        
+        //// Out.
+        tl.fromTo(typeOut.querySelectorAll('span'), {
+            opacity: 1,
+            rotateX: 0,
+            z: 0,
+            y: '0vh'
+        },{
+            rotateX: this.state.direction == 'down' ? 90 : -90,
+            y: this.state.direction == 'down' ? '-20vh' : '20vh',
+            z: -800,
+            stagger: 0.03,
+            duration: duration,
+            ease: "power2.outIn"
+        })
 
-            // BG Text.
-            //// Out.
-            if( this.state.prevSlideType !== 0 ) {
-
-                let typeOut = this.els.sculptureBGtext[this.state.prevSlideType]
-
-                tl.fromTo(typeOut.querySelectorAll('span'), {
-                    opacity: 1,
-                    rotateY: 0,
-                    //y: '0vh'
-                },{
-                    opacity: 0,
-                    rotateY: -25,
-                    //y: '-20vh',
-                    stagger: 0.03,
-                    duration: duration,
-                    ease: "power1.in"
-                })
-
-            }
-
-            //// In.
-            let typeIn = this.els.sculptureBGtext[this.state.activeSlide.type]
-            
-            tl.fromTo(typeIn.querySelectorAll('span'), {
-                opacity: 0,
-                rotateY: 25,
-               // y: '20vh'
-            },{
-                opacity: 1,
-                rotateY: 0,
-                //y: '0vh',
-                stagger: 0.03,
-                duration: duration,
-                ease: "power2.out"
-            },'-=0')
+        //// In.
+        tl.fromTo(typeIn.querySelectorAll('span'), {
+            rotateX: this.state.direction == 'down' ? -90 : 90,
+            y: this.state.direction == 'down' ? '20vh' : '-20vh',
+            z: -800
+        },{
+            opacity: 1,
+            rotateX: 0,
+            y: '0vh',
+            z: 0,
+            stagger: 0.03,
+            duration: duration,
+            ease: "power2.outIn"
+        },'-=1')
 
 
-            // Bottom Meta Name
-            this.updateVerticalOverflowSelection(this.modelNameHeight, this.els.sculptureMetaNamesInner)
+        // Bottom Meta Name
+        this.updateVerticalOverflowSelection(this.els.sculptureMetaName, () => {
+            this.els.sculptureMetaName.innerHTML = this.state.activeSlide.name
+        })
+        
+        // Tracking Number
+        this.updateVerticalOverflowSelection(this.els.sculptureTracking.number, () => {
+            this.els.sculptureTracking.number.innerHTML = index + 1
+        })
 
-            // Tracking Number
-            this.updateVerticalOverflowSelection(this.trackingNumHeight, this.els.sculptureTracking.numberInner)
 
-        }
-
-         // Store previous type
-         this.state.prevSlideType = this.state.activeSlide.type
+        // Store previous type
+        this.state.prevSlideType = this.state.activeSlide.type
         
 
      }
 
 
-     updateVerticalOverflowSelection(elHeight, elContainerInner) {
+     updateVerticalOverflowSelection(el, callback) {
 
-        let deltaY = ( this.state.direction == 'down' ) ? "-=" : "+="; //up or down
-     
-        let wrapAmount = (elHeight * this.slides.length) * -1 
-        let containerWrap = gsap.utils.wrap(0, wrapAmount)
-
-        let duration = this.state.duration === 0 ? 0 : '1.4'
-
-        gsap.to(elContainerInner, {
-            y: deltaY + elHeight,
-            duration: duration,
-            modifiers: {
-                y: function(y) {
-                    return containerWrap(parseFloat(y)) + 'px'
-                }
-            }
+        let nameTL = gsap.timeline()
+        let duration = this.state.duration === 0 ? 0 : 0.6
+        
+        nameTL.fromTo(el,{
+            y: '0'
+        }, {
+            y: this.state.direction == 'down' ? '-100%' : '100%',
+            ease: "power2.in",
+            duration
+        })
+        nameTL.call(callback)
+        nameTL.fromTo(el,{
+            y: this.state.direction == 'down' ? '100%' : '-100%'
+        }, {
+            y: '0%',
+            ease: "power2.out",
+            duration
         })
 
      }
@@ -292,13 +271,7 @@ export default class Slideshow {
          })
      }
 
-     getElHeight(elSelector) {
 
-         let name = this.els.parent.querySelector(elSelector)
-         let nameStyle = window.getComputedStyle(name)
-
-        return name.clientHeight + parseInt(nameStyle.marginBottom)
-    }
 
     getSlides() {
         

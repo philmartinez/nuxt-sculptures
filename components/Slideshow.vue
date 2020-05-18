@@ -17,7 +17,7 @@
                     <span>Model</span>
                     <span class="name-wrap">
                         <span class="inner">
-                            <span class="name" v-for="item in this.items" :key="item.id">{{ item.name }}</span>
+                            <span class="name">{{ this.items[0].name }}</span>
                         </span>
                     </span>
                 </div>
@@ -42,28 +42,36 @@ data() {
         return {
             items: [
                 {
-                    name: 'X1',
+                    name: 'S3',
                     type: 'snapper',
-                    image: 'book.jpg',
+                    image: 'fish-1.png',
                     bg_color: '#f1e8da',
                     font_color: '#f4bb51',
                     id: 1
                 },
                 {
-                    name: 'Q9',
+                    name: 'W9',
                     type: 'whale',
-                    image: 'food.jpg',
+                    image: 'fish-2.png',
                     bg_color: '#e1e1ff',
                     font_color: 'blue',
                     id: 2
                 },
                 {
-                    name: 'H4',
+                    name: 'G4',
                     type: 'grouper',
-                    image: 'book.jpg',
+                    image: 'fish-1.png',
                     bg_color: '#ffe1d6',
                     font_color: '#ff561a',
                     id: 3
+                },
+                {
+                    name: 'W2',
+                    type: 'whale',
+                    image: 'fish-2.png',
+                    bg_color: '#ecece7',
+                    font_color: '#333',
+                    id: 4
                 },
             ]
         }
@@ -103,9 +111,23 @@ data() {
             position: absolute;
             @include expand;
         }
+        .sculpture {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20%;
+        }
+        canvas {
+            z-index: 100;
+        }
         img, .sculpture .name {
             visibility: hidden;
             pointer-events: none;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            width: auto;
         }
 
     }
@@ -136,14 +158,15 @@ data() {
         > span {
             display: flex;
             justify-content: center;
-            perspective: 1000px;
+            perspective: 4000px;
         }
 
         > span > span {
             display: block;
-            transform-origin: top;
+            transform-origin: center;
+            backface-visibility: hidden;
             opacity: 0;
-            transform: rotateY(-50deg);
+            //transform: rotateY(-50deg);
             //transform: translateY(-30vh) rotateY(-50deg);
         }
     }
@@ -157,7 +180,8 @@ data() {
         bottom: 60px;
         align-items: flex-end;
         justify-content: center;
-        
+        z-index: 1000;
+
         .text {
             position: relative;
             -webkit-user-select: none;
@@ -185,12 +209,11 @@ data() {
                     height: 34px;
                     margin-left: 10px;
                     overflow: hidden;
-                    .inner {
+                    .inner, span {
                         display: block;
                     }
-                    span {
-                        display: block;
-                        margin-bottom: 25px;
+                    .name {
+                        width: 53px;
                     }
                 }
             }

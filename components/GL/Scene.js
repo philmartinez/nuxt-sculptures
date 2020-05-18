@@ -61,13 +61,16 @@ export default class Scene {
          Math.atan(APP.winW / this.camera.aspect / (2 * this.cameraDistance)) *
          (180 / Math.PI) // in degrees
 
-         //this.customPass.uniforms.resolution.value.y = STATE.winH / STATE.winW;
-
+   
         this.camera.updateProjectionMatrix()
 
     }
 
     run() {
+
+    }
+
+    resize() {
 
     }
 
