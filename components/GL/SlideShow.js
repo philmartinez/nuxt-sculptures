@@ -1,6 +1,6 @@
 
 import gsap from 'gsap'
-import { WebGLShadowMap } from 'three';
+import O from './Object.js'
 
 gsap.defaults({
     ease: "power2.inOut", 
@@ -160,7 +160,7 @@ export default class Slideshow {
         this.updateSculptureLink()
         
         this.state.changingSlides = true
-        setTimeout( () => { this.state.changingSlides = false }, 1100 )
+        setTimeout( () => { this.state.changingSlides = false }, 1250 )
     }
 
     
@@ -226,14 +226,16 @@ export default class Slideshow {
      updateVerticalOverflowSelection(el, callback) {
 
         let nameTL = gsap.timeline()
-        let duration = this.state.duration === 0 ? 0 : 0.6
+        let duration = this.state.duration === 0 ? 0 : 0.62
+        
+        nameTL.pause()
         
         nameTL.fromTo(el,{
-            y: '0'
+            y: '0%'
         }, {
             y: this.state.direction == 'down' ? '-100%' : '100%',
             ease: "power2.in",
-            duration
+            duration: duration
         })
         nameTL.call(callback)
         nameTL.fromTo(el,{
@@ -241,9 +243,10 @@ export default class Slideshow {
         }, {
             y: '0%',
             ease: "power2.out",
-            duration
+            duration: duration
         })
 
+        nameTL.play()
      }
 
      updateSculptureLink() {
@@ -265,10 +268,11 @@ export default class Slideshow {
              backgroundColor: bg_color,
              duration: this.state.duration
          })
+         /*
          gsap.to(this.els.sculptureType, {
              color: font_color,
              duration: this.state.duration
-         })
+         })*/
      }
 
 

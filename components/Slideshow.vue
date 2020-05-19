@@ -45,8 +45,8 @@ data() {
                     name: 'S3',
                     type: 'snapper',
                     image: 'fish-1.png',
-                    bg_color: '#f1e8da',
-                    font_color: '#f4bb51',
+                    bg_color: '#ffd493',
+                    font_color: '#e4ba7b',
                     id: 1
                 },
                 {
@@ -54,14 +54,14 @@ data() {
                     type: 'whale',
                     image: 'fish-2.png',
                     bg_color: '#e1e1ff',
-                    font_color: 'blue',
+                    font_color: '#c1c1f1',
                     id: 2
                 },
                 {
                     name: 'G4',
                     type: 'grouper',
                     image: 'fish-1.png',
-                    bg_color: '#ffe1d6',
+                    bg_color: '#ffc9b5',
                     font_color: '#ff561a',
                     id: 3
                 },
@@ -69,7 +69,7 @@ data() {
                     name: 'W2',
                     type: 'whale',
                     image: 'fish-2.png',
-                    bg_color: '#ecece7',
+                    bg_color: '#f9f9c5',
                     font_color: '#333',
                     id: 4
                 },
@@ -115,7 +115,7 @@ data() {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 20%;
+            padding: 0 27%;
         }
         canvas {
             z-index: 100;
@@ -138,7 +138,7 @@ data() {
         font-size: 20vw;
         width:100%;
         top: 45%;
-        color: #000;
+        color: rgba(0,0,0,0.13);
         text-align: center;
         left: 0;
         pointer-events: none;
