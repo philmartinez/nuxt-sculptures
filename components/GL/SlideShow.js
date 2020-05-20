@@ -1,4 +1,4 @@
-
+import * as THREE from 'three'
 import gsap from 'gsap'
 import O from './Object.js'
 
@@ -11,10 +11,16 @@ export default class Slideshow {
 
     constructor(scene, items) {
 
+        // GL
         this.scene = scene
+        this.material = new THREE.ShaderMaterial({
+            
+        })
 
+        // Data
         this.items = items
 
+        // DOM
         this.els = {
             parent: document.querySelector('.sculpture-slideshow'),
             slides: document.querySelectorAll('.sculpture-slideshow .sculpture'),
@@ -25,6 +31,7 @@ export default class Slideshow {
             sculptureTracking: {}
         }
 
+        // State
         this.state = {
             activeSlide: 0,
             activeSlideIndex: 0,
@@ -34,6 +41,7 @@ export default class Slideshow {
             changingSlides: false,
             direction: 'down'
         }
+
 
         this.setup()
         this.events()

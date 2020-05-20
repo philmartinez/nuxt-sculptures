@@ -36,6 +36,7 @@
 
 import Scene from '~/components/GL/Scene.js'
 import Slideshow from '~/components/GL/Slideshow.js'
+import App from '~/components/GL/App.js'
 
 export default {
 data() {
@@ -81,6 +82,7 @@ data() {
             return `sculptures/${sculpture.type}-${sculpture.name.toLowerCase()}`
         },
         createSlideshow() {
+            window.APP = new App()
             const scene = new Scene()
             const slideshow = new Slideshow(scene, this.items)
         }
@@ -138,7 +140,7 @@ data() {
         font-size: 20vw;
         width:100%;
         top: 45%;
-        color: rgba(0,0,0,0.13);
+        color: rgba(0,0,0,0.11);
         text-align: center;
         left: 0;
         pointer-events: none;

@@ -5,28 +5,9 @@
 </template>
 
 <script>
-
-class APP {
-
-    constructor() {
-        this.resize()
-        window.addEventListener('resize', () => { this.resize() })
-    }
-
-    resize() {
-        this.winH = window.innerHeight
-        this.winW = window.innerWidth
-    }
-} 
-
 export default {
 
-  mounted() {
-    new APP()
-  }
-  
 }
-
 </script>
 
 <style>
