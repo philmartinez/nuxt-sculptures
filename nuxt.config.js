@@ -49,6 +49,16 @@ export default {
     */
     transpile: ['GLTFLoader.js', 'TransformControls.js','TextureLoader.js'],
     extend (config, ctx) {
+      config.module.rules.push(
+        {
+          test: /\.(glsl|vs|fs|vert|frag)$/,
+          exclude: /node_modules/,
+          use: [
+            'raw-loader',
+            'glslify-loader'
+          ]
+        }
+      )
     }
   }
 }

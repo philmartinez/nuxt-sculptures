@@ -1,14 +1,13 @@
 import { Object3D } from 'three'
 import gsap from 'gsap'
-import Scene from './Scene.js'
 
 export default class O extends Object3D {
 
     init(el) {
 
-        this.el = el;
-        
-        this.resize();
+        this.el = el
+        this.GLscene = APP.Scene
+        this.resize()
     }
 
     setBounds() {
@@ -20,9 +19,9 @@ export default class O extends Object3D {
           width: this.rect.width,
           height: this.rect.height
         };
-    
+
         this.updateSize();
-        this.updatePosition();
+        //this.updatePosition();
       }
       
       resize() {
@@ -30,15 +29,15 @@ export default class O extends Object3D {
       }
       
       calculateUnitSize(distance = this.position.z) {
-        const vFov = Scene.camera.fov * Math.PI / 180;
+        const vFov = this.GLscene.camera.fov * Math.PI / 180;
         const height = 2 * Math.tan(vFov / 2) * distance;
-        const width = height * Scene.camera.aspect;
+        const width = height * this.GLscene.camera.aspect;
     
         return { width, height };
       }
     
       updateSize() {
-        this.camUnit = this.calculateUnitSize(Scene.camera.position.z - this.position.z);
+        this.camUnit = this.calculateUnitSize(this.GLscene.camera.position.z - this.position.z);
         
         const x = this.bounds.width / APP.winW;
         const y = this.bounds.height / APP.winH;
@@ -65,9 +64,9 @@ export default class O extends Object3D {
         this.position.x += ((left + x) / APP.winW) * this.camUnit.width;
       }  
       
-      updatePosition(y) {
+      /*updatePosition(y) {
         this.updateY(y);
         this.updateX(0);
-      }
+      }*/
 
 }

@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import gsap from 'gsap'
-import O from './Object.js'
+import Fish from '~/components/GL/Fish.js'
 
 gsap.defaults({
     ease: "power2.inOut", 
@@ -9,13 +9,8 @@ gsap.defaults({
 
 export default class Slideshow {
 
-    constructor(scene, items) {
+    constructor(items) {
 
-        // GL
-        this.scene = scene
-        this.material = new THREE.ShaderMaterial({
-            
-        })
 
         // Data
         this.items = items
@@ -24,12 +19,18 @@ export default class Slideshow {
         this.els = {
             parent: document.querySelector('.sculpture-slideshow'),
             slides: document.querySelectorAll('.sculpture-slideshow .sculpture'),
+            slideSizer: document.querySelector('.sculpture-slideshow .sculptures .img-wrap'),
             slideType: document.querySelector('.sculpture-slideshow .sculpture-type'),
             sculptureMetaLinks: Array.from(document.querySelectorAll('.sculpture-slideshow .sculpture-meta .link a')),
             sculptureMetaName: document.querySelector('.sculpture-slideshow .sculpture-meta .name-wrap .inner .name'),
             sculptureBGtext: {},
             sculptureTracking: {}
         }
+
+        // GL
+        this.GLscene = APP.Scene
+        this.Fish = new Fish()
+        this.Fish.init(this.els.slideSizer, this.els.parent)
 
         // State
         this.state = {
@@ -50,12 +51,14 @@ export default class Slideshow {
 
     setup() {
 
+        // Store
         this.slides = this.getSlides()
 
+        // DOM
         this.createMarkup()
 
+        // Start the slider
         this.state.prevSlideType = this.slides[0].type
-
         this.changeSlide(0)
         this.state.duration = 1.1
     }
@@ -161,12 +164,17 @@ export default class Slideshow {
 
     changeSlide(index) {
 
+        // DOM
         this.state.activeSlide = this.slides[index]
 
         this.updateSculptureColors()
         this.updateSculptureText(index)
         this.updateSculptureLink()
-        
+
+        // GL
+        this.Fish.switchTextures(index)
+
+        // State
         this.state.changingSlides = true
         setTimeout( () => { this.state.changingSlides = false }, 1250 )
     }

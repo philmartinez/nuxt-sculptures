@@ -6,7 +6,7 @@
 
         <div class="sculptures">
             <div class="sculpture" v-for="item in this.items" :id="`sculpture-${item.id}`">
-                <img :src="item.image" :alt="item.name" />
+                <div class="img-wrap"><img :src="item.image" :alt="item.name" /></div>
                 <h2 class="name"><nuxt-link :to="getURL(item)">{{ item.name }}</nuxt-link></h2>
             </div>
         </div>
@@ -45,7 +45,7 @@ data() {
                 {
                     name: 'S3',
                     type: 'snapper',
-                    image: 'fish-1.png',
+                    image: 'fish.png',
                     bg_color: '#ffd493',
                     font_color: '#e4ba7b',
                     id: 1
@@ -53,7 +53,7 @@ data() {
                 {
                     name: 'W9',
                     type: 'whale',
-                    image: 'fish-2.png',
+                    image: 'fish2.png',
                     bg_color: '#e1e1ff',
                     font_color: '#c1c1f1',
                     id: 2
@@ -61,7 +61,7 @@ data() {
                 {
                     name: 'G4',
                     type: 'grouper',
-                    image: 'fish-1.png',
+                    image: 'fish.png',
                     bg_color: '#ffc9b5',
                     font_color: '#ff561a',
                     id: 3
@@ -69,7 +69,7 @@ data() {
                 {
                     name: 'W2',
                     type: 'whale',
-                    image: 'fish-2.png',
+                    image: 'fish2.png',
                     bg_color: '#f9f9c5',
                     font_color: '#333',
                     id: 4
@@ -83,8 +83,8 @@ data() {
         },
         createSlideshow() {
             window.APP = new App()
-            const scene = new Scene()
-            const slideshow = new Slideshow(scene, this.items)
+            APP.Scene = new Scene()
+            const slideshow = new Slideshow(this.items)
         }
     },
     mounted() {
@@ -109,17 +109,25 @@ data() {
         background-color: #fff;
         position: fixed;
         @include expand;
-        .sculpture, canvas {
-            position: absolute;
+        .sculptures, .sculpture, canvas {
             @include expand;
         }
         .sculpture {
+            position: absolute;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 0 27%;
         }
+        .sculptures {
+            display: flex;
+            align-items: center;
+        }
+        .sculptures > div:first-child {
+            position: relative;
+        }
         canvas {
+            position: absolute;
             z-index: 100;
         }
         img, .sculpture .name {
@@ -137,10 +145,10 @@ data() {
     .sculpture-type {
         font-weight: 400;
         font-family: 'Playfair Display';
-        font-size: 20vw;
+        font-size: 21vw;
         width:100%;
         top: 45%;
-        color: rgba(0,0,0,0.11);
+        color: rgba(0,0,0,0.09);
         text-align: center;
         left: 0;
         pointer-events: none;
