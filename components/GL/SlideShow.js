@@ -126,7 +126,7 @@ export default class Slideshow {
             <span>e</span>
             <span>r</span>
         </span>
-        <span class="whale">
+        <span class="bowhead">
             <span>B</span>
             <span>o</span>
             <span>w</span>
@@ -148,7 +148,7 @@ export default class Slideshow {
             <span class="total">${this.slides.length}</span>`
 
         // Cache els.
-        this.els.sculptureBGtext.whale   = this.els.sculptureType.querySelector('.whale')
+        this.els.sculptureBGtext.bowhead   = this.els.sculptureType.querySelector('.bowhead')
         this.els.sculptureBGtext.grouper = this.els.sculptureType.querySelector('.grouper')
         this.els.sculptureBGtext.snapper = this.els.sculptureType.querySelector('.snapper')
 
@@ -223,7 +223,7 @@ export default class Slideshow {
 
         // Bottom Meta Name
         this.updateVerticalOverflowSelection(this.els.sculptureMetaName, () => {
-            this.els.sculptureMetaName.innerHTML = this.state.activeSlide.name
+            this.els.sculptureMetaName.innerHTML = `${this.state.activeSlide.type} ${this.state.activeSlide.name}`
         })
         
         // Tracking Number

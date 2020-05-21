@@ -15,10 +15,9 @@
         <div class="sculpture-meta">
             <div class="text">
                 <div class="model">
-                    <span>Model</span>
                     <span class="name-wrap">
                         <span class="inner">
-                            <span class="name">{{ this.items[0].name }}</span>
+                            <span class="name">{{ this.items[0].type }} {{ this.items[0].name }}</span>
                         </span>
                     </span>
                 </div>
@@ -53,8 +52,8 @@ data() {
                 },
                 {
                     name: 'W9',
-                    type: 'whale',
-                    image: 'fish2.png',
+                    type: 'bowhead',
+                    image: 'fish3.png',
                     bg_color: '#e1e1ff',
                     font_color: '#c1c1f1',
                     id: 2
@@ -62,15 +61,15 @@ data() {
                 {
                     name: 'G4',
                     type: 'grouper',
-                    image: 'fish.png',
+                    image: 'fish2.png',
                     bg_color: '#ffc9b5',
                     font_color: '#ff561a',
                     id: 3
                 },
                 {
                     name: 'W2',
-                    type: 'whale',
-                    image: 'fish2.png',
+                    type: 'bowhead',
+                    image: 'fish4.png',
                     bg_color: '#f9f9c5',
                     font_color: '#333',
                     id: 4
@@ -230,14 +229,14 @@ data() {
                 line-height: 34px;
                 .name-wrap {
                     display: inline-block;
-                    height: 34px;
+                    height: 39px;
                     margin-left: 10px;
                     overflow: hidden;
                     .inner, span {
                         display: block;
                     }
                     .name {
-                        width: 53px;
+                        text-transform: capitalize;
                     }
                 }
             }

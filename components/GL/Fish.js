@@ -62,6 +62,7 @@ export default class Fish extends O {
 
         fishImgs.forEach( (img) => {
             loader.load(img.src, texture => {
+
                 texture.minFilter = THREE.LinearFilter
                 texture.generateMipmaps = false
         
@@ -75,7 +76,6 @@ export default class Fish extends O {
     switchTextures(index) {
 
         this.state.current = index;
-    
         this.material.uniforms.uNextTex.value = this.textures[index];
     
         const tl = gsap.timeline({
