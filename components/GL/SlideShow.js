@@ -200,9 +200,9 @@ export default class Slideshow {
             rotateX: this.state.direction == 'down' ? 90 : -90,
             y: this.state.direction == 'down' ? '-20vh' : '20vh',
             z: -800,
-            stagger: 0.03,
+            stagger: 0.02,
             duration: duration,
-            ease: "power2.outIn"
+            ease: "power1.outIn"
         })
 
         //// In.
@@ -215,9 +215,9 @@ export default class Slideshow {
             rotateX: 0,
             y: '0vh',
             z: 0,
-            stagger: 0.03,
+            stagger: 0.02,
             duration: duration,
-            ease: "power2.outIn"
+            ease: "power1.outIn"
         },'-=1')
 
 
@@ -242,7 +242,7 @@ export default class Slideshow {
      updateVerticalOverflowSelection(el, callback) {
 
         let nameTL = gsap.timeline()
-        let duration = this.state.duration === 0 ? 0 : 0.62
+        let duration = this.state.duration === 0 ? 0 : 0.52
         
         nameTL.pause()
         
@@ -250,7 +250,7 @@ export default class Slideshow {
             y: '0%'
         }, {
             y: this.state.direction == 'down' ? '-100%' : '100%',
-            ease: "power2.in",
+            ease: "power1.in",
             duration: duration
         })
         nameTL.call(callback)
@@ -258,7 +258,7 @@ export default class Slideshow {
             y: this.state.direction == 'down' ? '100%' : '-100%'
         }, {
             y: '0%',
-            ease: "power2.out",
+            ease: "power1.out",
             duration: duration
         })
 

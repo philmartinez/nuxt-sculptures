@@ -6,7 +6,7 @@ import vertexShader from '~/components/GL/shaders/vertex.glsl'
 
 import gsap from 'gsap'
 
-const geometry = new THREE.PlaneBufferGeometry(1,1,32,32)
+const geometry = new THREE.PlaneBufferGeometry(1,1,64,64)
 const material = new THREE.ShaderMaterial({
     fragmentShader,
     vertexShader,
@@ -32,13 +32,13 @@ export default class Fish extends O {
             uMeshSize: { value: [this.rect.width, this.rect.height] },
             uImageSize: { value: [0, 0] },
             uTime: { value: 0 },
-            uProg: { value: 0 }
+            uProg: { value: 0 },
+            uAmp: { value: 0 }
         }
 
         this.textures = []
 
         this.state = {
-            animating: false,
             current: 0
         }
 
@@ -74,17 +74,12 @@ export default class Fish extends O {
 
     switchTextures(index) {
 
-        if(this.state.animating) return;
-
-    
-        this.state.animating = true;
         this.state.current = index;
     
         this.material.uniforms.uNextTex.value = this.textures[index];
     
         const tl = gsap.timeline({
           onComplete: () => {
-            this.state.animating = false;
             this.material.uniforms.uCurrTex.value = this.textures[index];
           }
         });
@@ -94,9 +89,26 @@ export default class Fish extends O {
             value: 0
           }, {
             value: 1,
-            duration: 1.2,
-            ease: 'power2.inOut',
-          }, 0);
+            duration: 1.1,
+            ease: 'power1.inOut',
+          });
+
+          tl
+          .fromTo(this.material.uniforms.uAmp, {
+              value: 0
+          },{
+            value: 1,
+            duration: 0.6,
+            ease: 'power1.in',
+          },'-=1.1')
+          .fromTo(this.material.uniforms.uAmp, {
+            value: 1
+          }, {
+            value: 0,
+            duration: 0.5,
+            ease: 'power1.out',
+          },'-=0.5')
+
       }
     
 

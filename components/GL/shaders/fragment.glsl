@@ -27,14 +27,16 @@ vec2 backgroundCoverUv(vec2 uv, vec2 canvasSize, vec2 textureSize){
 void main() {
   vec2 uv = vUv;
   vec2 texUv = backgroundCoverUv(uv, uMeshSize, uImageSize);
-
+  
   vec4 disp = texture2D(uDisp, uv);
  
-  vec4 currTex = texture2D(uCurrTex, texUv - vec2(disp.r * uProg, 0.));
-  vec4 nextTex = texture2D(uNextTex, texUv + vec2(disp.r * (1. - uProg), 0 ));
+  //vec4 currTex = texture2D(uCurrTex, texUv - vec2(disp.r * uProg, 0.));
+  //vec4 nextTex = texture2D(uNextTex, texUv + vec2(disp.r * (1. - uProg), 0 ));
+  vec4 currTex = texture2D(uCurrTex, texUv );
+  vec4 nextTex = texture2D(uNextTex, texUv );
 
   vec4 finalTex = mix(currTex, nextTex, uProg);
-
+  
   gl_FragColor = finalTex;
 }
 

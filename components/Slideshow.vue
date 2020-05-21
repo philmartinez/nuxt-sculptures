@@ -4,6 +4,7 @@
 
         <canvas></canvas>
 
+        <div class="sculpture-shadow"></div>
         <div class="sculptures">
             <div class="sculpture" v-for="item in this.items" :id="`sculpture-${item.id}`">
                 <div class="img-wrap"><img :src="item.image" :alt="item.name" /></div>
@@ -140,6 +141,19 @@ data() {
             width: auto;
         }
 
+    }
+
+    .sculpture-shadow {
+        background-size: cover;
+        position: absolute;
+        width: 55%;
+        padding-bottom: 40%;
+        opacity: 0.35;
+        top: 56%;
+        transform: translateY(-50%) translateX(-50%);
+        left: 52%;
+        z-index: -1;
+        background-image: url('~assets/fish-shadow.png');
     }
 
     .sculpture-type {
