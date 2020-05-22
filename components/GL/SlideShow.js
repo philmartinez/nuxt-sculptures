@@ -97,7 +97,7 @@ export default class Slideshow {
             this.state.prevSlideIndex = this.state.activeSlideIndex
         })
 
-        document.addEventListener('resize',() => {
+        window.addEventListener('resize',() => {
             
         })
     }
@@ -199,25 +199,25 @@ export default class Slideshow {
         },{
             rotateX: this.state.direction == 'down' ? 90 : -90,
             y: this.state.direction == 'down' ? '-20vh' : '20vh',
-            z: -800,
-            stagger: 0.02,
+            z: -1000,
+            stagger: 0.025,
             duration: duration,
-            ease: "power1.outIn"
+            ease: "power2.outIn"
         })
 
         //// In.
         tl.fromTo(typeIn.querySelectorAll('span'), {
             rotateX: this.state.direction == 'down' ? -90 : 90,
             y: this.state.direction == 'down' ? '20vh' : '-20vh',
-            z: -800
+            z: -1000
         },{
             opacity: 1,
             rotateX: 0,
             y: '0vh',
             z: 0,
-            stagger: 0.02,
+            stagger: 0.025,
             duration: duration,
-            ease: "power1.outIn"
+            ease: "power2.outIn"
         },'-=1')
 
 
@@ -242,7 +242,7 @@ export default class Slideshow {
      updateVerticalOverflowSelection(el, callback) {
 
         let nameTL = gsap.timeline()
-        let duration = this.state.duration === 0 ? 0 : 0.52
+        let duration = this.state.duration === 0 ? 0 : 0.6
         
         nameTL.pause()
         
@@ -250,7 +250,7 @@ export default class Slideshow {
             y: '0%'
         }, {
             y: this.state.direction == 'down' ? '-100%' : '100%',
-            ease: "power1.in",
+            ease: "power2.in",
             duration: duration
         })
         nameTL.call(callback)
@@ -258,7 +258,7 @@ export default class Slideshow {
             y: this.state.direction == 'down' ? '100%' : '-100%'
         }, {
             y: '0%',
-            ease: "power1.out",
+            ease: "power2.out",
             duration: duration
         })
 

@@ -34,6 +34,7 @@
 
 <script>
 
+import preloadImages from '~/components/util/preload.js'
 import Scene from '~/components/GL/Scene.js'
 import Slideshow from '~/components/GL/Slideshow.js'
 import App from '~/components/GL/App.js'
@@ -53,8 +54,8 @@ data() {
                 {
                     name: 'W9',
                     type: 'bowhead',
-                    image: 'fish3.png',
-                    bg_color: '#e1e1ff',
+                    image: 'whale.png',
+                    bg_color: '#8198ff',
                     font_color: '#c1c1f1',
                     id: 2
                 },
@@ -62,7 +63,7 @@ data() {
                     name: 'G4',
                     type: 'grouper',
                     image: 'fish2.png',
-                    bg_color: '#ffc9b5',
+                    bg_color: '#ffadad',
                     font_color: '#ff561a',
                     id: 3
                 },
@@ -84,7 +85,11 @@ data() {
         createSlideshow() {
             window.APP = new App()
             APP.Scene = new Scene()
-            const slideshow = new Slideshow(this.items)
+
+            preloadImages('.sculpture-slideshow').then(() => {
+                const slideshow = new Slideshow(this.items)
+            })
+            
         }
     },
     mounted() {
@@ -147,7 +152,7 @@ data() {
         position: absolute;
         width: 55%;
         padding-bottom: 40%;
-        opacity: 0.35;
+        opacity: 0.42;
         top: 56%;
         transform: translateY(-50%) translateX(-50%);
         left: 52%;
@@ -157,8 +162,12 @@ data() {
 
     .sculpture-type {
         font-weight: 400;
-        font-family: 'Playfair Display';
-        font-size: 21vw;
+        font-family: 'Roboto';
+        /*-webkit-text-stroke-color: inherit;
+        -webkit-text-fill-color: rgba(0,0,0,0);
+        -webkit-text-stroke-width: 2px;*/
+        font-weight: 700;
+        font-size: 20vw;
         width:100%;
         top: 45%;
         color: rgba(0,0,0,0.09);
