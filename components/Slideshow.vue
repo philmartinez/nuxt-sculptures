@@ -63,7 +63,7 @@ data() {
                     name: 'G4',
                     type: 'grouper',
                     image: 'fish2.png',
-                    bg_color: '#ffadad',
+                    bg_color: '#e4434f',
                     font_color: '#ff561a',
                     id: 3
                 },
@@ -153,7 +153,7 @@ data() {
         width: 55%;
         padding-bottom: 40%;
         opacity: 0.42;
-        top: 56%;
+        top: 57%;
         transform: translateY(-50%) translateX(-50%);
         left: 52%;
         z-index: -1;

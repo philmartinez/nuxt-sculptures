@@ -114,7 +114,7 @@ export default class Fish extends O {
           .fromTo(this.material.uniforms.uTimeProg, {
               value: 1.7
           },{
-            value: 14,
+            value: 17,
             duration: 1.2,
             ease: 'none',
           },'-=1.2')
