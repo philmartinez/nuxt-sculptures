@@ -1,8 +1,8 @@
 
 import * as THREE from 'three'
 import O from '~/components/GL/Object.js'
-import fragmentShader from '~/components/GL/shaders/fragment.glsl'
-import vertexShader from '~/components/GL/shaders/vertex.glsl'
+import fragmentShader from '~/components/GL/shaders/fish/fish-fragment.glsl'
+import vertexShader from '~/components/GL/shaders/fish/fish-vertex.glsl'
 
 import gsap from 'gsap'
 
@@ -127,7 +127,7 @@ export default class Fish extends O {
             value: 0
           }, {
             value: 1,
-            duration: 0.06,
+            duration: 0.1,
             ease: 'none',
           },'-=0.6');
 

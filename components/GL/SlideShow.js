@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import gsap from 'gsap'
 import Fish from '~/components/GL/Fish.js'
+import ColorBG from '~/components/GL/ColorBG.js'
 
 gsap.defaults({
     ease: "power2.inOut", 
@@ -10,7 +11,6 @@ gsap.defaults({
 export default class Slideshow {
 
     constructor(items) {
-
 
         // Data
         this.items = items
@@ -28,9 +28,11 @@ export default class Slideshow {
         }
 
         // GL
-        this.GLscene = APP.Scene
         this.Fish = new Fish()
         this.Fish.init(this.els.slideSizer, this.els.parent)
+
+        this.ColorBG = new ColorBG()
+        this.ColorBG.init(this.els.parent)
 
         // State
         this.state = {
@@ -173,6 +175,7 @@ export default class Slideshow {
 
         // GL
         this.Fish.switchTextures(index)
+        this.ColorBG.changeColor(this.state.activeSlide.bg_color)
 
         // State
         this.state.changingSlides = true
@@ -277,14 +280,15 @@ export default class Slideshow {
      }
  
      updateSculptureColors() {
- 
+        
+        /*
          let { font_color, bg_color } = this.state.activeSlide
  
          gsap.to(this.els.parent, {
              backgroundColor: bg_color,
              duration: this.state.duration
          })
-         /*
+         
          gsap.to(this.els.sculptureType, {
              color: font_color,
              duration: this.state.duration

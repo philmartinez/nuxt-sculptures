@@ -2,7 +2,8 @@
 
     <div class="sculpture-slideshow">
 
-        <canvas></canvas>
+        <canvas id="sculpture-bg-gl"></canvas>
+        <canvas id="sculpture-gl"></canvas>
 
         <div class="sculpture-shadow"></div>
         <div class="sculptures">
@@ -36,6 +37,7 @@
 
 import preloadImages from '~/components/util/preload.js'
 import Scene from '~/components/GL/Scene.js'
+import SceneBG from '~/components/GL/SceneBG.js'
 import Slideshow from '~/components/GL/Slideshow.js'
 import App from '~/components/GL/App.js'
 
@@ -85,6 +87,7 @@ data() {
         createSlideshow() {
             window.APP = new App()
             APP.Scene = new Scene()
+            APP.SceneBG = new SceneBG()
 
             preloadImages('.sculpture-slideshow').then(() => {
                 const slideshow = new Slideshow(this.items)
@@ -133,6 +136,8 @@ data() {
         }
         canvas {
             position: absolute;
+        }
+        #sculpture-gl {
             z-index: 100;
         }
         img, .sculpture .name {
@@ -156,7 +161,7 @@ data() {
         top: 57%;
         transform: translateY(-50%) translateX(-50%);
         left: 52%;
-        z-index: -1;
+        z-index: 1;
         background-image: url('~assets/fish-shadow.png');
     }
 

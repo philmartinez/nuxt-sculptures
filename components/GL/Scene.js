@@ -7,6 +7,14 @@ export default class Scene {
 
     constructor() {
         
+        this.lightsCameraAction()
+        this.setup()
+        this.addEvents()
+        this.render()
+    }
+
+    lightsCameraAction() {
+
         this.scene = new THREE.Scene()
         
         this.camera = new THREE.PerspectiveCamera(
@@ -17,20 +25,15 @@ export default class Scene {
         )
 
         this.renderer = new THREE.WebGLRenderer({
-            canvas: document.querySelector(".sculpture-slideshow canvas"),
+            canvas: document.querySelector("#sculpture-gl"),
             antialias: true,
             alpha: true
-        });
-
-        this.setup()
-        this.addEvents()
-
-        this.render()
+        })
     }
 
     setup() {
 
-        this.renderer.setPixelRatio(gsap.utils.clamp(1.5, 1, window.devicePixelRatio))
+        this.renderer.setPixelRatio(gsap.utils.clamp(2, 1, window.devicePixelRatio))
         this.renderer.setSize( APP.winW, APP.winH )
         this.renderer.setClearColor( 0x000000, 0 )
         this.renderer.outputEncoding = THREE.sRGBEncoding
@@ -55,8 +58,8 @@ export default class Scene {
         this.camera.updateProjectionMatrix()
 
         this.scene.children.forEach((el, i) => {
-            const fish = this.scene.children[i]
-            fish.resize()
+            const object = this.scene.children[i]
+            object.resize()
         })
 
     }
@@ -66,9 +69,9 @@ export default class Scene {
         let elapsed = this.clock.getElapsedTime()
 
         this.scene.children.forEach( (el, i) => {
-            const fish = this.scene.children[i]
+            const object = this.scene.children[i]
             //fish.updatePosition(current)
-            fish.updateTime(elapsed)
+            object.updateTime(elapsed)
         })
 
         this.render()
