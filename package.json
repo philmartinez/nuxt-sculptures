@@ -11,6 +11,7 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "glsl-noise": "0.0.0",
     "glslify": "^7.0.0",
     "glslify-loader": "^2.0.0",
     "gsap": "^3.2.6",

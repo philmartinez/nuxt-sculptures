@@ -33,6 +33,10 @@ export default class ColorBG extends O {
             uTime: { value: 0 },
             uProg: { value: 0 },
             uTimeProg: { value: 0 },
+            width: { type: "f", value: 5},
+            scaleX: { type: "f", value: 7 },
+            scaleY: { type: "f", value: 17.0 },
+            resolution: { type: "v4", value: new THREE.Vector4() },
             uAmp: { value: 0 }
         }
 
