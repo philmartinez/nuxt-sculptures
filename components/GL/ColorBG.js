@@ -1,5 +1,5 @@
 
-import * as THREE from 'THREE'
+import * as THREE from 'three'
 import O from '~/components/GL/Object.js'
 import vertexShader from '~/components/GL/shaders/fish/background-vertex.glsl'
 import fragmentShader from '~/components/GL/shaders/fish/background-fragment.glsl'
@@ -33,10 +33,10 @@ export default class ColorBG extends O {
             uTime: { value: 0 },
             uProg: { value: 0 },
             uTimeProg: { value: 0 },
-            width: { type: "f", value: 5},
-            scaleX: { type: "f", value: 7 },
-            scaleY: { type: "f", value: 17.0 },
-            resolution: { type: "v4", value: new THREE.Vector4() },
+            width: { type: "f", value:2},
+            //scaleX: { type: "f", value: 33.1 },
+            //scaleY: { type: "f", value: 1.2 },
+            //resolution: { type: "v4", value: new THREE.Vector4() },
             uAmp: { value: 0 }
         }
 
@@ -78,7 +78,7 @@ export default class ColorBG extends O {
         tl.fromTo(this.material.uniforms.uProg, {
             value: 0
         }, {
-            duration: 1.2,
+            duration: 1.1,
             ease: "power2.inOut",
             value: 1
         },'-=1.2')
