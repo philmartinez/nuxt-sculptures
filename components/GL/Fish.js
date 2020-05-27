@@ -147,14 +147,18 @@ export default class Fish extends O {
     }
 
     updateTime(time) {
-        this.material.uniforms.uTime.value = time;
+        this.material.uniforms.uTime.value = time
     }
 
     resize() {
-        super.resize();
-        if (!this.material) return;
-        this.material.uniforms.uMeshSize.value.x = this.rect.width;
-        this.material.uniforms.uMeshSize.value.y = this.rect.height;
+        super.resize()
+        if (!this.material) return
+
+        this.material.uniforms.uMeshSize.value.x = this.rect.width
+        this.material.uniforms.uMeshSize.value.y = this.rect.height
+
+        this.GLscene.shouldRun = true
+        setTimeout(() => { this.GLscene.shouldRun = false }, 80)
     }
 
 }
