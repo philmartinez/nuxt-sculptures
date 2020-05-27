@@ -2,14 +2,15 @@
 import * as THREE from 'three'
 import O from '~/components/GL/Object.js'
 import vertexShader from '~/components/GL/shaders/fish/background-vertex.glsl'
-import fragmentShader from '~/components/GL/shaders/fish/background-fragment.glsl'
+import fragmentShaderDown from '~/components/GL/shaders/fish/background-down-fragment.glsl'
+import fragmentShaderUp from '~/components/GL/shaders/fish/background-up-fragment.glsl'
 
 import gsap from 'gsap'
 
 const geometry = new THREE.PlaneBufferGeometry(1,1,64,64)
 const material = new THREE.ShaderMaterial({
-    fragmentShader,
-    vertexShader
+    fragmentShader: fragmentShaderDown,
+    vertexShader: vertexShader
 })
 
 export default class ColorBG extends O {
@@ -34,9 +35,6 @@ export default class ColorBG extends O {
             uProg: { value: 0 },
             uTimeProg: { value: 0 },
             width: { type: "f", value:2},
-            //scaleX: { type: "f", value: 33.1 },
-            //scaleY: { type: "f", value: 1.2 },
-            //resolution: { type: "v4", value: new THREE.Vector4() },
             uAmp: { value: 0 }
         }
 
@@ -86,6 +84,15 @@ export default class ColorBG extends O {
             value: 1
         },'-=1.2')
 
+    }
+
+    changeShader(direction) {
+        if( 'down' === direction ) {
+            this.material.fragmentShader = fragmentShaderDown;
+            return
+        } 
+        this.material.fragmentShader = fragmentShaderUp
+      
     }
 
     updateTime(time) {

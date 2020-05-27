@@ -176,6 +176,7 @@ export default class Slideshow {
         // GL
         this.Fish.switchTextures(index)
         this.ColorBG.changeColor(this.state.activeSlide.bg_color)
+        this.ColorBG.changeShader(this.state.direction)
 
         // State
         this.state.changingSlides = true
