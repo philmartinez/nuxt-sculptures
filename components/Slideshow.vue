@@ -104,6 +104,8 @@ data() {
 
 <style lang="scss">
 
+    $breakpoint-tablet: 768px;
+
     @mixin expand {
         height: 100%;
         width: 100%;
@@ -126,6 +128,9 @@ data() {
             align-items: center;
             justify-content: center;
             padding: 0 27%;
+            @media only screen and (max-width: $breakpoint-tablet) {
+                padding: 0 15%;
+            }
         }
         .sculptures {
             display: flex;
@@ -168,13 +173,14 @@ data() {
     .sculpture-type {
         font-weight: 400;
         font-family: 'Roboto';
-        /*-webkit-text-stroke-color: inherit;
-        -webkit-text-fill-color: rgba(0,0,0,0);
-        -webkit-text-stroke-width: 2px;*/
         font-weight: 700;
         font-size: 20vw;
         width:100%;
         top: 45%;
+        @media only screen and (max-width: $breakpoint-tablet) {
+            top: 47%;
+            font-size: 21vw;
+        }
         color: rgba(0,0,0,0.09);
         text-align: center;
         left: 0;

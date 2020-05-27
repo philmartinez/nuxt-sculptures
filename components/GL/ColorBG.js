@@ -9,7 +9,7 @@ import gsap from 'gsap'
 
 const geometry = new THREE.PlaneBufferGeometry(1,1,64,64)
 const material = new THREE.ShaderMaterial({
-    fragmentShader: fragmentShaderDown,
+    fragmentShader: fragmentShaderUp,
     vertexShader: vertexShader
 })
 
@@ -34,7 +34,7 @@ export default class ColorBG extends O {
             uTime: { value: 0 },
             uProg: { value: 0 },
             uTimeProg: { value: 0 },
-            width: { type: "f", value:2},
+            width: { type: "f", value:1.0 },
             uAmp: { value: 0 }
         }
 
@@ -48,50 +48,40 @@ export default class ColorBG extends O {
     changeColor(color) {
         
         this.nextColor = new THREE.Color(color)
-
         this.material.uniforms.uNextColor.value = new THREE.Vector3(this.nextColor.r, this.nextColor.g, this.nextColor.b)
         
         const tl = gsap.timeline({
+
           onComplete: () => {
+
             this.GLscene.shouldRun = false;
+
             this.currColor = new THREE.Color(color)
             this.material.uniforms.uCurrColor.value = new THREE.Vector3(this.currColor.r, this.currColor.g, this.currColor.b)
           }
+
         });
 
         this.GLscene.shouldRun = true;
 
-        tl.fromTo(this.material.uniforms.uTimeProg, {
-            value: 0
-        }, {
-            duration: 0.6,
-            ease: "power2.in",
-            value: 1
-        })
-        tl.fromTo(this.material.uniforms.uTimeProg, {
-            value: 1
-        }, {
-            duration: 0.6,
-            ease: "power2.out",
-            value: 0
-        })
-
         tl.fromTo(this.material.uniforms.uProg, {
             value: 0
         }, {
-            duration: 1.1,
+            duration: 1.12,
             ease: "power2.inOut",
-            value: 1
-        },'-=1.2')
+            value: 1,
+            delay: 0.05
+        })
 
     }
 
     changeShader(direction) {
         if( 'down' === direction ) {
-            this.material.fragmentShader = fragmentShaderDown;
-            return
-        } 
-        this.material.fragmentShader = fragmentShaderUp
+            this.material.fragmentShader = fragmentShaderUp;
+        } else {
+            this.material.fragmentShader = fragmentShaderDown
+        }
+        this.material.needsUpdate = true
       
     }
 

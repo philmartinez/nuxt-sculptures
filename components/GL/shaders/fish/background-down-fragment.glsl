@@ -44,7 +44,7 @@ float snoise(vec2 v){
 
 
 float parabola( float x, float k ) {
-  return pow( 4. * x * ( 1. - x ), k );
+  return pow( 1. * x * ( 1. - x ), k );
 }
 
 void main() {
@@ -64,14 +64,11 @@ void main() {
 	vec3 color1 = uCurrColor;
 	vec3 color2 = uNextColor;
 
-	//float realnoise = 0.5*(cnoise(vec4(newUV.x*scaleX  + 0.*uTime/3., newUV.y*scaleY,0.*uTime/3.,0.)) +5.);
-	float realnoise = 0.5*(snoise(vec2(newUV.x*10.2, 3.)) + 1. );
+	float noise = sin(newUV.y*3.15)+0.3;
 
-	float maskvalue = smoothstep(1.-w, 1., vUv.y + mix(-w/2., 1. - w/2., uProg)); //vertical
-	//float maskvalue = smoothstep(w, 0., vUv.y - mix(-w/2., 1. - w/2., uProg)); //reverse
-	//float maskvalue0 = smoothstep(1.,1.,vUv.x + uProg);
+	float maskvalue = smoothstep(w, 0., vUv.x - mix(-w/2., 1. - w/2., uProg));
 
-	float mask = maskvalue + maskvalue*realnoise;
+	float mask = maskvalue + maskvalue*noise;
 
 	float final = smoothstep(border,border+.01,mask); 
 	gl_FragColor = vec4(mix(color1,color2,final),1.);
