@@ -55,10 +55,13 @@ export default class ColorBG extends O {
         
         const tl = gsap.timeline({
           onComplete: () => {
+            this.GLscene.shouldRun = false;
             this.currColor = new THREE.Color(color)
             this.material.uniforms.uCurrColor.value = new THREE.Vector3(this.currColor.r, this.currColor.g, this.currColor.b)
           }
         });
+
+        this.GLscene.shouldRun = true;
 
         tl.fromTo(this.material.uniforms.uTimeProg, {
             value: 0

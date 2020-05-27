@@ -81,8 +81,12 @@ export default class Fish extends O {
 
     switchTextures(index) {
 
-        if( typeof this.textures[0] === 'undefined' ) return
-
+      
+        if( typeof this.textures[0] === 'undefined' ) {
+           setTimeout( () => { this.switchTextures(0) }, 100)
+           return
+        }
+        
         let { texture } = this.getTexture(index)[0]
 
         this.state.current = index;
@@ -91,9 +95,12 @@ export default class Fish extends O {
         const tl = gsap.timeline({
           onComplete: () => {
             this.material.uniforms.uCurrTex.value = texture;
+            this.GLscene.shouldRun = false;
           }
         });
-        
+
+        this.GLscene.shouldRun = true;
+
           // Wave
           tl
           .fromTo(this.material.uniforms.uAmp, {

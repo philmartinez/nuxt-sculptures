@@ -41,6 +41,7 @@ export default class Scene {
         this.camera.position.set(0, 0, 50)
         this.camera.lookAt(0, 0, 0)
 
+        this.shouldRun = false;
         this.clock = new THREE.Clock()
         this.run()
 
@@ -66,15 +67,18 @@ export default class Scene {
 
     run() {
 
-        let elapsed = this.clock.getElapsedTime()
+        if( this.shouldRun ) {
+            let elapsed = this.clock.getElapsedTime()
 
-        this.scene.children.forEach( (el, i) => {
-            const object = this.scene.children[i]
-            //fish.updatePosition(current)
-            object.updateTime(elapsed)
-        })
+            this.scene.children.forEach( (el, i) => {
+                const object = this.scene.children[i]
+                //fish.updatePosition(current)
+                object.updateTime(elapsed)
+            })
 
-        this.render()
+            this.render()
+        }
+        
         requestAnimationFrame(() => {
             this.run()
         })

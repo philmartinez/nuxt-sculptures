@@ -65,15 +65,15 @@ void main() {
 	vec3 color2 = uNextColor;
 
 	//float realnoise = 0.5*(cnoise(vec4(newUV.x*scaleX  + 0.*uTime/3., newUV.y*scaleY,0.*uTime/3.,0.)) +5.);
-	float realnoise = 0.5*(snoise(vec2(newUV.x*2.2, 3.)) + 1. );
+	float realnoise = 0.5*(snoise(vec2(newUV.x*10.2, 3.)) + 1. );
 
-	//float maskvalue = smoothstep(1.-w, 1., vUv.y + mix(-w/2., 1. - w/2., uProg)); //vertical
-	float maskvalue = smoothstep(w, 0., vUv.y - mix(-w/2., 1. - w/2., uProg)); //reverse
+	float maskvalue = smoothstep(1.-w, 1., vUv.y + mix(-w/2., 1. - w/2., uProg)); //vertical
+	//float maskvalue = smoothstep(w, 0., vUv.y - mix(-w/2., 1. - w/2., uProg)); //reverse
 	//float maskvalue0 = smoothstep(1.,1.,vUv.x + uProg);
 
-	float mask = maskvalue + maskvalue/realnoise;
+	float mask = maskvalue + maskvalue*realnoise;
 
-	float final = smoothstep(border,border,mask);
+	float final = smoothstep(border,border+.01,mask); 
 	gl_FragColor = vec4(mix(color1,color2,final),1.);
 
 }
