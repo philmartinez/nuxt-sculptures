@@ -66,7 +66,7 @@ export default class Scene {
     }
 
     run() {
-
+        
         if( this.shouldRun ) {
             let elapsed = this.clock.getElapsedTime()
 

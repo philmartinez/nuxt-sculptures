@@ -70,7 +70,7 @@ void main() {
 
 	float mask = maskvalue + maskvalue*noise;
 
-	float final = smoothstep(border,border+.01,mask); 
+	float final = smoothstep(border,border+.005,mask); 
 	gl_FragColor = vec4(mix(color1,color2,final),1.);
 
 }

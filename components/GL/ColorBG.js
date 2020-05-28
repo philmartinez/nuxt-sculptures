@@ -34,7 +34,7 @@ export default class ColorBG extends O {
             uTime: { value: 0 },
             uProg: { value: 0 },
             uTimeProg: { value: 0 },
-            width: { type: "f", value:1.0 },
+            width: { type: "f", value: 0.6 },
             uAmp: { value: 0 }
         }
 
@@ -45,8 +45,9 @@ export default class ColorBG extends O {
 
     }
 
-    changeColor(color) {
+    changeColor(color, ease = 'inOut') {
         
+        this.animating = true
         this.nextColor = new THREE.Color(color)
         this.material.uniforms.uNextColor.value = new THREE.Vector3(this.nextColor.r, this.nextColor.g, this.nextColor.b)
         
@@ -54,8 +55,8 @@ export default class ColorBG extends O {
 
           onComplete: () => {
 
-            this.GLscene.shouldRun = false;
-
+            this.GLscene.shouldRun = false
+            this.animating = false
             this.currColor = new THREE.Color(color)
             this.material.uniforms.uCurrColor.value = new THREE.Vector3(this.currColor.r, this.currColor.g, this.currColor.b)
           }
@@ -65,10 +66,10 @@ export default class ColorBG extends O {
         this.GLscene.shouldRun = true;
 
         tl.fromTo(this.material.uniforms.uProg, {
-            value: 0
+            value: this.material.uniforms.uProg.value != 1 ? this.material.uniforms.uProg.value : 0
         }, {
             duration: 1.12,
-            ease: "power2.inOut",
+            ease: `power2.${ease}`,
             value: 1,
             delay: 0.05
         })
@@ -76,6 +77,7 @@ export default class ColorBG extends O {
     }
 
     changeShader(direction) {
+
         if( 'down' === direction ) {
             this.material.fragmentShader = fragmentShaderUp;
         } else {
@@ -83,6 +85,34 @@ export default class ColorBG extends O {
         }
         this.material.needsUpdate = true
       
+    }
+
+    previewColor(x, color) {
+        
+        this.previewingColor = true;
+        this.nextColor = new THREE.Color(color)
+        this.material.uniforms.uNextColor.value = new THREE.Vector3(this.nextColor.r, this.nextColor.g, this.nextColor.b)
+
+        this.material.uniforms.uProg.value = gsap.utils.clamp(0, 0.2, Math.abs(x/800)) // used in lerp below
+        
+        if( x < 0 ) {
+            this.changeShader('down');
+            return
+        } 
+
+        this.changeShader('up'); 
+    }
+
+    previewColorReset() {
+   
+        gsap.to(this.material.uniforms.uProg, {
+            value: 0,
+            duration: 0.6,
+            ease: 'power1.out',
+            onComplete: () => {
+                this.GLscene.shouldRun = false;
+            }
+        })
     }
 
     updateTime(time) {

@@ -42,7 +42,8 @@ export default class Slideshow {
             prevSlideType: 0,
             duration: 0,
             changingSlides: false,
-            direction: 'down'
+            direction: 'down',
+            dragging: false
         }
 
 
@@ -75,23 +76,14 @@ export default class Slideshow {
             if( e.deltaY > 0 ) {
 
                 this.state.direction = 'down'
-                if( this.state.activeSlideIndex < this.slides.length - 1 ) {
-                    this.state.activeSlideIndex++
-                } else {
-                    this.state.activeSlideIndex = 0
-                }
+                this.state.activeSlideIndex = this.getNextSlideI()
                 
             } 
             // prev
             else {
                 
                 this.state.direction = 'up'
-                if( this.state.activeSlideIndex != 0) {
-                    this.state.activeSlideIndex--
-                } else {
-                    this.state.activeSlideIndex = this.slides.length - 1
-                }
-    
+                this.state.activeSlideIndex = this.getPrevSlideI()
             }
 
             this.changeSlide(this.state.activeSlideIndex)
@@ -99,9 +91,11 @@ export default class Slideshow {
             this.state.prevSlideIndex = this.state.activeSlideIndex
         })
 
-        window.addEventListener('resize',() => {
-            
-        })
+        document.addEventListener('mousedown', this.onDown.bind(this) )
+        document.addEventListener('mousemove', this.onMove.bind(this) )
+        document.addEventListener('mouseup', this.onUp.bind(this) )
+
+        window.addEventListener('resize',() => { })
     }
 
     createMarkup() {
@@ -159,23 +153,68 @@ export default class Slideshow {
         this.els.parent.appendChild(this.els.sculptureType)
         this.els.parent.querySelector('.sculpture-meta').prepend(totalMarkup)
         this.els.sculptureTracking.number = this.els.parent.querySelector('.current .inner')
-        this.els.sculptureTracking.indicator   = this.els.parent.querySelector('.indicator span')
+        this.els.sculptureTracking.indicator = this.els.parent.querySelector('.indicator span')
 
     }
 
+    onDown(e) {
+        this.state.dragging = true
+        this.startMouseX = this.getPosition(e).x
+      
+    }
 
-    changeSlide(index) {
+    onMove(e) {
+        if( !this.state.dragging || this.state.changingSlides ) return
+        
+        APP.SceneBG.shouldRun = true;
+
+        const currentX = this.getPosition(e).x
+        this.endMouseX = currentX - this.startMouseX
+
+        const color = this.endMouseX < 0 ? this.slides[this.getNextSlideI()].bg_color : this.slides[this.getPrevSlideI()].bg_color 
+ 
+        this.ColorBG.previewColor(this.endMouseX,color)
+    }   
+
+    onUp() {
+        if( this.state.changingSlides ) return
+
+        this.state.dragging = false
+
+        if( this.endMouseX <= -60 ) {
+
+            APP.SceneBG.shouldRun = false;
+            this.state.direction = 'down'
+            this.state.activeSlideIndex = this.getNextSlideI()
+            this.changeSlide(this.state.activeSlideIndex, 'out')
+            
+
+        } else if( this.endMouseX >= 60 ) {
+
+            APP.SceneBG.shouldRun = false;
+            this.state.direction = 'up'
+            this.state.activeSlideIndex = this.getPrevSlideI()
+            this.changeSlide(this.state.activeSlideIndex, 'out')
+            
+
+        } else {
+            this.ColorBG.previewColorReset()
+        }
+      
+
+    }
+
+    changeSlide(index, ease) {
 
         // DOM
         this.state.activeSlide = this.slides[index]
 
-        this.updateSculptureColors()
         this.updateSculptureText(index)
         this.updateSculptureLink()
 
         // GL
         this.Fish.switchTextures(index)
-        this.ColorBG.changeColor(this.state.activeSlide.bg_color)
+        this.ColorBG.changeColor(this.state.activeSlide.bg_color, ease)
         this.ColorBG.changeShader(this.state.direction)
 
         // State
@@ -280,24 +319,16 @@ export default class Slideshow {
         })
      }
  
-     updateSculptureColors() {
-        
-        /*
-         let { font_color, bg_color } = this.state.activeSlide
- 
-         gsap.to(this.els.parent, {
-             backgroundColor: bg_color,
-             duration: this.state.duration
-         })
-         
-         gsap.to(this.els.sculptureType, {
-             color: font_color,
-             duration: this.state.duration
-         })*/
+
+     // loop ready wrap logic
+     getNextSlideI() {
+        return gsap.utils.wrap(0, this.slides.length, this.state.activeSlideIndex + 1)
+     }
+     getPrevSlideI() {
+        return gsap.utils.wrap(0, this.slides.length, this.state.activeSlideIndex - 1)
      }
 
-
-
+    // store all slide data is js obj
     getSlides() {
         
         let arrEls = Array.from(this.els.slides);
@@ -323,6 +354,16 @@ export default class Slideshow {
                 bg_color: bg_color
             }
         })
+    }
+
+    // normalize touch and mouse
+    getPosition({clientX, clientY, changedTouches, target}) {
+        const x = changedTouches ? changedTouches[0].clientX : clientX
+        const y = changedTouches ? changedTouches[0].clientY : clientY
+
+        return {
+            x, y, target,
+        }
     }
 
 }
