@@ -93,7 +93,7 @@ export default class ColorBG extends O {
         this.nextColor = new THREE.Color(color)
         this.material.uniforms.uNextColor.value = new THREE.Vector3(this.nextColor.r, this.nextColor.g, this.nextColor.b)
 
-        this.material.uniforms.uProg.value = gsap.utils.clamp(0, 0.2, Math.abs(x/800)) // used in lerp below
+        this.material.uniforms.uProg.value = Math.abs(x/(APP.winW*1.5)) // used in lerp below
         
         if( x < 0 ) {
             this.changeShader('down');
