@@ -158,9 +158,11 @@ export default class Slideshow {
     }
 
     onDown(e) {
+        if( this.state.changingSlides ) return
+
         this.state.dragging = true
         this.startMouseX = this.getPosition(e).x
-      
+        this.endMouseX = 0 // reset
     }
 
     onMove(e) {
@@ -177,11 +179,11 @@ export default class Slideshow {
     }   
 
     onUp() {
-        if( this.state.changingSlides ) return
+        if( !this.state.dragging || this.state.changingSlides ) return
 
         this.state.dragging = false
 
-        if( this.endMouseX <= -60 ) {
+        if( this.endMouseX <= -70 ) {
 
             APP.SceneBG.shouldRun = false;
             this.state.direction = 'down'
@@ -189,7 +191,7 @@ export default class Slideshow {
             this.changeSlide(this.state.activeSlideIndex, 'out')
             
 
-        } else if( this.endMouseX >= 60 ) {
+        } else if( this.endMouseX >= 70 ) {
 
             APP.SceneBG.shouldRun = false;
             this.state.direction = 'up'
