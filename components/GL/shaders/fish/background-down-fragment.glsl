@@ -47,6 +47,8 @@ float parabola( float x, float k ) {
   return pow( 1. * x * ( 1. - x ), k );
 }
 
+float PI = 3.14159;
+
 void main() {
 /*
   vec2 uv = vUv;
@@ -55,7 +57,7 @@ void main() {
   
   gl_FragColor = vec4(finalColor,1.0); */
 
-	float dt = parabola(uProg,1.);
+	float dt = parabola(uProg,.9);
 	float w = width*dt;
 	float border = 1.;
 	
@@ -64,11 +66,11 @@ void main() {
 	vec3 color1 = uCurrColor;
 	vec3 color2 = uNextColor;
 
-	float noise = sin(newUV.y*3.15)+0.3;
+	float noise = sin(newUV.y*PI);
 
 	float maskvalue = smoothstep(w, 0., vUv.x - mix(-w/2., 1. - w/2., uProg));
 
-	float mask = maskvalue + maskvalue*noise;
+	float mask = maskvalue + maskvalue*noise+0.4;
 
 	float final = smoothstep(border,border+.005,mask); 
 	gl_FragColor = vec4(mix(color1,color2,final),1.);

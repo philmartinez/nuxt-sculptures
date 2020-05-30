@@ -32,6 +32,7 @@ export default class Fish extends O {
             uImageSize: { value: [0, 0] },
             uTime: { value: 0 },
             uTimeProg: { value: 0 },
+            uPreview: { value: 0 },
             uProg: { value: 0 },
             uAmp: { value: 0 }
         }
@@ -79,7 +80,7 @@ export default class Fish extends O {
         })
     }
 
-    switchTextures(index) {
+    switchTextures(index, ease) {
 
       
         if( typeof this.textures[0] === 'undefined' ) {
@@ -99,7 +100,16 @@ export default class Fish extends O {
           }
         });
 
+        const duration = 1.2
+        const firstEase = ease === 'out' ? 'out' : 'in'
+        const texSwapDivider = ease === 'out' ? 1.3 : 2
         this.GLscene.shouldRun = true;
+
+        gsap.to(this.material.uniforms.uPreview, {
+          value: 0,
+          duration: 0.2,
+          ease: 'power2.out'
+        })
 
           // Wave
           tl
@@ -107,14 +117,14 @@ export default class Fish extends O {
               value: 0
           },{
             value: 1,
-            duration: 0.6,
-            ease: 'sine.in',
+            duration: duration/2,
+            ease: `sine.${firstEase}`,
           })
           .fromTo(this.material.uniforms.uAmp, {
             value: 1
           }, {
             value: 0,
-            duration: 0.6,
+            duration: duration/2,
             ease: 'sine.out',
           })
           tl
@@ -122,9 +132,9 @@ export default class Fish extends O {
               value: 1.7
           },{
             value: 11,
-            duration: 1.2,
-            ease: 'sine.inOut',
-          },'-=1.2')
+            duration: duration,
+            ease: `sine.inOut`,
+          },`-=${duration}`)
 
 
 
@@ -136,10 +146,25 @@ export default class Fish extends O {
             value: 1,
             duration: 0.01,
             ease: 'none',
-          },'-=0.6');
+          },`-=${duration/texSwapDivider}`);
 
-      }
+    }
     
+    previewFlopInit() {
+      this.GLscene.shouldRun = true;
+    }
+
+    previewFlopReset() {
+      gsap.to(this.material.uniforms.uPreview, {
+        value: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        onComplete: () => {
+          this.GLscene.shouldRun = false;
+        }
+      })
+    }
+
     getTexture(index) {
       return this.textures.filter((object) => {
         return object.index === index

@@ -41,7 +41,10 @@ export default class Slideshow {
             prevSlideIndex: -1,
             prevSlideType: 0,
             duration: 0,
+            easing: 'inOut',
             changingSlides: false,
+            previewColorTracked: false,
+            previewColorDir: 'down',
             direction: 'down',
             dragging: false
         }
@@ -63,7 +66,7 @@ export default class Slideshow {
         // Start the slider
         this.state.prevSlideType = this.slides[0].type
         this.changeSlide(0)
-        this.state.duration = 1.1
+        this.state.duration = 1.2
     }
 
     events() {
@@ -71,24 +74,26 @@ export default class Slideshow {
         document.addEventListener('wheel', (e) => {
 
             if( this.state.changingSlides ) return
-            
+           
             // next
-            if( e.deltaY > 0 ) {
-
+            if( e.deltaY > 5 ) {
                 this.state.direction = 'down'
                 this.state.activeSlideIndex = this.getNextSlideI()
                 
             } 
             // prev
-            else {
-                
+            else if( e.deltaY < -5 ) {
                 this.state.direction = 'up'
                 this.state.activeSlideIndex = this.getPrevSlideI()
             }
 
-            this.changeSlide(this.state.activeSlideIndex)
+            if( e.deltaY > 5 || e.deltaY < -5) {
+                this.state.easing = 'inOut'
+                this.changeSlide(this.state.activeSlideIndex)
 
-            this.state.prevSlideIndex = this.state.activeSlideIndex
+                this.state.prevSlideIndex = this.state.activeSlideIndex
+            }
+            
         })
 
         document.addEventListener('mousedown', this.onDown.bind(this) )
@@ -163,6 +168,7 @@ export default class Slideshow {
         this.state.dragging = true
         this.startMouseX = this.getPosition(e).x
         this.endMouseX = 0 // reset
+        
     }
 
     onMove(e) {
@@ -173,36 +179,66 @@ export default class Slideshow {
         const currentX = this.getPosition(e).x
         this.endMouseX = currentX - this.startMouseX
 
-        const color = this.endMouseX < 0 ? this.slides[this.getNextSlideI()].bg_color : this.slides[this.getPrevSlideI()].bg_color 
- 
-        this.ColorBG.previewColor(this.endMouseX,color)
+        
+        let color;
+
+        if( !this.state.previewColorTracked && (this.endMouseX > 15 || this.endMouseX < -15) ) {
+            
+            this.ColorBG.material.uniforms.uProg.value = 0
+
+            if( this.endMouseX < 0 ) {
+                color = this.slides[this.getNextSlideI()].bg_color 
+                this.state.previewColorDir = 'down'
+            } else {
+                color = this.slides[this.getPrevSlideI()].bg_color 
+                this.state.previewColorDir = 'up'
+            }
+            
+            this.state.previewColorTracked = true
+
+            this.ColorBG.preview = true
+            this.ColorBG.previewColorInit(this.state.previewColorDir,color)
+            this.ColorBG.previewColor = color
+
+            this.Fish.previewFlopInit()
+            gsap.fromTo(this.Fish.material.uniforms.uPreview,{
+                value: 0
+            }, {
+                value: 1,
+                duration: 0.6,
+                ease: 'power1.in'
+            })
+            
+        }
+        
+        this.ColorBG.previewX = this.state.previewColorDir === 'down' ? gsap.utils.clamp(-3000, 0, this.endMouseX) : gsap.utils.clamp(0, 3000, this.endMouseX)
+     
     }   
 
     onUp() {
         if( !this.state.dragging || this.state.changingSlides ) return
 
         this.state.dragging = false
+        this.state.previewColorTracked = false
 
-        if( this.endMouseX <= -70 ) {
-
-            APP.SceneBG.shouldRun = false;
+        if( this.endMouseX <= -90 ) {
             this.state.direction = 'down'
             this.state.activeSlideIndex = this.getNextSlideI()
-            this.changeSlide(this.state.activeSlideIndex, 'out')
-            
-
-        } else if( this.endMouseX >= 70 ) {
-
-            APP.SceneBG.shouldRun = false;
+        } else if( this.endMouseX >= 90 ) {
             this.state.direction = 'up'
             this.state.activeSlideIndex = this.getPrevSlideI()
-            this.changeSlide(this.state.activeSlideIndex, 'out')
-            
-
-        } else {
-            this.ColorBG.previewColorReset()
         }
-      
+
+        if( this.endMouseX <= -90 || this.endMouseX >= 90) {
+            APP.SceneBG.shouldRun = false;
+            this.state.easing = 'out'
+            this.changeSlide(this.state.activeSlideIndex, 'out')
+            return
+        }
+        
+        this.ColorBG.previewColorReset()
+        this.Fish.previewFlopReset()
+        
 
     }
 
@@ -215,21 +251,21 @@ export default class Slideshow {
         this.updateSculptureLink()
 
         // GL
-        this.Fish.switchTextures(index)
+        this.Fish.switchTextures(index, ease)
         this.ColorBG.changeColor(this.state.activeSlide.bg_color, ease)
         this.ColorBG.changeShader(this.state.direction)
+        this.ColorBG.preview = false
 
         // State
         this.state.changingSlides = true
-        setTimeout( () => { this.state.changingSlides = false }, 1250 )
+        setTimeout( () => { this.state.changingSlides = false }, this.state.duration*1000 )
+    
     }
 
     
     updateSculptureText(index) {
 
         let tl = gsap.timeline()
-        let duration = this.state.duration === 0 ? 0 : '1'
-
 
         // BG Text.
         let typeOut = this.els.sculptureBGtext[this.state.prevSlideType]
@@ -246,8 +282,8 @@ export default class Slideshow {
             y: this.state.direction == 'down' ? '-20vh' : '20vh',
             z: -1000,
             stagger: 0.025,
-            duration: duration,
-            ease: "power2.outIn"
+            duration: this.state.duration,
+            ease: `power2.${this.state.easing}`
         })
 
         //// In.
@@ -261,9 +297,10 @@ export default class Slideshow {
             y: '0vh',
             z: 0,
             stagger: 0.025,
-            duration: duration,
-            ease: "power2.outIn"
-        },'-=1')
+            duration: this.state.duration,
+            ease: `power2.${this.state.easing}`
+        },`-=${this.state.duration}`)
+       
 
 
         // Bottom Meta Name
@@ -287,7 +324,6 @@ export default class Slideshow {
      updateVerticalOverflowSelection(el, callback) {
 
         let nameTL = gsap.timeline()
-        let duration = this.state.duration === 0 ? 0 : 0.6
         
         nameTL.pause()
         
@@ -296,7 +332,7 @@ export default class Slideshow {
         }, {
             y: this.state.direction == 'down' ? '-100%' : '100%',
             ease: "power2.in",
-            duration: duration
+            duration: this.state.duration/2
         })
         nameTL.call(callback)
         nameTL.fromTo(el,{
@@ -304,7 +340,7 @@ export default class Slideshow {
         }, {
             y: '0%',
             ease: "power2.out",
-            duration: duration
+            duration: this.state.duration/2
         })
 
         nameTL.play()
