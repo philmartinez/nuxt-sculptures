@@ -48,7 +48,9 @@ export default class Fish extends O {
         
         this.GLscene.scene.add(this)
 
-        this.loadTextures();
+        this.loadTextures()
+
+        this.previewTimeline()
     }
 
     loadTextures() {
@@ -105,11 +107,8 @@ export default class Fish extends O {
         const texSwapDivider = ease === 'out' ? 1.3 : 2
         this.GLscene.shouldRun = true;
 
-        gsap.to(this.material.uniforms.uPreview, {
-          value: 0,
-          duration: 0.2,
-          ease: 'power2.out'
-        })
+        this.previewTL.seek(0).pause()
+
 
           // Wave
           tl
@@ -150,19 +149,43 @@ export default class Fish extends O {
 
     }
     
-    previewFlopInit() {
-      this.GLscene.shouldRun = true;
-    }
+    previewTimeline() {
 
-    previewFlopReset() {
-      gsap.to(this.material.uniforms.uPreview, {
+      this.previewTL = gsap.timeline()
+
+      this.previewTL.fromTo(this.material.uniforms.uPreview,{
+          value: 0
+      }, {
+          value: 1,
+          duration: 0.5,
+          ease: 'power1.in'
+      },'start')
+      
+
+      this.previewTL.to(this.material.uniforms.uPreview, {
         value: 0,
-        duration: 0.6,
-        ease: 'power2.out',
+        duration: 0.5,
+        ease: 'power1.out',
         onComplete: () => {
           this.GLscene.shouldRun = false;
         }
       })
+
+      this.previewTL.fromTo(this.material.uniforms.uTimeProg, {
+          value: 1.7
+      }, {
+          value: 11,
+          duration: 1,
+          ease: 'sine.inOut'
+      },'-=1')
+
+      this.previewTL.pause()
+
+    }
+
+    previewFlopInit() {
+      this.GLscene.shouldRun = true;
+      this.previewTL.play('start')
     }
 
     getTexture(index) {

@@ -100,6 +100,9 @@ export default class Slideshow {
         document.addEventListener('mousemove', this.onMove.bind(this) )
         document.addEventListener('mouseup', this.onUp.bind(this) )
 
+        this.els.parent.querySelector('.link').addEventListener('mouseover', this.viewDetailOver.bind(this) )
+        this.els.parent.querySelector('.link').addEventListener('mouseleave', this.viewDetailLeave.bind(this) )
+
         window.addEventListener('resize',() => { })
     }
 
@@ -162,6 +165,15 @@ export default class Slideshow {
 
     }
 
+    viewDetailOver() {
+        if( this.state.changingSlides ) return
+        this.Fish.previewFlopInit()
+    }
+
+    viewDetailLeave() {
+       
+    }
+
     onDown(e) {
         if( this.state.changingSlides ) return
 
@@ -200,18 +212,10 @@ export default class Slideshow {
             this.ColorBG.previewColorInit(this.state.previewColorDir,color)
             this.ColorBG.previewColor = color
 
-            this.Fish.previewFlopInit()
-            gsap.fromTo(this.Fish.material.uniforms.uPreview,{
-                value: 0
-            }, {
-                value: 1,
-                duration: 0.6,
-                ease: 'power1.in'
-            })
-            
         }
         
         this.ColorBG.previewX = this.state.previewColorDir === 'down' ? gsap.utils.clamp(-3000, 0, this.endMouseX) : gsap.utils.clamp(0, 3000, this.endMouseX)
+        this.Fish.previewX = this.state.previewColorDir === 'down' ? gsap.utils.clamp(-3000, 0, this.endMouseX) : gsap.utils.clamp(0, 3000, this.endMouseX)
      
     }   
 
@@ -237,7 +241,6 @@ export default class Slideshow {
         }
         
         this.ColorBG.previewColorReset()
-        this.Fish.previewFlopReset()
         
 
     }
