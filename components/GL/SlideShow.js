@@ -282,9 +282,9 @@ export default class Slideshow {
             y: '0vh'
         },{
             rotateX: this.state.direction == 'down' ? 90 : -90,
-            y: this.state.direction == 'down' ? '-20vh' : '20vh',
+            y: this.state.direction == 'down' ? '-25vh' : '25vh',
             z: -1000,
-            stagger: 0.025,
+            stagger: 0.06,
             duration: this.state.duration,
             ease: `power2.${this.state.easing}`
         })
@@ -292,14 +292,14 @@ export default class Slideshow {
         //// In.
         tl.fromTo(typeIn.querySelectorAll('span'), {
             rotateX: this.state.direction == 'down' ? -90 : 90,
-            y: this.state.direction == 'down' ? '20vh' : '-20vh',
+            y: this.state.direction == 'down' ? '25vh' : '-25vh',
             z: -1000
         },{
             opacity: 1,
             rotateX: 0,
             y: '0vh',
             z: 0,
-            stagger: 0.025,
+            stagger: 0.06,
             duration: this.state.duration,
             ease: `power2.${this.state.easing}`
         },`-=${this.state.duration}`)

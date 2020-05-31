@@ -171,8 +171,7 @@ data() {
     }
 
     .sculpture-type {
-        font-weight: 400;
-        font-family: 'Roboto';
+        font-family: 'Playfair Display';
         font-weight: 700;
         font-size: 20vw;
         width:100%;
@@ -181,7 +180,7 @@ data() {
             top: 47%;
             font-size: 21vw;
         }
-        color: rgba(0,0,0,0.09);
+        color: rgba(0,0,0,0.08);
         text-align: center;
         left: 0;
         pointer-events: none;

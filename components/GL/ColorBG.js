@@ -101,7 +101,7 @@ export default class ColorBG extends O {
     previewColorRAF() {
 
         if( this.preview ) {
-            this.material.uniforms.uProg.value += (Math.abs(this.previewX/APP.winW*1.2) - this.material.uniforms.uProg.value ) * 0.18 
+            this.material.uniforms.uProg.value += (Math.abs(this.previewX/APP.winW*1.2) - this.material.uniforms.uProg.value ) * 0.13 
         }
        
         requestAnimationFrame(() => { this.previewColorRAF() })
