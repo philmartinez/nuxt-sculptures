@@ -6,7 +6,7 @@ import vertexShader from '~/components/GL/shaders/fish/fish-vertex.glsl'
 
 import gsap from 'gsap'
 
-const geometry = new THREE.PlaneBufferGeometry(1,1,64,64)
+const geometry = new THREE.PlaneBufferGeometry(1,1,14,14)
 const material = new THREE.ShaderMaterial({
     fragmentShader,
     vertexShader,
@@ -31,6 +31,7 @@ export default class Fish extends O {
             uMeshSize: { value: [this.rect.width, this.rect.height] },
             uImageSize: { value: [0, 0] },
             uTime: { value: 0 },
+            uMultiplier: { value: 9.0 },
             uTimeProg: { value: 0 },
             uPreview: { value: 0 },
             uProg: { value: 0 },
@@ -102,9 +103,20 @@ export default class Fish extends O {
           }
         });
 
-        const duration = 1.2
-        const firstEase = ease === 'out' ? 'out' : 'in'
-        const texSwapDivider = ease === 'out' ? 1.3 : 2
+        let duration, firstEase, texSwapDivider = ''
+
+        if(ease === 'out') {
+          this.material.uniforms.uMultiplier.value = 6.0
+          duration = 0.95
+          firstEase = 'out' 
+          texSwapDivider = 1.2
+        } else {
+          this.material.uniforms.uMultiplier.value = 9.0
+          duration = 1.2
+          firstEase = 'in' 
+          texSwapDivider = 2
+        }
+
         this.GLscene.shouldRun = true;
 
         this.previewTL.seek(0).pause()
@@ -132,7 +144,7 @@ export default class Fish extends O {
           },{
             value: 11,
             duration: duration,
-            ease: `sine.inOut`,
+            ease: ease === 'out' ? 'sine.out' : 'sine.inOut',
           },`-=${duration}`)
 
 
@@ -143,7 +155,7 @@ export default class Fish extends O {
             value: 0
           }, {
             value: 1,
-            duration: 0.01,
+            duration: 0.04,
             ease: 'none',
           },`-=${duration/texSwapDivider}`);
 

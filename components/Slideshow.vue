@@ -8,7 +8,7 @@
         <div class="sculpture-shadow"></div>
         <div class="sculptures">
             <div class="sculpture" v-for="item in this.items" :id="`sculpture-${item.id}`">
-                <div class="img-wrap"><img :src="item.image" :alt="item.name" /></div>
+                <div class="img-wrap"><img :src="'/'+item.image" :alt="item.name" /></div>
                 <h2 class="name"><nuxt-link :to="getURL(item)">{{ item.name }}</nuxt-link></h2>
             </div>
         </div>
@@ -208,8 +208,6 @@ data() {
             transform-origin: center;
             backface-visibility: hidden;
             opacity: 0;
-            //transform: rotateY(-50deg);
-            //transform: translateY(-30vh) rotateY(-50deg);
         }
     }
 
@@ -313,6 +311,10 @@ data() {
                 margin-bottom: 10px;
             }
         
+        }
+        .current, .total {
+            width: 12px;
+            
         }
     }
 

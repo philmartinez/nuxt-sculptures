@@ -99,7 +99,9 @@ export default class Slideshow {
         document.addEventListener('mousedown', this.onDown.bind(this) )
         document.addEventListener('mousemove', this.onMove.bind(this) )
         document.addEventListener('mouseup', this.onUp.bind(this) )
-
+        
+        this.els.parent.querySelector('.link').addEventListener('mouseup', this.viewDetailOpen.bind(this) )
+        
         this.els.parent.querySelector('.link').addEventListener('mouseover', this.viewDetailOver.bind(this) )
         this.els.parent.querySelector('.link').addEventListener('mouseleave', this.viewDetailLeave.bind(this) )
 
@@ -141,9 +143,9 @@ export default class Slideshow {
         </span>`
 
         // Total count
-        let totalMarkup = document.createElement('div')
-        totalMarkup.classList.add('progress')
-        totalMarkup.innerHTML = `
+        this.els.sculptureTotal = document.createElement('div')
+        this.els.sculptureTotal.classList.add('progress')
+        this.els.sculptureTotal.innerHTML = `
             <span class="number">No.</span>
             <span class="current">
                 <span class="inner">1</span>
@@ -152,14 +154,14 @@ export default class Slideshow {
             <span class="total">${this.slides.length}</span>`
 
         // Cache els.
-        this.els.sculptureBGtext.bowhead   = this.els.sculptureType.querySelector('.bowhead')
+        this.els.sculptureBGtext.bowhead = this.els.sculptureType.querySelector('.bowhead')
         this.els.sculptureBGtext.grouper = this.els.sculptureType.querySelector('.grouper')
         this.els.sculptureBGtext.snapper = this.els.sculptureType.querySelector('.snapper')
-
+        this.els.sculptureViewDetail = this.els.parent.querySelector('.view-detail')
 
         // Append els.
         this.els.parent.appendChild(this.els.sculptureType)
-        this.els.parent.querySelector('.sculpture-meta').prepend(totalMarkup)
+        this.els.parent.querySelector('.sculpture-meta').prepend(this.els.sculptureTotal)
         this.els.sculptureTracking.number = this.els.parent.querySelector('.current .inner')
         this.els.sculptureTracking.indicator = this.els.parent.querySelector('.indicator span')
 
@@ -172,6 +174,10 @@ export default class Slideshow {
 
     viewDetailLeave() {
        
+    }
+
+    viewDetailOpen() {
+        this.singleSculptureEnter()
     }
 
     onDown(e) {
@@ -215,7 +221,7 @@ export default class Slideshow {
         }
         
         this.ColorBG.previewX = this.state.previewColorDir === 'down' ? gsap.utils.clamp(-3000, 0, this.endMouseX) : gsap.utils.clamp(0, 3000, this.endMouseX)
-        this.Fish.previewX = this.state.previewColorDir === 'down' ? gsap.utils.clamp(-3000, 0, this.endMouseX) : gsap.utils.clamp(0, 3000, this.endMouseX)
+        //this.Fish.previewX = this.state.previewColorDir === 'down' ? gsap.utils.clamp(-3000, 0, this.endMouseX) : gsap.utils.clamp(0, 3000, this.endMouseX)
      
     }   
 
@@ -274,8 +280,24 @@ export default class Slideshow {
         let typeOut = this.els.sculptureBGtext[this.state.prevSlideType]
         let typeIn = this.els.sculptureBGtext[this.state.activeSlide.type]
         
-        //// Out.
-        tl.fromTo(typeOut.querySelectorAll('span'), {
+        //// In.
+        tl.fromTo(typeIn.querySelectorAll('span'), {
+            rotateX: this.state.direction == 'down' ? -90 : 90,
+            y: this.state.direction == 'down' ? '25vh' : '-25vh',
+            z: -500,
+            opacity: 0
+        },{
+            opacity: 1,
+            rotateX: 0,
+            y: '0vh',
+            z: 0,
+            stagger: 0.04,
+            duration: 0.94,
+            ease: `power2.${this.state.easing}`
+        })
+
+         //// Out.
+         tl.fromTo(typeOut.querySelectorAll('span'), {
             opacity: 1,
             rotateX: 0,
             z: 0,
@@ -283,26 +305,12 @@ export default class Slideshow {
         },{
             rotateX: this.state.direction == 'down' ? 90 : -90,
             y: this.state.direction == 'down' ? '-25vh' : '25vh',
-            z: -1000,
-            stagger: 0.06,
-            duration: this.state.duration,
+            z: -500,
+            opacity: 0,
+            stagger: 0.04,
+            duration: 0.94,
             ease: `power2.${this.state.easing}`
-        })
-
-        //// In.
-        tl.fromTo(typeIn.querySelectorAll('span'), {
-            rotateX: this.state.direction == 'down' ? -90 : 90,
-            y: this.state.direction == 'down' ? '25vh' : '-25vh',
-            z: -1000
-        },{
-            opacity: 1,
-            rotateX: 0,
-            y: '0vh',
-            z: 0,
-            stagger: 0.06,
-            duration: this.state.duration,
-            ease: `power2.${this.state.easing}`
-        },`-=${this.state.duration}`)
+        },'-=1.18')
        
 
 
@@ -334,8 +342,8 @@ export default class Slideshow {
             y: '0%'
         }, {
             y: this.state.direction == 'down' ? '-100%' : '100%',
-            ease: "power2.in",
-            duration: this.state.duration/2
+            ease: this.state.easing === 'out' ? "power2.out" : "power2.in",
+            duration: this.state.easing === 'out' ? 0.47 : this.state.duration/2
         })
         nameTL.call(callback)
         nameTL.fromTo(el,{
@@ -343,11 +351,31 @@ export default class Slideshow {
         }, {
             y: '0%',
             ease: "power2.out",
-            duration: this.state.duration/2
+            duration: this.state.easing === 'out' ? 0.47 : this.state.duration/2
         })
-
+      
         nameTL.play()
      }
+
+
+     singleSculptureEnter() {
+
+        this.state.changingSlides = true
+   
+        gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail], {
+            opacity: 0,
+            stagger: 0.15,
+            y: '20px',
+            duration: 0.8,
+            ease: "power2.inOut"
+        })
+        
+     }
+
+     singleSculptureExit() {
+        this.state.changingSlides = false
+     }
+
 
      updateSculptureLink() {
 

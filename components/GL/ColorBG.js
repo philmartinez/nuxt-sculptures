@@ -7,7 +7,7 @@ import fragmentShaderUp from '~/components/GL/shaders/fish/background-up-fragmen
 
 import gsap from 'gsap'
 
-const geometry = new THREE.PlaneBufferGeometry(1,1,64,64)
+const geometry = new THREE.PlaneBufferGeometry(1,1,4,4)
 const material = new THREE.ShaderMaterial({
     fragmentShader: fragmentShaderUp,
     vertexShader: vertexShader

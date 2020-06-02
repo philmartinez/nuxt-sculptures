@@ -1,11 +1,18 @@
 <template>
   <div>
     <nuxt />
+    <Slideshow></Slideshow>
   </div>
 </template>
 
 <script>
+import Slideshow from '~/components/Slideshow'
+
 export default {
+
+    components: {
+        Slideshow
+    }
 
 }
 </script>
@@ -29,4 +36,5 @@ html {
   box-sizing: border-box;
   margin: 0;
 }
+
 </style>
