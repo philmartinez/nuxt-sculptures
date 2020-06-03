@@ -155,7 +155,7 @@ export default class Fish extends O {
             value: 0
           }, {
             value: 1,
-            duration: 0.04,
+            duration: 0.01,
             ease: 'none',
           },`-=${duration/texSwapDivider}`);
 

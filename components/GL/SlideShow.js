@@ -283,16 +283,15 @@ export default class Slideshow {
         //// In.
         tl.fromTo(typeIn.querySelectorAll('span'), {
             rotateX: this.state.direction == 'down' ? -90 : 90,
-            y: this.state.direction == 'down' ? '25vh' : '-25vh',
-            z: -500,
-            opacity: 0
+            y: this.state.direction == 'down' ? '23vh' : '-23vh',
+            z: -300
         },{
             opacity: 1,
             rotateX: 0,
             y: '0vh',
             z: 0,
-            stagger: 0.04,
-            duration: 0.94,
+            stagger: 0.06,
+            duration: 0.78,
             ease: `power2.${this.state.easing}`
         })
 
@@ -304,13 +303,12 @@ export default class Slideshow {
             y: '0vh'
         },{
             rotateX: this.state.direction == 'down' ? 90 : -90,
-            y: this.state.direction == 'down' ? '-25vh' : '25vh',
-            z: -500,
-            opacity: 0,
-            stagger: 0.04,
-            duration: 0.94,
+            y: this.state.direction == 'down' ? '-23vh' : '23vh',
+            z: -300,
+            stagger: 0.06,
+            duration: 0.78,
             ease: `power2.${this.state.easing}`
-        },'-=1.18')
+        },'-=1.2')
        
 
 
@@ -364,10 +362,10 @@ export default class Slideshow {
    
         gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail], {
             opacity: 0,
-            stagger: 0.15,
+            stagger: 0.2,
             y: '20px',
-            duration: 0.8,
-            ease: "power2.inOut"
+            duration: 0.6,
+            ease: "power2.Out"
         })
         
      }

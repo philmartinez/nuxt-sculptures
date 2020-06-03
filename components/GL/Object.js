@@ -64,9 +64,9 @@ export default class O extends Object3D {
         this.position.x += ((left + x) / APP.winW) * this.camUnit.width;
       }  
       
-      /*updatePosition(y) {
+      updatePosition(y) {
         this.updateY(y);
         this.updateX(0);
-      }*/
+      }
 
 }
