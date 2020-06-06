@@ -34,6 +34,7 @@ export default class Fish extends O {
             uMultiplier: { value: 9.0 },
             uTimeProg: { value: 0 },
             uPreview: { value: 0 },
+            uPreviewTimeProg: { value: 0},
             uProg: { value: 0 },
             uAmp: { value: 0 }
         }
@@ -46,12 +47,21 @@ export default class Fish extends O {
 
         this.mesh = new THREE.Mesh(this.geometry, this.material)
         this.add(this.mesh)
-        
+        this.scale.z = 10
+        this.position.z = 100
+
+        this.resize()
+        window.addEventListener('resize',() => { this.resize() })
+
         this.GLscene.scene.add(this)
 
         this.loadTextures()
-
+    
         this.previewTimeline()
+    }
+
+    setBounds() {
+      super.setBounds()
     }
 
     loadTextures() {
@@ -182,8 +192,8 @@ export default class Fish extends O {
           this.GLscene.shouldRun = false;
         }
       })
-
-      this.previewTL.fromTo(this.material.uniforms.uTimeProg, {
+      
+      this.previewTL.fromTo(this.material.uniforms.uPreviewTimeProg, {
           value: 1.7
       }, {
           value: 11,
@@ -211,11 +221,14 @@ export default class Fish extends O {
     }
 
     resize() {
-        super.resize()
+        this.setBounds()
+        this.scale.x = this.bounds.width 
+        this.scale.y = this.bounds.height
+
         if (!this.material) return
 
-        this.material.uniforms.uMeshSize.value.x = this.rect.width
-        this.material.uniforms.uMeshSize.value.y = this.rect.height
+        this.material.uniforms.uMeshSize.value.x = this.bounds.width 
+        this.material.uniforms.uMeshSize.value.y = this.bounds.height
 
         this.GLscene.shouldRun = true
         setTimeout(() => { this.GLscene.shouldRun = false }, 80)

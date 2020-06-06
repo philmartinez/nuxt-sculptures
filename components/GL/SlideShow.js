@@ -21,6 +21,7 @@ export default class Slideshow {
             slides: document.querySelectorAll('.sculpture-slideshow .sculpture'),
             slideSizer: document.querySelector('.sculpture-slideshow .sculptures .img-wrap'),
             slideType: document.querySelector('.sculpture-slideshow .sculpture-type'),
+            slideBGcolor: document.querySelector('.sculpture-bg-color'),
             sculptureMetaLinks: Array.from(document.querySelectorAll('.sculpture-slideshow .sculpture-meta .link a')),
             sculptureMetaName: document.querySelector('.sculpture-slideshow .sculpture-meta .name-wrap .inner .name'),
             sculptureBGtext: {},
@@ -32,7 +33,7 @@ export default class Slideshow {
         this.Fish.init(this.els.slideSizer, this.els.parent)
 
         this.ColorBG = new ColorBG()
-        this.ColorBG.init(this.els.parent)
+        this.ColorBG.init(this.els.slideBGcolor)
 
         // State
         this.state = {
@@ -192,7 +193,7 @@ export default class Slideshow {
     onMove(e) {
         if( !this.state.dragging || this.state.changingSlides ) return
         
-        APP.SceneBG.shouldRun = true;
+        APP.Scene.shouldRun = true;
 
         const currentX = this.getPosition(e).x
         this.endMouseX = currentX - this.startMouseX
@@ -240,7 +241,7 @@ export default class Slideshow {
         }
 
         if( this.endMouseX <= -90 || this.endMouseX >= 90) {
-            APP.SceneBG.shouldRun = false;
+            APP.Scene.shouldRun = false;
             this.state.easing = 'out'
             this.changeSlide(this.state.activeSlideIndex, 'out')
             return
@@ -274,6 +275,7 @@ export default class Slideshow {
     
     updateSculptureText(index) {
 
+        /*
         let tl = gsap.timeline()
 
         // BG Text.
@@ -284,7 +286,7 @@ export default class Slideshow {
         tl.fromTo(typeIn.querySelectorAll('span'), {
             rotateX: this.state.direction == 'down' ? -90 : 90,
             y: this.state.direction == 'down' ? '23vh' : '-23vh',
-            z: -300
+            z: -100
         },{
             opacity: 1,
             rotateX: 0,
@@ -304,13 +306,13 @@ export default class Slideshow {
         },{
             rotateX: this.state.direction == 'down' ? 90 : -90,
             y: this.state.direction == 'down' ? '-23vh' : '23vh',
-            z: -300,
+            z: -100,
             stagger: 0.06,
             duration: 0.78,
             ease: `power2.${this.state.easing}`
         },'-=1.2')
        
-
+*/
 
         // Bottom Meta Name
         this.updateVerticalOverflowSelection(this.els.sculptureMetaName, () => {
@@ -359,7 +361,7 @@ export default class Slideshow {
      singleSculptureEnter() {
 
         this.state.changingSlides = true
-   
+        APP.state.view = 'single'
         gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail], {
             opacity: 0,
             stagger: 0.2,
@@ -367,11 +369,14 @@ export default class Slideshow {
             duration: 0.6,
             ease: "power2.Out"
         })
+
+        // Transform Color BG
         
      }
 
      singleSculptureExit() {
         this.state.changingSlides = false
+        APP.state.view = 'slider'
      }
 
 

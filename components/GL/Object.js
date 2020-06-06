@@ -1,5 +1,5 @@
 import { Object3D } from 'three'
-import gsap from 'gsap'
+
 
 export default class O extends Object3D {
 
@@ -7,7 +7,7 @@ export default class O extends Object3D {
 
         this.el = el
         this.GLscene = APP.Scene
-        this.resize()
+        this.setBounds()
     }
 
     setBounds() {
@@ -18,25 +18,26 @@ export default class O extends Object3D {
           top: this.rect.top,
           width: this.rect.width,
           height: this.rect.height
-        };
+        }
+    
 
-        this.updateSize();
-        //this.updatePosition();
       }
       
-      resize() {
-        this.setBounds();
-      }
       
-      calculateUnitSize(distance = this.position.z) {
+      /*calculateUnitSize(distance = this.position.z) {
         const vFov = this.GLscene.camera.fov * Math.PI / 180;
         const height = 2 * Math.tan(vFov / 2) * distance;
         const width = height * this.GLscene.camera.aspect;
     
         return { width, height };
-      }
+      }*/
     
+      /*
       updateSize() {
+  
+        this.scale.x = this.bounds.width 
+        this.scale.y = this.bounds.height
+        
         this.camUnit = this.calculateUnitSize(this.GLscene.camera.position.z - this.position.z);
         
         const x = this.bounds.width / APP.winW;
@@ -45,9 +46,10 @@ export default class O extends Object3D {
         if (!x || !y) return;
     
         this.scale.x = this.camUnit.width * x;
-        this.scale.y = this.camUnit.height * y;
-      }
+        this.scale.y = this.camUnit.height * y; 
+      } */
       
+      /*
       updateY(y = 0) {
         const { top, height } = this.bounds;
     
@@ -64,9 +66,9 @@ export default class O extends Object3D {
         this.position.x += ((left + x) / APP.winW) * this.camUnit.width;
       }  
       
-      updatePosition(y) {
-        this.updateY(y);
-        this.updateX(0);
-      }
+      updatePosition(x) {
+        //this.updateY(y);
+        this.updateX(x);
+      } */
 
 }

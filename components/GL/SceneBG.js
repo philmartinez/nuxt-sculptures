@@ -9,10 +9,10 @@ export default class SceneBG extends Scene {
         this.scene = new THREE.Scene()
         
         this.camera = new THREE.PerspectiveCamera(
-            45,
-            APP.winW / APP.winH,
-            0.1,
-            100
+            70, // fov
+            APP.winW / APP.winH, // aspect
+            300, // near
+            1000 // far
         )
 
         this.renderer = new THREE.WebGLRenderer({

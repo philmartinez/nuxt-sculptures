@@ -7,7 +7,7 @@ import fragmentShaderUp from '~/components/GL/shaders/fish/background-up-fragmen
 
 import gsap from 'gsap'
 
-const geometry = new THREE.PlaneBufferGeometry(1,1,4,4)
+const geometry = new THREE.PlaneBufferGeometry(1,1,20,20)
 const material = new THREE.ShaderMaterial({
     fragmentShader: fragmentShaderUp,
     vertexShader: vertexShader
@@ -19,7 +19,7 @@ export default class ColorBG extends O {
         super.init(el)
         
         this.el = el
-        this.GLscene = APP.SceneBG
+        this.GLscene = APP.Scene
 
         this.geometry = geometry
         this.material = material.clone()
@@ -38,13 +38,24 @@ export default class ColorBG extends O {
             uAmp: { value: 0 }
         }
 
+        this.resize()
+        window.addEventListener('resize',() => { this.resize() })
+
         this.mesh = new THREE.Mesh(this.geometry, this.material)
         this.add(this.mesh)
         
+        this.position.z = 0 // behind fish
         this.GLscene.scene.add(this)
         this.previewColorRAF()
+       
+       
 
     }
+
+    setBounds() {
+        super.setBounds()
+    }
+   
 
     changeColor(color, ease = 'inOut') {
         
@@ -52,12 +63,12 @@ export default class ColorBG extends O {
         this.nextColor = new THREE.Color(color)
         this.material.uniforms.uNextColor.value = new THREE.Vector3(this.nextColor.r, this.nextColor.g, this.nextColor.b)
         
-        const duration = 1.15
+        const duration = ease === 'inOut' ? 1.1 : 0.93
         const tl = gsap.timeline({
 
           onComplete: () => {
 
-            this.GLscene.shouldRun = false
+            //this.GLscene.shouldRun = false
             this.animating = false
             this.currColor = new THREE.Color(color)
             this.material.uniforms.uCurrColor.value = new THREE.Vector3(this.currColor.r, this.currColor.g, this.currColor.b)
@@ -67,14 +78,31 @@ export default class ColorBG extends O {
 
         this.GLscene.shouldRun = true;
 
+        tl
+          .fromTo(this.material.uniforms.uAmp, {
+              value: 0
+          },{
+            value: 1,
+            duration: duration/2,
+            ease: 'sine.in',
+          })
+          .fromTo(this.material.uniforms.uAmp, {
+            value: 1
+          }, {
+            value: 0,
+            duration: duration/2,
+            ease: 'sine.out',
+          })
+
         tl.fromTo(this.material.uniforms.uProg, {
             value: this.material.uniforms.uProg.value != 1 ? this.material.uniforms.uProg.value : 0
         }, {
             duration: duration,
             ease: `power2.${ease}`,
             value: 1,
-            delay: 0.05
-        })
+        },`-=${duration}`)
+
+    
 
     }
 
@@ -126,10 +154,21 @@ export default class ColorBG extends O {
     }
 
     resize() {
-        super.resize();
+
+        this.setBounds()
+
+        if(APP.state.view = 'slider') {
+            this.scale.x = this.bounds.height
+            this.scale.y = this.bounds.height - this.bounds.height*.3
+        } else {
+            this.scale.x = this.bounds.width 
+            this.scale.y = this.bounds.height
+        }
+    
+
         if (!this.material) return;
-        this.material.uniforms.uMeshSize.value.x = this.rect.width;
-        this.material.uniforms.uMeshSize.value.y = this.rect.height;
+        this.material.uniforms.uMeshSize.value.x = this.bounds.width 
+        this.material.uniforms.uMeshSize.value.y = this.bounds.height
     }
 
 }

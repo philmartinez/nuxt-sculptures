@@ -2,10 +2,11 @@
 
     <div class="sculpture-slideshow">
 
-        <canvas id="sculpture-bg-gl"></canvas>
+        <!--<canvas id="sculpture-bg-gl"></canvas>-->
         <canvas id="sculpture-gl"></canvas>
 
-        <div class="sculpture-shadow"></div>
+        <div class="sculpture-bg-color"></div>
+        <!--<div class="sculpture-shadow"></div>-->
         <div class="sculptures">
             <div class="sculpture" v-for="item in this.items" :id="`sculpture-${item.id}`">
                 <div class="img-wrap"><img :src="'/'+item.image" :alt="item.name" /></div>
@@ -37,7 +38,7 @@
 
 import preloadImages from '~/components/util/preload.js'
 import Scene from '~/components/GL/Scene.js'
-import SceneBG from '~/components/GL/SceneBG.js'
+//import SceneBG from '~/components/GL/SceneBG.js'
 import Slideshow from '~/components/GL/Slideshow.js'
 import App from '~/components/GL/App.js'
 
@@ -87,7 +88,7 @@ data() {
         createSlideshow() {
             window.APP = new App()
             APP.Scene = new Scene()
-            APP.SceneBG = new SceneBG()
+            //APP.SceneBG = new SceneBG()
 
             preloadImages('.sculpture-slideshow').then(() => {
                 const slideshow = new Slideshow(this.items)
@@ -113,13 +114,18 @@ data() {
         top: 0;
     }
 
+    @mixin playfair {
+        font-family: 'Playfair Display';
+        font-weight: 700;
+    }
+
     $meta-font-size: 16px;
 
     .sculpture-slideshow {
-        background-color: #fff;
+        background-color: #fdf9f4;
         position: fixed;
         @include expand;
-        .sculptures, .sculpture, canvas {
+        .sculptures, .sculpture, canvas, .sculpture-bg-color {
             @include expand;
         }
         .sculpture {
@@ -127,7 +133,7 @@ data() {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 27%;
+            padding: 0 28%;
             @media only screen and (max-width: $breakpoint-tablet) {
                 padding: 0 15%;
             }
@@ -139,7 +145,7 @@ data() {
         .sculptures > div:first-child {
             position: relative;
         }
-        canvas {
+        canvas, .sculpture-bg-color {
             position: absolute;
         }
         #sculpture-gl {
@@ -171,8 +177,7 @@ data() {
     }
 
     .sculpture-type {
-        font-family: 'Playfair Display';
-        font-weight: 700;
+        @include playfair;
         font-size: 20vw;
         width:100%;
         top: 45%;
@@ -217,7 +222,7 @@ data() {
         width: 100%;
         display: flex;
         flex-wrap: wrap;
-        bottom: 60px;
+        bottom: 50px;
         align-items: flex-end;
         justify-content: center;
         z-index: 1000;
@@ -240,13 +245,14 @@ data() {
             }
 
             .model {
-                font-size: 34px;
+                font-family: 'Roboto',sans-serif;
                 font-weight: 700;
-                margin-bottom: 15px;
-                line-height: 34px;
+                font-size: 44px;
+                margin-bottom: 10px;
+                line-height: 44px;
                 .name-wrap {
                     display: inline-block;
-                    height: 39px;
+                    height: 54px;
                     margin-left: 10px;
                     overflow: hidden;
                     .inner, span {

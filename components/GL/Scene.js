@@ -9,6 +9,7 @@ export default class Scene {
         
         this.lightsCameraAction()
         this.setup()
+        this.resize()
         this.addEvents()
         this.render()
     }
@@ -18,10 +19,10 @@ export default class Scene {
         this.scene = new THREE.Scene()
         
         this.camera = new THREE.PerspectiveCamera(
-            45,
-            APP.winW / APP.winH,
-            0.1,
-            100
+            70, // fov
+            APP.winW / APP.winH, // aspect
+            100, // near
+            1000 // far
         )
 
         this.renderer = new THREE.WebGLRenderer({
@@ -38,7 +39,8 @@ export default class Scene {
         this.renderer.setClearColor( 0x000000, 0 )
         this.renderer.outputEncoding = THREE.sRGBEncoding
 
-        this.camera.position.set(0, 0, 50)
+        this.cameraDistance = 400;
+        this.camera.position.set(0, 0, this.cameraDistance)
         this.camera.lookAt(0, 0, 0)
 
         this.shouldRun = false;
@@ -56,12 +58,21 @@ export default class Scene {
     resize() {
   
         this.renderer.setSize(APP.winW, APP.winH)
+        this.camera.aspect = APP.winW / APP.winH;
+
+        // Match HTML DOM
+        this.camera.fov =
+        2 *
+        Math.atan( APP.winW / this.camera.aspect / (2 * this.cameraDistance) ) *
+        (180 / Math.PI); // in degrees
+        
+
         this.camera.updateProjectionMatrix()
 
-        this.scene.children.forEach((el, i) => {
+        /*this.scene.children.forEach((el, i) => {
             const object = this.scene.children[i]
             object.resize()
-        })
+        })*/
 
     }
 
@@ -72,7 +83,7 @@ export default class Scene {
 
             this.scene.children.forEach( (el, i) => {
                 const object = this.scene.children[i]
-                //fish.updatePosition(current)
+                //object.updatePosition()
                 object.updateTime(elapsed)
             })
 
