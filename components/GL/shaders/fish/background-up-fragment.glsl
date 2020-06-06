@@ -1,6 +1,8 @@
 
 varying vec2 vUv;
-varying vec4 vPosition;
+
+varying vec3 vPos;
+varying float vWave;
 
 uniform vec3 uCurrColor;
 uniform vec3 uNextColor;
@@ -10,6 +12,8 @@ uniform float uProg;
 uniform float width;
 uniform float scaleX;
 uniform float scaleY;
+uniform float uAmp;
+
 
 // Simplex 2D noise
 //
@@ -47,15 +51,26 @@ float parabola( float x, float k ) {
   return pow( 1. * x * ( 1. - x ), k );
 }
 
+float map(float value, float min1, float max1, float min2, float max2) {
+  return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
+}
+
+
 float PI = 3.14159;
 
 void main() {
-/*
+ 
+  float wave = vWave;
+  wave = map(wave, -1., 1., 0.1, 0.);
+  float shadow = 1. - (wave*uAmp);
+
   vec2 uv = vUv;
 
-  vec3 finalColor = mix(uCurrColor, uNextColor, uProg); 
+  /*
+  vec3 finalColor = mix(uCurrColor*shadow, uNextColor*shadow, uProg); 
   
   gl_FragColor = vec4(finalColor,1.0); */
+  
 
 	float dt = parabola(uProg,0.9);
 	float w = width*dt;
@@ -63,8 +78,8 @@ void main() {
 	
 	vec2 newUV = (vUv - vec2(0.5)) + vec2(0.5);
 
-	vec3 color1 = uCurrColor;
-	vec3 color2 = uNextColor;
+	vec3 color1 = uCurrColor*shadow;
+	vec3 color2 = uNextColor*shadow;
 
 	float noise = sin(newUV.y*PI-0.);
 
@@ -73,6 +88,6 @@ void main() {
 	float mask = maskvalue + maskvalue*noise+0.4;
 
 	float final = smoothstep(border,border+.005,mask); 
-	gl_FragColor = vec4(mix(color1,color2,final),1.);
+	gl_FragColor = vec4(mix(color1,color2,final),1.); 
 
 }

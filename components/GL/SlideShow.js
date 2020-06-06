@@ -187,6 +187,8 @@ export default class Slideshow {
         this.state.dragging = true
         this.startMouseX = this.getPosition(e).x
         this.endMouseX = 0 // reset
+
+        this.ColorBG.constantWaveStart()
         
     }
 
@@ -203,6 +205,7 @@ export default class Slideshow {
 
         if( !this.state.previewColorTracked && (this.endMouseX > 15 || this.endMouseX < -15) ) {
             
+            /*
             this.ColorBG.material.uniforms.uProg.value = 0
 
             if( this.endMouseX < 0 ) {
@@ -211,13 +214,13 @@ export default class Slideshow {
             } else {
                 color = this.slides[this.getPrevSlideI()].bg_color 
                 this.state.previewColorDir = 'up'
-            }
+            } */
             
             this.state.previewColorTracked = true
 
-            this.ColorBG.preview = true
+            /*this.ColorBG.preview = true
             this.ColorBG.previewColorInit(this.state.previewColorDir,color)
-            this.ColorBG.previewColor = color
+            this.ColorBG.previewColor = color */
 
         }
         
@@ -231,6 +234,7 @@ export default class Slideshow {
 
         this.state.dragging = false
         this.state.previewColorTracked = false
+        this.ColorBG.constantWaveEnd()
 
         if( this.endMouseX <= -90 ) {
             this.state.direction = 'down'
@@ -247,7 +251,7 @@ export default class Slideshow {
             return
         }
         
-        this.ColorBG.previewColorReset()
+        //this.ColorBG.previewColorReset()
         
 
     }

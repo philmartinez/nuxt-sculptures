@@ -37,6 +37,7 @@ export default class ColorBG extends O {
             width: { type: "f", value: 1.0 },
             uAmp: { value: 0 }
         }
+        this.constantWaveTL()
 
         this.resize()
         window.addEventListener('resize',() => { this.resize() })
@@ -44,7 +45,7 @@ export default class ColorBG extends O {
         this.mesh = new THREE.Mesh(this.geometry, this.material)
         this.add(this.mesh)
         
-        this.position.z = 0 // behind fish
+        this.position.z = 10 // behind fish
         this.GLscene.scene.add(this)
         this.previewColorRAF()
        
@@ -78,21 +79,6 @@ export default class ColorBG extends O {
 
         this.GLscene.shouldRun = true;
 
-        tl
-          .fromTo(this.material.uniforms.uAmp, {
-              value: 0
-          },{
-            value: 1,
-            duration: duration/2,
-            ease: 'sine.in',
-          })
-          .fromTo(this.material.uniforms.uAmp, {
-            value: 1
-          }, {
-            value: 0,
-            duration: duration/2,
-            ease: 'sine.out',
-          })
 
         tl.fromTo(this.material.uniforms.uProg, {
             value: this.material.uniforms.uProg.value != 1 ? this.material.uniforms.uProg.value : 0
@@ -100,7 +86,7 @@ export default class ColorBG extends O {
             duration: duration,
             ease: `power2.${ease}`,
             value: 1,
-        },`-=${duration}`)
+        })
 
     
 
@@ -127,9 +113,9 @@ export default class ColorBG extends O {
     }
 
     previewColorRAF() {
-
+        
         if( this.preview ) {
-            this.material.uniforms.uProg.value += (Math.abs(this.previewX/APP.winW*1.2) - this.material.uniforms.uProg.value ) * 0.13 
+           // this.material.uniforms.uProg.value += (Math.abs(this.previewX/APP.winW*1.2) - this.material.uniforms.uProg.value ) * 0.13 
         }
        
         requestAnimationFrame(() => { this.previewColorRAF() })
@@ -147,6 +133,32 @@ export default class ColorBG extends O {
                 this.GLscene.shouldRun = false;
             }
         })
+    }
+
+    constantWaveTL() {
+        this.waveTL = gsap.timeline({paused: true})
+
+        this.waveTL
+            .fromTo(this.material.uniforms.uAmp, {
+                value: 0    
+            },{
+            value: 1,
+            duration: 0.5,
+            delay:0.2,
+            ease: 'sine.out',
+            })
+
+        this.waveTL.pause()
+    }
+
+    constantWaveStart() {
+
+        this.GLscene.shouldRun = true;
+        this.waveTL.play()
+          
+    }
+    constantWaveEnd() {
+        this.waveTL.reverse()
     }
 
     updateTime(time) {
