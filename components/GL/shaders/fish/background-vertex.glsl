@@ -13,7 +13,7 @@ void main() {
   vPos = position;
 
   vWave = sin((position.x + position.y)*12. + uTime*2.5);
-  vPos.z = vWave*7.*uAmp;
+  vPos.z = vWave*10.*uAmp;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x, position.y, vPos.z, 1.0);
 }

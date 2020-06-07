@@ -28,13 +28,6 @@ export default class Slideshow {
             sculptureTracking: {}
         }
 
-        // GL
-        this.Fish = new Fish()
-        this.Fish.init(this.els.slideSizer, this.els.parent)
-
-        this.ColorBG = new ColorBG()
-        this.ColorBG.init(this.els.slideBGcolor)
-
         // State
         this.state = {
             activeSlide: 0,
@@ -47,7 +40,13 @@ export default class Slideshow {
             previewColorTracked: false,
             previewColorDir: 'down',
             direction: 'down',
-            dragging: false
+            dragging: false,
+            targetX: 0,
+            offX: 0,
+            lerpX: 0
+        }
+        this.GLTL = {
+            scene: gsap.timeline({ paused: true })
         }
 
 
@@ -61,10 +60,16 @@ export default class Slideshow {
         // Store
         this.slides = this.getSlides()
 
+        // GL 
+        this.ColorBG = new ColorBG()
+        this.ColorBG.init(this.els.slideBGcolor)
+        this.createGLTL()
+
         // DOM
         this.createMarkup()
 
         // Start the slider
+        this.transformSlides()
         this.state.prevSlideType = this.slides[0].type
         this.changeSlide(0)
         this.state.duration = 1.2
@@ -109,6 +114,18 @@ export default class Slideshow {
         window.addEventListener('resize',() => { })
     }
 
+    createGLTL() {
+        this.GLTL.scene.to(APP.Scene.scene.position,{
+            z: -150,
+            duration: 0.8,
+            ease: 'power2.inOut'
+        })
+        this.GLTL.scene.to(this.ColorBG.position,{
+            z: 50,
+            duration: 0.8,
+            ease: 'power2.inOut'
+        },'-=0.8')
+    }
     createMarkup() {
 
 
@@ -170,7 +187,7 @@ export default class Slideshow {
 
     viewDetailOver() {
         if( this.state.changingSlides ) return
-        this.Fish.previewFlopInit()
+        //this.Fish.previewFlopInit()
     }
 
     viewDetailLeave() {
@@ -189,6 +206,8 @@ export default class Slideshow {
         this.endMouseX = 0 // reset
 
         this.ColorBG.constantWaveStart()
+
+        this.GLTL.scene.play()
         
     }
 
@@ -198,10 +217,11 @@ export default class Slideshow {
         APP.Scene.shouldRun = true;
 
         const currentX = this.getPosition(e).x
-        this.endMouseX = currentX - this.startMouseX
+        this.endMouseX = (currentX - this.startMouseX) * 1.5
 
+        this.state.targetX = this.state.offX + this.endMouseX * 1.5
         
-        let color;
+        //let color;
 
         if( !this.state.previewColorTracked && (this.endMouseX > 15 || this.endMouseX < -15) ) {
             
@@ -232,10 +252,14 @@ export default class Slideshow {
     onUp() {
         if( !this.state.dragging || this.state.changingSlides ) return
 
+        this.state.offX = this.state.targetX
+
         this.state.dragging = false
         this.state.previewColorTracked = false
         this.ColorBG.constantWaveEnd()
 
+        this.GLTL.scene.reverse()
+        
         if( this.endMouseX <= -90 ) {
             this.state.direction = 'down'
             this.state.activeSlideIndex = this.getNextSlideI()
@@ -263,9 +287,8 @@ export default class Slideshow {
 
         this.updateSculptureText(index)
         this.updateSculptureLink()
-
-        // GL
-        this.Fish.switchTextures(index, ease)
+   
+        //this.Fish.switchTextures(index, ease)
         this.ColorBG.changeColor(this.state.activeSlide.bg_color, ease)
         this.ColorBG.changeShader(this.state.direction)
         this.ColorBG.preview = false
@@ -274,6 +297,18 @@ export default class Slideshow {
         this.state.changingSlides = true
         setTimeout( () => { this.state.changingSlides = false }, this.state.duration*1000 )
     
+    }
+
+    transformSlides() {
+       
+        this.state.lerpX += (this.state.targetX - this.state.lerpX) * 0.13
+       
+        this.state.lerpX = gsap.utils.clamp(-10000,0,this.state.lerpX)
+
+        this.slides.forEach((slide) => {
+            slide.Fish.updateX(this.state.lerpX)
+        })
+        requestAnimationFrame(() => { this.transformSlides() })
     }
 
     
@@ -420,6 +455,8 @@ export default class Slideshow {
 
             let { font_color, bg_color, type } = currentItem[0]
             
+            const fish = new Fish()
+            fish.init(el.querySelector('.img-wrap'), this.els.parent)
 
             return {
                 el: el,
@@ -427,7 +464,8 @@ export default class Slideshow {
                 name: title,
                 type: type,
                 font_color: font_color,
-                bg_color: bg_color
+                bg_color: bg_color,
+                Fish: fish
             }
         })
     }

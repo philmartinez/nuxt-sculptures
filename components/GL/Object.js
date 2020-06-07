@@ -11,7 +11,7 @@ export default class O extends Object3D {
     }
 
     setBounds() {
-        this.rect = this.el.getBoundingClientRect();
+        this.rect = this.el.getBoundingClientRect();  
         
         this.bounds = {
           left: this.rect.left,
@@ -19,8 +19,16 @@ export default class O extends Object3D {
           width: this.rect.width,
           height: this.rect.height
         }
-    
+        this.pos = {
+          x: (this.bounds.left + (this.bounds.width / 2)) - (APP.winW / 2)
+        }
 
+        this.position.x = this.pos.x
+
+      }
+
+      updateX(current) {
+         current && (this.position.x = current + this.pos.x)
       }
       
       

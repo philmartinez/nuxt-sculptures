@@ -45,7 +45,7 @@ export default class ColorBG extends O {
         this.mesh = new THREE.Mesh(this.geometry, this.material)
         this.add(this.mesh)
         
-        this.position.z = 10 // behind fish
+        this.position.z = 1 // behind fish
         this.GLscene.scene.add(this)
         this.previewColorRAF()
        
@@ -170,8 +170,8 @@ export default class ColorBG extends O {
         this.setBounds()
 
         if(APP.state.view = 'slider') {
-            this.scale.x = this.bounds.height
-            this.scale.y = this.bounds.height - this.bounds.height*.3
+            this.scale.x = this.bounds.height- this.bounds.height*.45
+            this.scale.y = this.bounds.height - this.bounds.height*.45
         } else {
             this.scale.x = this.bounds.width 
             this.scale.y = this.bounds.height

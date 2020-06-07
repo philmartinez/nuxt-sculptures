@@ -2,8 +2,8 @@ precision mediump float;
 
 varying vec2 vUv;
 
-uniform sampler2D uCurrTex;
-uniform sampler2D uNextTex;
+
+uniform sampler2D uTexture;
 uniform sampler2D uDisp;
 uniform vec2 uMeshSize;
 uniform vec2 uImageSize;
@@ -28,16 +28,9 @@ void main() {
   vec2 uv = vUv;
   vec2 texUv = backgroundCoverUv(uv, uMeshSize, uImageSize);
   
-  vec4 disp = texture2D(uDisp, uv);
- 
-  //vec4 currTex = texture2D(uCurrTex, texUv - vec2(disp.r * uProg, 0.));
-  //vec4 nextTex = texture2D(uNextTex, texUv + vec2(disp.r * (1. - uProg), 0 ));
-  vec4 currTex = texture2D(uCurrTex, texUv );
-  vec4 nextTex = texture2D(uNextTex, texUv );
-
-  vec4 finalTex = mix(currTex, nextTex, uProg);
+  vec4 texture = texture2D(uTexture, texUv );
   
-  gl_FragColor = finalTex;
+  gl_FragColor = texture;
 }
 
 

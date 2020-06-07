@@ -26,8 +26,7 @@ export default class Fish extends O {
         this.material = material.clone()
 
         this.material.uniforms = {
-            uCurrTex: { value: 0 },
-            uNextTex: { value: 0 },
+            uTexture: { value: 0 },
             uMeshSize: { value: [this.rect.width, this.rect.height] },
             uImageSize: { value: [0, 0] },
             uTime: { value: 0 },
@@ -39,16 +38,14 @@ export default class Fish extends O {
             uAmp: { value: 0 }
         }
 
-        this.textures = []
-
         this.state = {
             current: 0
         }
 
         this.mesh = new THREE.Mesh(this.geometry, this.material)
         this.add(this.mesh)
-        this.scale.z = 10
-        this.position.z = 100
+        
+        this.position.z = 70
 
         this.resize()
         window.addEventListener('resize',() => { this.resize() })
@@ -66,49 +63,34 @@ export default class Fish extends O {
 
     loadTextures() {
 
-        const manager = new THREE.LoadingManager(() => {
-            // Set first fish as default
-            this.material.uniforms.uCurrTex.value = this.textures[0].texture
-        });
+        const loader = new THREE.TextureLoader();
+        const fishImg = this.el.querySelector('img')
 
-        const loader = new THREE.TextureLoader(manager);
-        const fishImgs = [...this.parentEl.querySelectorAll('img')]
+       
+        loader.load(fishImg.src, texture => {
 
-        fishImgs.forEach( (img, index) => {
-            loader.load(img.src, texture => {
+            texture.minFilter = THREE.LinearFilter
+            texture.generateMipmaps = false
+    
+            this.material.uniforms.uImageSize.value = [fishImg.naturalWidth, fishImg.naturalHeight]
+            
+            this.material.uniforms.uTexture.value = texture;
 
-                texture.minFilter = THREE.LinearFilter
-                texture.generateMipmaps = false
-        
-                this.material.uniforms.uImageSize.value = [img.naturalWidth, img.naturalHeight]
-                
-                // The textures will get pushed async, so in order to
-                // keep the order, we'll create an object with the index
-                this.textures.push({
-                  index,
-                  texture
-                })
-
-            })
         })
+       
     }
 
     switchTextures(index, ease) {
 
-      
-        if( typeof this.textures[0] === 'undefined' ) {
-           setTimeout( () => { this.switchTextures(0) }, 100)
-           return
-        }
         
         let { texture } = this.getTexture(index)[0]
 
         this.state.current = index;
-        this.material.uniforms.uNextTex.value = texture;
+        //this.material.uniforms.uNextTex.value = texture;
     
         const tl = gsap.timeline({
           onComplete: () => {
-            this.material.uniforms.uCurrTex.value = texture;
+            //this.material.uniforms.uCurrTex.value = texture;
             this.GLscene.shouldRun = false;
           }
         });
@@ -210,11 +192,6 @@ export default class Fish extends O {
       this.previewTL.play('start')
     }
 
-    getTexture(index) {
-      return this.textures.filter((object) => {
-        return object.index === index
-      })
-    }
 
     updateTime(time) {
         this.material.uniforms.uTime.value = time
@@ -232,6 +209,7 @@ export default class Fish extends O {
 
         this.GLscene.shouldRun = true
         setTimeout(() => { this.GLscene.shouldRun = false }, 80)
+        
     }
 
 }

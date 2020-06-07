@@ -88,10 +88,9 @@ data() {
         createSlideshow() {
             window.APP = new App()
             APP.Scene = new Scene()
-            //APP.SceneBG = new SceneBG()
 
             preloadImages('.sculpture-slideshow').then(() => {
-                const slideshow = new Slideshow(this.items)
+                APP.Slideshow = new Slideshow(this.items)
             })
             
         }
@@ -129,13 +128,17 @@ data() {
             @include expand;
         }
         .sculpture {
-            position: absolute;
+            position: relative;
             display: flex;
+            flex: 0 0 35%;
             align-items: center;
             justify-content: center;
-            padding: 0 28%;
+            margin-right: 15%;
             @media only screen and (max-width: $breakpoint-tablet) {
-                padding: 0 15%;
+                //padding: 0 10%;
+            }
+            h2 {
+                position: absolute
             }
         }
         .sculptures {
@@ -143,7 +146,7 @@ data() {
             align-items: center;
         }
         .sculptures > div:first-child {
-            position: relative;
+            margin-left: 32.5%;
         }
         canvas, .sculpture-bg-color {
             position: absolute;
