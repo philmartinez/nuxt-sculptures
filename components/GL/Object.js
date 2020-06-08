@@ -8,6 +8,7 @@ export default class O extends Object3D {
         this.el = el
         this.GLscene = APP.Scene
         this.setBounds()
+        this.position.x = this.pos.x
     }
 
     setBounds() {
@@ -23,7 +24,7 @@ export default class O extends Object3D {
           x: (this.bounds.left + (this.bounds.width / 2)) - (APP.winW / 2)
         }
 
-        this.position.x = this.pos.x
+
 
       }
 

@@ -91,7 +91,7 @@ export default class Fish extends O {
         const tl = gsap.timeline({
           onComplete: () => {
             //this.material.uniforms.uCurrTex.value = texture;
-            this.GLscene.shouldRun = false;
+           // this.GLscene.shouldRun = false;
           }
         });
 
@@ -109,7 +109,7 @@ export default class Fish extends O {
           texSwapDivider = 2
         }
 
-        this.GLscene.shouldRun = true;
+        //this.GLscene.shouldRun = true;
 
         this.previewTL.seek(0).pause()
 
@@ -171,7 +171,7 @@ export default class Fish extends O {
         duration: 0.5,
         ease: 'power1.out',
         onComplete: () => {
-          this.GLscene.shouldRun = false;
+          //this.GLscene.shouldRun = false;
         }
       })
       
@@ -188,7 +188,7 @@ export default class Fish extends O {
     }
 
     previewFlopInit() {
-      this.GLscene.shouldRun = true;
+      //this.GLscene.shouldRun = true;
       this.previewTL.play('start')
     }
 
@@ -207,8 +207,8 @@ export default class Fish extends O {
         this.material.uniforms.uMeshSize.value.x = this.bounds.width 
         this.material.uniforms.uMeshSize.value.y = this.bounds.height
 
-        this.GLscene.shouldRun = true
-        setTimeout(() => { this.GLscene.shouldRun = false }, 80)
+        //this.GLscene.shouldRun = true
+        //setTimeout(() => { this.GLscene.shouldRun = false }, 80)
         
     }
 

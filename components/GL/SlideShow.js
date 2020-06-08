@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import gsap from 'gsap'
 import Fish from '~/components/GL/Fish.js'
 import ColorBG from '~/components/GL/ColorBG.js'
+import { Vector3 } from 'three';
 
 gsap.defaults({
     ease: "power2.inOut", 
@@ -41,6 +42,7 @@ export default class Slideshow {
             previewColorDir: 'down',
             direction: 'down',
             dragging: false,
+            instant: false,
             targetX: 0,
             offX: 0,
             lerpX: 0
@@ -73,6 +75,7 @@ export default class Slideshow {
         this.state.prevSlideType = this.slides[0].type
         this.changeSlide(0)
         this.state.duration = 1.2
+
     }
 
     events() {
@@ -111,12 +114,15 @@ export default class Slideshow {
         this.els.parent.querySelector('.link').addEventListener('mouseover', this.viewDetailOver.bind(this) )
         this.els.parent.querySelector('.link').addEventListener('mouseleave', this.viewDetailLeave.bind(this) )
 
-        window.addEventListener('resize',() => { })
+        window.addEventListener('resize',() => { 
+            this.state.instant = true
+            this.slideTo(this.getClosestSlide())
+        })
     }
 
     createGLTL() {
         this.GLTL.scene.to(APP.Scene.scene.position,{
-            z: -150,
+            z: -100,
             duration: 0.8,
             ease: 'power2.inOut'
         })
@@ -217,9 +223,9 @@ export default class Slideshow {
         APP.Scene.shouldRun = true;
 
         const currentX = this.getPosition(e).x
-        this.endMouseX = (currentX - this.startMouseX) * 1.5
+        this.endMouseX = (currentX - this.startMouseX) 
 
-        this.state.targetX = this.state.offX + this.endMouseX * 1.5
+        this.state.targetX = this.state.offX + this.endMouseX * 2.5 
         
         //let color;
 
@@ -252,9 +258,13 @@ export default class Slideshow {
     onUp() {
         if( !this.state.dragging || this.state.changingSlides ) return
 
+        this.state.dragging = false
+  
+        this.slideTo(this.getClosestSlide())
+        
+        
         this.state.offX = this.state.targetX
 
-        this.state.dragging = false
         this.state.previewColorTracked = false
         this.ColorBG.constantWaveEnd()
 
@@ -276,9 +286,10 @@ export default class Slideshow {
         }
         
         //this.ColorBG.previewColorReset()
-        
-
+    
     }
+
+
 
     changeSlide(index, ease) {
 
@@ -295,19 +306,22 @@ export default class Slideshow {
 
         // State
         this.state.changingSlides = true
-        setTimeout( () => { this.state.changingSlides = false }, this.state.duration*1000 )
+        setTimeout( () => { this.state.changingSlides = false }, 300 )
     
     }
 
     transformSlides() {
-       
-        this.state.lerpX += (this.state.targetX - this.state.lerpX) * 0.13
-       
-        this.state.lerpX = gsap.utils.clamp(-10000,0,this.state.lerpX)
 
+        let ease = this.state.instant ? 1 : .11
+        this.state.lerpX += (this.state.targetX - this.state.lerpX) * ease
+        
+        // Move GL
         this.slides.forEach((slide) => {
             slide.Fish.updateX(this.state.lerpX)
         })
+
+        this.state.instant = false
+
         requestAnimationFrame(() => { this.transformSlides() })
     }
 
@@ -468,6 +482,42 @@ export default class Slideshow {
                 Fish: fish
             }
         })
+    }
+
+    
+    getClosestSlide() {
+        let closest = this.slides[0]
+        const center = new Vector3()
+
+        this.slides.map(slide => slide.Fish).forEach((fish, i) => {
+            const closestDist = closest.Fish.position.distanceTo(center)
+            const newDist     = fish.position.distanceTo(center)
+
+            if (newDist < closestDist) {
+                closest = this.slides[i]
+            }
+        })
+     
+        return closest
+    }
+
+    slideTo(slide) {
+
+        const state = this.state
+        const targetX = (slide.Fish.bounds.left - (APP.winW*.325)) * -1
+        
+        
+        gsap.killTweensOf(state)
+
+        gsap.to(state,{
+            targetX,
+            duration: (this.state.instant) ? 0 : 0.7,
+            ease: 'power2.out',
+            onComplete: () => {
+                state.offX = state.targetX
+            }
+        }) 
+
     }
 
     // normalize touch and mouse
