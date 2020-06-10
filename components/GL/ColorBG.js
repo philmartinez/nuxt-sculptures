@@ -35,7 +35,8 @@ export default class ColorBG extends O {
             uProg: { value: 0 },
             uTimeProg: { value: 0 },
             width: { type: "f", value: 1.0 },
-            uAmp: { value: 0 }
+            uAmp: { value: 0 },
+            uVelo: { value: 0 }
         }
         this.constantWaveTL()
 

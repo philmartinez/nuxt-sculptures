@@ -133,7 +133,7 @@ data() {
             flex: 0 0 35%;
             align-items: center;
             justify-content: center;
-            margin-right: 15%;
+            margin-right: 40%;
             @media only screen and (max-width: $breakpoint-tablet) {
                 //padding: 0 10%;
             }

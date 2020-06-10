@@ -35,7 +35,8 @@ export default class Fish extends O {
             uPreview: { value: 0 },
             uPreviewTimeProg: { value: 0},
             uProg: { value: 0 },
-            uAmp: { value: 0 }
+            uAmp: { value: 0 },
+            uVelo: { value: 0 }
         }
 
         this.state = {
@@ -45,7 +46,7 @@ export default class Fish extends O {
         this.mesh = new THREE.Mesh(this.geometry, this.material)
         this.add(this.mesh)
         
-        this.position.z = 70
+        this.position.z = 120
 
         this.resize()
         window.addEventListener('resize',() => { this.resize() })

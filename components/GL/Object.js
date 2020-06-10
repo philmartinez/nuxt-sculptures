@@ -15,6 +15,7 @@ export default class O extends Object3D {
         this.rect = this.el.getBoundingClientRect();  
         
         this.bounds = {
+          right: this.rect.right,
           left: this.rect.left,
           top: this.rect.top,
           width: this.rect.width,

@@ -3,11 +3,14 @@ import gsap from 'gsap'
 import Fish from '~/components/GL/Fish.js'
 import ColorBG from '~/components/GL/ColorBG.js'
 import { Vector3 } from 'three';
+import { clamp } from 'lodash';
 
 gsap.defaults({
     ease: "power2.inOut", 
     duration: 1.1
 });
+
+// make bg color and slide change based on this.getClosestSlide()
 
 export default class Slideshow {
 
@@ -44,8 +47,10 @@ export default class Slideshow {
             dragging: false,
             instant: false,
             targetX: 0,
+            velocity: 0,
             offX: 0,
-            lerpX: 0
+            lerpX: 0,
+            lerpX2: 0
         }
         this.GLTL = {
             scene: gsap.timeline({ paused: true })
@@ -122,12 +127,12 @@ export default class Slideshow {
 
     createGLTL() {
         this.GLTL.scene.to(APP.Scene.scene.position,{
-            z: -100,
+            z: -80,
             duration: 0.8,
             ease: 'power2.inOut'
         })
         this.GLTL.scene.to(this.ColorBG.position,{
-            z: 50,
+            z: 30,
             duration: 0.8,
             ease: 'power2.inOut'
         },'-=0.8')
@@ -221,11 +226,21 @@ export default class Slideshow {
         if( !this.state.dragging || this.state.changingSlides ) return
         
         APP.Scene.shouldRun = true;
+        const limit = this.slides[this.slides.length-1].Fish.bounds.left - APP.winW*0.325 + 50
 
-        const currentX = this.getPosition(e).x
+
+        let currentX = this.getPosition(e).x
         this.endMouseX = (currentX - this.startMouseX) 
-
-        this.state.targetX = this.state.offX + this.endMouseX * 2.5 
+        this.state.targetX = clamp(this.state.offX + this.endMouseX * 1.25, `-${limit}`, 50)
+       
+        // when dragging past bounds, reset tracking
+        if( this.state.targetX == `-${limit}` || this.state.targetX == 50) {
+            this.state.offX = this.state.targetX
+            this.endMouseX = 0
+            this.startMouseX = this.getPosition(e).x
+        }
+      
+    
         
         //let color;
 
@@ -250,8 +265,8 @@ export default class Slideshow {
 
         }
         
-        this.ColorBG.previewX = this.state.previewColorDir === 'down' ? gsap.utils.clamp(-3000, 0, this.endMouseX) : gsap.utils.clamp(0, 3000, this.endMouseX)
-        //this.Fish.previewX = this.state.previewColorDir === 'down' ? gsap.utils.clamp(-3000, 0, this.endMouseX) : gsap.utils.clamp(0, 3000, this.endMouseX)
+        this.ColorBG.previewX = this.state.previewColorDir === 'down' ? clamp(this.endMouseX,-3000, 0) : clamp(this.endMouseX,0, 3000)
+       
      
     }   
 
@@ -260,7 +275,7 @@ export default class Slideshow {
 
         this.state.dragging = false
   
-        this.slideTo(this.getClosestSlide())
+        setTimeout( () => { this.slideTo(this.getClosestSlide()) },200)
         
         
         this.state.offX = this.state.targetX
@@ -272,16 +287,16 @@ export default class Slideshow {
         
         if( this.endMouseX <= -90 ) {
             this.state.direction = 'down'
-            this.state.activeSlideIndex = this.getNextSlideI()
+           // this.state.activeSlideIndex = this.getNextSlideI()
         } else if( this.endMouseX >= 90 ) {
             this.state.direction = 'up'
-            this.state.activeSlideIndex = this.getPrevSlideI()
+            //this.state.activeSlideIndex = this.getPrevSlideI()
         }
 
         if( this.endMouseX <= -90 || this.endMouseX >= 90) {
             APP.Scene.shouldRun = false;
             this.state.easing = 'out'
-            this.changeSlide(this.state.activeSlideIndex, 'out')
+            //this.changeSlide(this.state.activeSlideIndex, 'out')
             return
         }
         
@@ -312,13 +327,24 @@ export default class Slideshow {
 
     transformSlides() {
 
+        // Lerp Movement
         let ease = this.state.instant ? 1 : .11
         this.state.lerpX += (this.state.targetX - this.state.lerpX) * ease
         
-        // Move GL
+        // Track Velocity
+        this.state.lerpX2 += (this.state.targetX - this.state.lerpX2) * 0.06
+        this.state.velocity = clamp((this.state.targetX - this.state.lerpX2 ) * .006, -1.3, 1.3)
+
+
+        // Update GL
         this.slides.forEach((slide) => {
+            // Move
             slide.Fish.updateX(this.state.lerpX)
+            // Send uniforms
+            slide.Fish.material.uniforms.uVelo.value = this.state.velocity
+    
         })
+        this.ColorBG.material.uniforms.uVelo.value = this.state.velocity
 
         this.state.instant = false
 
@@ -505,18 +531,20 @@ export default class Slideshow {
 
         const state = this.state
         const targetX = (slide.Fish.bounds.left - (APP.winW*.325)) * -1
-        
-        
+
         gsap.killTweensOf(state)
 
         gsap.to(state,{
             targetX,
-            duration: (this.state.instant) ? 0 : 0.7,
+            duration: (this.state.instant) ? 0 : 0.5,
             ease: 'power2.out',
             onComplete: () => {
                 state.offX = state.targetX
             }
         }) 
+
+        this.state.activeSlideIndex = slide.index
+        this.changeSlide(slide.index)
 
     }
 
