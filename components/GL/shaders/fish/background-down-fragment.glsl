@@ -56,13 +56,13 @@ float map(float value, float min1, float max1, float min2, float max2) {
 float PI = 3.14159;
 
 void main() {
-/*
+
   vec2 uv = vUv;
 
   vec3 finalColor = mix(uCurrColor, uNextColor, uProg); 
   
-  gl_FragColor = vec4(finalColor,1.0); */
-
+  gl_FragColor = vec4(finalColor,1.0); 
+/*
   float wave = vWave;
   wave = map(wave, -1., 1., 0.1, 0.);
   float shadow = 1. - (wave*uAmp);
@@ -83,6 +83,6 @@ void main() {
 	float mask = maskvalue + maskvalue*noise+0.4;
 
 	float final = smoothstep(border,border+.005,mask); 
-	gl_FragColor = vec4(mix(color1,color2,final),1.);
+	gl_FragColor = vec4(mix(color1,color2,final),1.); */
 
 }

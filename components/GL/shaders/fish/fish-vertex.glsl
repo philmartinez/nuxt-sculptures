@@ -17,7 +17,7 @@ void main() {
 
   lowp float vWave = cos(uTimeProg + (position.x + position.y)*5.);
 
-  lowp float vWavePreview = cos( uTime*12. + (position.x + position.y)*4.5) *uVelo;
+  lowp float swimDir = position.x + ((sin(uv.y * 3.141592653) * uVelo) * 0.15);
 
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x, position.y, vWave*(uMultiplier*uAmp) + vWavePreview*20. *uVelo, 1.0);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(swimDir, position.y, vWave*(uMultiplier) , 1.0);
 }

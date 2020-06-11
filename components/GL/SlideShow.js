@@ -231,7 +231,7 @@ export default class Slideshow {
 
         let currentX = this.getPosition(e).x
         this.endMouseX = (currentX - this.startMouseX) 
-        this.state.targetX = clamp(this.state.offX + this.endMouseX * 1.25, `-${limit}`, 50)
+        this.state.targetX = clamp(this.state.offX + this.endMouseX * 1.4, `-${limit}`, 50)
        
         // when dragging past bounds, reset tracking
         if( this.state.targetX == `-${limit}` || this.state.targetX == 50) {
@@ -294,7 +294,7 @@ export default class Slideshow {
         }
 
         if( this.endMouseX <= -90 || this.endMouseX >= 90) {
-            APP.Scene.shouldRun = false;
+        
             this.state.easing = 'out'
             //this.changeSlide(this.state.activeSlideIndex, 'out')
             return
@@ -316,8 +316,8 @@ export default class Slideshow {
    
         //this.Fish.switchTextures(index, ease)
         this.ColorBG.changeColor(this.state.activeSlide.bg_color, ease)
-        this.ColorBG.changeShader(this.state.direction)
-        this.ColorBG.preview = false
+        //this.ColorBG.changeShader(this.state.direction)
+        //this.ColorBG.preview = false
 
         // State
         this.state.changingSlides = true
@@ -332,8 +332,8 @@ export default class Slideshow {
         this.state.lerpX += (this.state.targetX - this.state.lerpX) * ease
         
         // Track Velocity
-        this.state.lerpX2 += (this.state.targetX - this.state.lerpX2) * 0.06
-        this.state.velocity = clamp((this.state.targetX - this.state.lerpX2 ) * .006, -1.3, 1.3)
+        this.state.lerpX2 += (this.state.targetX - this.state.lerpX2) * 0.08
+        this.state.velocity = clamp((this.state.targetX - this.state.lerpX2 ) * .008, -1.3, 1.3)
 
 
         // Update GL
@@ -345,6 +345,12 @@ export default class Slideshow {
     
         })
         this.ColorBG.material.uniforms.uVelo.value = this.state.velocity
+        
+        // set render flag when needed
+        // will fail sometimes (velo check)
+        //if(!this.state.dragging && Math.abs(this.state.velocity) < 0.01) {
+            APP.Scene.shouldRun = false
+        //}
 
         this.state.instant = false
 
@@ -544,7 +550,8 @@ export default class Slideshow {
         }) 
 
         this.state.activeSlideIndex = slide.index
-        this.changeSlide(slide.index)
+        this.state.easing = 'out'
+        this.changeSlide(slide.index,'out')
 
     }
 

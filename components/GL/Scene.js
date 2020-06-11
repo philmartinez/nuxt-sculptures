@@ -80,7 +80,7 @@ export default class Scene {
         
         if( this.shouldRun ) {
             let elapsed = this.clock.getElapsedTime()
-
+            console.log('ce');
             this.scene.children.forEach( (el, i) => {
                 const object = this.scene.children[i]
                 //object.updatePosition()

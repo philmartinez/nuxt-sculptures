@@ -66,12 +66,12 @@ void main() {
 
   vec2 uv = vUv;
 
-  /*
+  
   vec3 finalColor = mix(uCurrColor*shadow, uNextColor*shadow, uProg); 
   
-  gl_FragColor = vec4(finalColor,1.0); */
+  gl_FragColor = vec4(finalColor,1.0); 
   
-
+/*
 	float dt = parabola(uProg,0.9);
 	float w = width*dt;
 	float border = 1.;
@@ -88,6 +88,6 @@ void main() {
 	float mask = maskvalue + maskvalue*noise+0.4;
 
 	float final = smoothstep(border,border+.005,mask); 
-	gl_FragColor = vec4(mix(color1,color2,final),1.); 
+	gl_FragColor = vec4(mix(color1,color2,final),1.); */
 
 }
