@@ -65,7 +65,7 @@ export default class ColorBG extends O {
         this.nextColor = new THREE.Color(color)
         this.material.uniforms.uNextColor.value = new THREE.Vector3(this.nextColor.r, this.nextColor.g, this.nextColor.b)
         
-        const duration = ease === 'inOut' ? 1.1 : 1.0
+        const duration = ease === 'inOut' ? 1.0 : 0.7
         const tl = gsap.timeline({
 
           onComplete: () => {

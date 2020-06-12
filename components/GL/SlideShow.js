@@ -40,6 +40,7 @@ export default class Slideshow {
             prevSlideType: 0,
             duration: 0,
             easing: 'inOut',
+            ease: 0.11,
             changingSlides: false,
             previewColorTracked: false,
             previewColorDir: 'down',
@@ -103,9 +104,23 @@ export default class Slideshow {
 
             if( e.deltaY > 5 || e.deltaY < -5) {
                 this.state.easing = 'inOut'
-                this.changeSlide(this.state.activeSlideIndex)
+                
+                // Change slide
+                clearTimeout(this.glAnimation)
+                this.state.changingSlides = true
+                APP.Scene.shouldRun = true
 
-                this.state.prevSlideIndex = this.state.activeSlideIndex
+
+                this.slideTo(this.slides[this.state.activeSlideIndex])
+
+                // Simulate velocity
+                this.state.velocity = 1.3
+
+                
+                // stop all future events for 1 second
+                setTimeout( () => { this.state.changingSlides = false }, 1100 )
+                
+                
             }
             
         })
@@ -212,7 +227,10 @@ export default class Slideshow {
     onDown(e) {
         if( this.state.changingSlides ) return
 
+        clearTimeout(this.glAnimation)
+
         this.state.dragging = true
+        this.state.ease = 0.11
         this.startMouseX = this.getPosition(e).x
         this.endMouseX = 0 // reset
 
@@ -231,7 +249,7 @@ export default class Slideshow {
 
         let currentX = this.getPosition(e).x
         this.endMouseX = (currentX - this.startMouseX) 
-        this.state.targetX = clamp(this.state.offX + this.endMouseX * 1.4, `-${limit}`, 50)
+        this.state.targetX = clamp(this.state.offX + this.endMouseX * 1.5, `-${limit}`, 50)
        
         // when dragging past bounds, reset tracking
         if( this.state.targetX == `-${limit}` || this.state.targetX == 50) {
@@ -285,15 +303,15 @@ export default class Slideshow {
 
         this.GLTL.scene.reverse()
         
-        if( this.endMouseX <= -90 ) {
+        if( this.endMouseX <= -20 ) {
             this.state.direction = 'down'
            // this.state.activeSlideIndex = this.getNextSlideI()
-        } else if( this.endMouseX >= 90 ) {
+        } else if( this.endMouseX >= 20 ) {
             this.state.direction = 'up'
             //this.state.activeSlideIndex = this.getPrevSlideI()
         }
 
-        if( this.endMouseX <= -90 || this.endMouseX >= 90) {
+        if( this.endMouseX <= -20 || this.endMouseX >= 20) {
         
             this.state.easing = 'out'
             //this.changeSlide(this.state.activeSlideIndex, 'out')
@@ -320,15 +338,15 @@ export default class Slideshow {
         //this.ColorBG.preview = false
 
         // State
-        this.state.changingSlides = true
-        setTimeout( () => { this.state.changingSlides = false }, 300 )
+        //this.state.changingSlides = true
+        //setTimeout( () => { this.state.changingSlides = false }, 300 )
     
     }
 
     transformSlides() {
 
         // Lerp Movement
-        let ease = this.state.instant ? 1 : .11
+        let ease = this.state.instant ? 1 : this.state.ease
         this.state.lerpX += (this.state.targetX - this.state.lerpX) * ease
         
         // Track Velocity
@@ -346,12 +364,6 @@ export default class Slideshow {
         })
         this.ColorBG.material.uniforms.uVelo.value = this.state.velocity
         
-        // set render flag when needed
-        // will fail sometimes (velo check)
-        //if(!this.state.dragging && Math.abs(this.state.velocity) < 0.01) {
-            APP.Scene.shouldRun = false
-        //}
-
         this.state.instant = false
 
         requestAnimationFrame(() => { this.transformSlides() })
@@ -538,16 +550,36 @@ export default class Slideshow {
         const state = this.state
         const targetX = (slide.Fish.bounds.left - (APP.winW*.325)) * -1
 
+        this.state.ease = 0.09
+        this.state.targetX = targetX
+
+        state.offX = state.targetX
+
+        // smoothe harsh velocity diff on drag
+        // only whell sets changingSlides flag
+        if(!this.state.changingSlides) {
+            this.state.lerpX2 = targetX - this.state.velocity * 200
+        }
+
+        // pause GL after animation complete
+        this.glAnimation = setTimeout(() => {
+            APP.Scene.shouldRun = false
+        }, 1000)
+
+
+
+        /*
         gsap.killTweensOf(state)
 
         gsap.to(state,{
             targetX,
-            duration: (this.state.instant) ? 0 : 0.5,
+            duration: (this.state.instant) ? 0 : 0.6,
             ease: 'power2.out',
             onComplete: () => {
                 state.offX = state.targetX
+                APP.Scene.shouldRun = false
             }
-        }) 
+        })  */
 
         this.state.activeSlideIndex = slide.index
         this.state.easing = 'out'
