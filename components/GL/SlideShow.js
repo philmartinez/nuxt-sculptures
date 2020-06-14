@@ -36,7 +36,7 @@ export default class Slideshow {
         this.state = {
             activeSlide: 0,
             activeSlideIndex: 0,
-            prevSlideIndex: -1,
+            prevSlideIndex: 0,
             prevSlideType: 0,
             duration: 0,
             easing: 'inOut',
@@ -80,7 +80,7 @@ export default class Slideshow {
         this.transformSlides()
         this.state.prevSlideType = this.slides[0].type
         this.changeSlide(0)
-        this.state.duration = 1.2
+        this.state.duration = 0.7
 
     }
 
@@ -136,6 +136,8 @@ export default class Slideshow {
 
         window.addEventListener('resize',() => { 
             this.state.instant = true
+            clearTimeout(this.glAnimation)
+            APP.Scene.shouldRun = true
             this.slideTo(this.getClosestSlide())
         })
     }
@@ -351,7 +353,7 @@ export default class Slideshow {
         
         // Track Velocity
         this.state.lerpX2 += (this.state.targetX - this.state.lerpX2) * 0.08
-        this.state.velocity = clamp((this.state.targetX - this.state.lerpX2 ) * .008, -1.3, 1.3)
+        this.state.velocity = clamp((this.state.targetX - this.state.lerpX2 ) * .007, -1.45, 1.45)
 
 
         // Update GL
@@ -439,8 +441,8 @@ export default class Slideshow {
             y: '0%'
         }, {
             y: this.state.direction == 'down' ? '-100%' : '100%',
-            ease: this.state.easing === 'out' ? "power2.out" : "power2.in",
-            duration: this.state.easing === 'out' ? 0.47 : this.state.duration/2
+            ease: "power2.in",
+            duration: this.state.duration/2
         })
         nameTL.call(callback)
         nameTL.fromTo(el,{
@@ -448,7 +450,7 @@ export default class Slideshow {
         }, {
             y: '0%',
             ease: "power2.out",
-            duration: this.state.easing === 'out' ? 0.47 : this.state.duration/2
+            duration: this.state.duration/2
         })
       
         nameTL.play()
@@ -567,23 +569,14 @@ export default class Slideshow {
         }, 1000)
 
 
-
-        /*
-        gsap.killTweensOf(state)
-
-        gsap.to(state,{
-            targetX,
-            duration: (this.state.instant) ? 0 : 0.6,
-            ease: 'power2.out',
-            onComplete: () => {
-                state.offX = state.targetX
-                APP.Scene.shouldRun = false
-            }
-        })  */
-
         this.state.activeSlideIndex = slide.index
         this.state.easing = 'out'
-        this.changeSlide(slide.index,'out')
+
+        if( this.state.activeSlideIndex !== this.state.prevSlideIndex ) {
+            this.changeSlide(slide.index,'out')
+        }
+
+        this.state.prevSlideIndex = slide.index
 
     }
 

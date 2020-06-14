@@ -48,7 +48,7 @@ export default class ColorBG extends O {
         
         this.position.z = 1 // behind fish
         this.GLscene.scene.add(this)
-        this.previewColorRAF()
+   
        
        
 
@@ -113,28 +113,7 @@ export default class ColorBG extends O {
   
     }
 
-    previewColorRAF() {
-        
-        if( this.preview ) {
-           // this.material.uniforms.uProg.value += (Math.abs(this.previewX/APP.winW*1.2) - this.material.uniforms.uProg.value ) * 0.13 
-        }
-       
-        requestAnimationFrame(() => { this.previewColorRAF() })
-    }
-
-    previewColorReset() {
-        
-        this.preview = false
-
-        gsap.to(this.material.uniforms.uProg, {
-            value: 0,
-            duration: 0.6,
-            ease: 'power1.out',
-            onComplete: () => {
-                this.GLscene.shouldRun = false;
-            }
-        })
-    }
+   
 
     constantWaveTL() {
         this.waveTL = gsap.timeline({paused: true})
