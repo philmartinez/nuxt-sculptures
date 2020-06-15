@@ -40,7 +40,7 @@ export default class Slideshow {
             prevSlideType: 0,
             duration: 0,
             easing: 'inOut',
-            ease: 0.11,
+            ease: 0.12,
             changingSlides: false,
             previewColorTracked: false,
             previewColorDir: 'down',
@@ -110,13 +110,12 @@ export default class Slideshow {
                 this.state.changingSlides = true
                 APP.Scene.shouldRun = true
 
-
                 this.slideTo(this.slides[this.state.activeSlideIndex])
 
-                // Simulate velocity
-                this.state.velocity = 1.3
+                // Quick Wave
+                this.ColorBG.quickWave()
 
-                
+ 
                 // stop all future events for 1 second
                 setTimeout( () => { this.state.changingSlides = false }, 1100 )
                 
@@ -352,8 +351,12 @@ export default class Slideshow {
         this.state.lerpX += (this.state.targetX - this.state.lerpX) * ease
         
         // Track Velocity
-        this.state.lerpX2 += (this.state.targetX - this.state.lerpX2) * 0.08
-        this.state.velocity = clamp((this.state.targetX - this.state.lerpX2 ) * .007, -1.45, 1.45)
+        this.state.lerpX2 += (this.state.targetX - this.state.lerpX2) * ease
+
+        let clampVal = (this.state.changingSlides) ? 0.9 : 1.6;
+        let multVal  = (this.state.changingSlides) ? 0.004 :  0.0075;
+
+        this.state.velocity = clamp((this.state.targetX - this.state.lerpX2 ) * multVal, `-${clampVal}`, clampVal)
 
 
         // Update GL
@@ -441,16 +444,16 @@ export default class Slideshow {
             y: '0%'
         }, {
             y: this.state.direction == 'down' ? '-100%' : '100%',
-            ease: "power2.in",
-            duration: this.state.duration/2
+            ease: "power1.out",
+            duration: 0.3
         })
         nameTL.call(callback)
         nameTL.fromTo(el,{
             y: this.state.direction == 'down' ? '100%' : '-100%'
         }, {
             y: '0%',
-            ease: "power2.out",
-            duration: this.state.duration/2
+            ease: "power1.out",
+            duration: 0.5
         })
       
         nameTL.play()
@@ -470,6 +473,9 @@ export default class Slideshow {
         })
 
         // Transform Color BG
+        this.GLTL.scene.reverse()
+        this.ColorBG.constantWaveEnd()
+        this.ColorBG.singleView()
         
      }
 
@@ -558,11 +564,10 @@ export default class Slideshow {
         state.offX = state.targetX
 
         // smoothe harsh velocity diff on drag
-        // only whell sets changingSlides flag
+        //drag
         if(!this.state.changingSlides) {
             this.state.lerpX2 = targetX - this.state.velocity * 200
-        }
-
+        } 
         // pause GL after animation complete
         this.glAnimation = setTimeout(() => {
             APP.Scene.shouldRun = false

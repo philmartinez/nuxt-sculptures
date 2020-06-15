@@ -1,5 +1,5 @@
 
-uniform float uProg;
+uniform float uTimeProg;
 uniform float uTime;
 uniform float uAmp;
 uniform float uVelo;
@@ -13,7 +13,7 @@ void main() {
   vUv = uv;
   vPos = position;
 
-  vWave = sin((position.x + position.y)*7. + uTime*2.5);
+  vWave = sin((position.x + position.y)*7. + uTime*uTimeProg);
   vPos.z = vWave*10.*uAmp;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x, position.y, vPos.z, 1.0);

@@ -9,6 +9,7 @@ uniform vec3 uNextColor;
 uniform vec2 uMeshSize;
 uniform float uTime;
 uniform float uProg;
+uniform float uShadowAmp;
 uniform float width;
 uniform float scaleX;
 uniform float scaleY;
@@ -61,8 +62,8 @@ float PI = 3.14159;
 void main() {
  
   float wave = vWave;
-  wave = map(wave, -1., 1., 0.1, 0.);
-  float shadow = 1. - (wave*uAmp);
+  wave = map(wave, -1., 1., 0.2, 0.);
+  float shadow = 1. - (wave*uShadowAmp);
 
   vec2 uv = vUv;
 

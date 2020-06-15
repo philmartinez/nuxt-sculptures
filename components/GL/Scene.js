@@ -76,11 +76,23 @@ export default class Scene {
 
     }
 
+    /*
+    Gives the width and height of the current camera's view.
+   */
+    getViewSize() {
+        const fovInRadians = (this.camera.fov * Math.PI) / 180;
+        const height = Math.abs(
+        this.camera.position.z * Math.tan(fovInRadians / 2) * 2
+        );
+
+        return { width: height * this.camera.aspect, height };
+    }
+
     run() {
         
         if( this.shouldRun ) {
             let elapsed = this.clock.getElapsedTime()
-            console.log('ce');
+           
             this.scene.children.forEach( (el, i) => {
                 const object = this.scene.children[i]
                 //object.updatePosition()
