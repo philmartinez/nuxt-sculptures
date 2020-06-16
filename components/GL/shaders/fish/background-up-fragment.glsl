@@ -62,7 +62,7 @@ float PI = 3.14159;
 void main() {
  
   float wave = vWave;
-  wave = map(wave, -1., 1., 0.2, 0.);
+  wave = map(wave, -1., 1., 0.13, 0.);
   float shadow = 1. - (wave*uShadowAmp);
 
   vec2 uv = vUv;

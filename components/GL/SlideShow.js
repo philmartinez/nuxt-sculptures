@@ -7,7 +7,7 @@ import { clamp } from 'lodash';
 
 gsap.defaults({
     ease: "power2.inOut", 
-    duration: 1.1
+    duration: 1.2
 });
 
 // make bg color and slide change based on this.getClosestSlide()
@@ -117,7 +117,7 @@ export default class Slideshow {
 
  
                 // stop all future events for 1 second
-                setTimeout( () => { this.state.changingSlides = false }, 1100 )
+                setTimeout( () => { this.state.changingSlides = false }, 1250 )
                 
                 
             }
@@ -143,15 +143,15 @@ export default class Slideshow {
 
     createGLTL() {
         this.GLTL.scene.to(APP.Scene.scene.position,{
-            z: -80,
-            duration: 0.8,
-            ease: 'power2.inOut'
+            z: -30,
+            duration: 0.6,
+            ease: 'power1.inOut'
         })
         this.GLTL.scene.to(this.ColorBG.position,{
-            z: 30,
-            duration: 0.8,
-            ease: 'power2.inOut'
-        },'-=0.8')
+            z: -50,
+            duration: 0.6,
+            ease: 'power1.inOut'
+        },'-=0.6')
     }
     createMarkup() {
 
@@ -250,7 +250,7 @@ export default class Slideshow {
 
         let currentX = this.getPosition(e).x
         this.endMouseX = (currentX - this.startMouseX) 
-        this.state.targetX = clamp(this.state.offX + this.endMouseX * 1.5, `-${limit}`, 50)
+        this.state.targetX = clamp(this.state.offX + this.endMouseX * 1.6, `-${limit}`, 50)
        
         // when dragging past bounds, reset tracking
         if( this.state.targetX == `-${limit}` || this.state.targetX == 50) {
@@ -353,8 +353,8 @@ export default class Slideshow {
         // Track Velocity
         this.state.lerpX2 += (this.state.targetX - this.state.lerpX2) * ease
 
-        let clampVal = (this.state.changingSlides) ? 0.9 : 1.6;
-        let multVal  = (this.state.changingSlides) ? 0.004 :  0.0075;
+        let clampVal = (this.state.changingSlides) ? 0.8 : 1.5;
+        let multVal  = (this.state.changingSlides) ? 0.006 :  0.0065;
 
         this.state.velocity = clamp((this.state.targetX - this.state.lerpX2 ) * multVal, `-${clampVal}`, clampVal)
 
@@ -444,17 +444,21 @@ export default class Slideshow {
             y: '0%'
         }, {
             y: this.state.direction == 'down' ? '-100%' : '100%',
-            ease: "power1.out",
-            duration: 0.3
+            ease: this.state.easing == 'inOut' ? "power2.in" : "power1.out",
+            duration: this.state.easing == 'inOut' ? 0.6 : 0.3,
+            onComplete: () => {
+                
+                nameTL.call(callback)
+                nameTL.fromTo(el,{
+                    y: this.state.direction == 'down' ? '100%' : '-100%'
+                }, {
+                    y: '0%',
+                    ease: this.state.easing == 'inOut' ? "power2.out" : "power1.out",
+                    duration: this.state.easing == 'inOut' ? 0.6 : 0.5,
+                })
+            }
         })
-        nameTL.call(callback)
-        nameTL.fromTo(el,{
-            y: this.state.direction == 'down' ? '100%' : '-100%'
-        }, {
-            y: '0%',
-            ease: "power1.out",
-            duration: 0.5
-        })
+        
       
         nameTL.play()
      }
@@ -558,27 +562,38 @@ export default class Slideshow {
         const state = this.state
         const targetX = (slide.Fish.bounds.left - (APP.winW*.325)) * -1
 
-        this.state.ease = 0.09
-        this.state.targetX = targetX
-
-        state.offX = state.targetX
-
-        // smoothe harsh velocity diff on drag
         //drag
         if(!this.state.changingSlides) {
+            this.state.targetX = targetX
+             state.offX = state.targetX
+             // smoothe harsh velocity diff on drag
             this.state.lerpX2 = targetX - this.state.velocity * 200
-        } 
+            this.state.easing = 'out'
+        } else {
+            state.ease = 0.16
+            this.state.easing = 'inOut'
+            gsap.to(state,{
+                targetX,
+                ease: 'power2.in',
+                duration: 0.6,
+                onComplete: () => {
+                    state.offX = state.targetX
+                }
+            })
+        }
+
+
         // pause GL after animation complete
         this.glAnimation = setTimeout(() => {
             APP.Scene.shouldRun = false
-        }, 1000)
+        }, !this.state.changingSlides ? 1000 : 1800)
 
 
         this.state.activeSlideIndex = slide.index
-        this.state.easing = 'out'
+        
 
         if( this.state.activeSlideIndex !== this.state.prevSlideIndex ) {
-            this.changeSlide(slide.index,'out')
+            this.changeSlide(slide.index,this.state.easing)
         }
 
         this.state.prevSlideIndex = slide.index

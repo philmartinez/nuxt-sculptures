@@ -69,18 +69,22 @@ export default class ColorBG extends O {
     changeColor(color, ease = 'inOut') {
         
         this.animating = true
+
         this.nextColor = new THREE.Color(color)
         this.material.uniforms.uNextColor.value = new THREE.Vector3(this.nextColor.r, this.nextColor.g, this.nextColor.b)
         
-        const duration = ease === 'inOut' ? 1.0 : 1.0
+        this.material.uniforms.uCurrColor.value = new THREE.Vector3(this.currColor.r, this.currColor.g, this.currColor.b)
+        this.currColor = new THREE.Color(color)
+        
+        const duration = ease === 'inOut' ? 1.2 : 0.8
         const tl = gsap.timeline({
 
           onComplete: () => {
 
             //this.GLscene.shouldRun = false
-            this.animating = false
-            this.currColor = new THREE.Color(color)
-            this.material.uniforms.uCurrColor.value = new THREE.Vector3(this.currColor.r, this.currColor.g, this.currColor.b)
+            //this.animating = false
+            //this.currColor = new THREE.Color(color)
+            
           }
 
         });
@@ -89,7 +93,7 @@ export default class ColorBG extends O {
 
 
         tl.fromTo(this.material.uniforms.uProg, {
-            value: this.material.uniforms.uProg.value != 1 ? this.material.uniforms.uProg.value : 0
+            value: 0
         }, {
             duration: duration,
             ease: `power2.${ease}`,
@@ -126,8 +130,8 @@ export default class ColorBG extends O {
         this.material.vertexShader = vertexShaderSingle
         this.material.needsUpdate = true
 
-        this.material.uniforms.uMeshScale.value.x = this.bounds.height*.45
-        this.material.uniforms.uMeshScale.value.y = this.bounds.height*.45
+        this.material.uniforms.uMeshScale.value.x = this.bounds.height*.4
+        this.material.uniforms.uMeshScale.value.y = this.bounds.height*.4
 
         const viewSize = this.GLscene.getViewSize()
         this.material.uniforms.uViewSize.value = new THREE.Vector2(
@@ -193,26 +197,25 @@ export default class ColorBG extends O {
 
         this.GLscene.shouldRun = true;
 
+
         gsap.fromTo(this.material.uniforms.uAmp, {
             value: 0    
         },{
-            value: 1,
-            duration: 0.3,
-            ease: 'power1.out',
+            value: 2,
+            duration: 0.6,
+            ease: 'power2.in',
+            onComplete: () => {
+                gsap.fromTo(this.material.uniforms.uAmp, {
+                    value: 2 
+                },{
+                    value: 0,
+                    duration: 0.6,
+                    ease: 'power2.out',
+                })
+            }
         })
         this.material.uniforms.uTimeProg.value = 4.5 // faster rate
        
-
-        gsap.fromTo(this.material.uniforms.uAmp, {
-            value: 1    
-        },{
-            value: 0,
-            delay: 0.25,
-            duration: 0.7,
-            ease: 'power1.out',
-        })
-       
-        
           
     }
 
@@ -237,8 +240,8 @@ export default class ColorBG extends O {
         this.setBounds()
 
         if(APP.state.view === 'slider') {
-            this.scale.x = this.bounds.height- this.bounds.height*.45
-            this.scale.y = this.bounds.height - this.bounds.height*.45
+            this.scale.x = this.bounds.height- this.bounds.height*.4
+            this.scale.y = this.bounds.height - this.bounds.height*.4
         } else {
             this.scale.x = this.bounds.width 
             this.scale.y = this.bounds.height
