@@ -43,7 +43,7 @@ export default class Scene {
         this.camera.position.set(0, 0, this.cameraDistance)
         this.camera.lookAt(0, 0, 0)
 
-        this.shouldRun = false;
+        this.shouldRun = true;
         this.clock = new THREE.Clock()
         this.run()
 

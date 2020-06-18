@@ -74,13 +74,17 @@ export default class Fish extends O {
             texture.generateMipmaps = false
     
             this.material.uniforms.uImageSize.value = [fishImg.naturalWidth, fishImg.naturalHeight]
-            
             this.material.uniforms.uTexture.value = texture;
+
+            setTimeout(() => {
+              this.GLscene.shouldRun = false;
+            }, 300)
+           
 
         })
        
     }
-
+    /*
     switchTextures(index, ease) {
 
         
@@ -152,7 +156,7 @@ export default class Fish extends O {
             ease: 'none',
           },`-=${duration/texSwapDivider}`);
 
-    }
+    } */
     
     previewTimeline() {
 

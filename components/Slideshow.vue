@@ -9,6 +9,7 @@
         <!--<div class="sculpture-shadow"></div>-->
         <div class="sculptures">
             <div class="sculpture" v-for="item in this.items" :id="`sculpture-${item.id}`">
+                <div class="color-plane"></div>
                 <div class="img-wrap"><img :src="'/'+item.image" :alt="item.name" /></div>
                 <h2 class="name"><nuxt-link :to="getURL(item)">{{ item.name }}</nuxt-link></h2>
             </div>
@@ -133,9 +134,17 @@ data() {
             flex: 0 0 35%;
             align-items: center;
             justify-content: center;
-            margin-right: 40%;
+            margin-right: 32.5%;
+            margin-left: 32.5%;
             @media only screen and (max-width: $breakpoint-tablet) {
                 //padding: 0 10%;
+            }
+            .color-plane {
+                position: absolute;
+                width: 100vw;
+                height: 100vh;
+                left: -32.5vw;
+                top: 0;
             }
             h2 {
                 position: absolute
@@ -145,9 +154,9 @@ data() {
             display: flex;
             align-items: center;
         }
-        .sculptures > div:first-child {
+        /*.sculptures > div:first-child {
             margin-left: 32.5%;
-        }
+        }*/
         canvas, .sculpture-bg-color {
             position: absolute;
         }

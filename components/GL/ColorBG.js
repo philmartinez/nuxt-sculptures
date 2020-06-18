@@ -4,35 +4,36 @@ import O from '~/components/GL/Object.js'
 import vertexShader from '~/components/GL/shaders/fish/background-vertex.glsl'
 import vertexShaderSingle from '~/components/GL/shaders/fish/background-single-vertex.glsl'
 
-import fragmentShaderDown from '~/components/GL/shaders/fish/background-down-fragment.glsl'
-import fragmentShaderUp from '~/components/GL/shaders/fish/background-up-fragment.glsl'
+//import fragmentShaderDown from '~/components/GL/shaders/fish/background-down-fragment.glsl'
+import fragmentShader from '~/components/GL/shaders/fish/background-fragment.glsl'
 
 
 import gsap from 'gsap'
 
 const geometry = new THREE.PlaneBufferGeometry(1,1,20,20)
 const material = new THREE.ShaderMaterial({
-    fragmentShader: fragmentShaderUp,
+    fragmentShader: fragmentShader,
     vertexShader: vertexShader
 })
 
 export default class ColorBG extends O {
 
-    init(el) {
+    init(el, color) {
         super.init(el)
         
         this.el = el
+        this.color = new THREE.Color(color)
         this.GLscene = APP.Scene
 
         this.geometry = geometry
         this.material = material.clone()
 
-        this.currColor = new THREE.Color( 0xFFFFFF );
-        this.nextColor = new THREE.Color( 0x00ff00 );
-
+        //this.currColor = new THREE.Color( 0xFFFFFF );
+        //this.nextColor = new THREE.Color( 0x00ff00 );
+        
         this.material.uniforms = {
-            uCurrColor: { value: new THREE.Vector3( this.currColor.r, this.currColor.g, this.currColor.b) },
-            uNextColor: { value: new THREE.Vector3( this.nextColor.r, this.nextColor.g, this.nextColor.b) },
+            uColor: { value: new THREE.Vector3( this.color.r, this.color.g, this.color.b) },
+            //uNextColor: { value: new THREE.Vector3( this.nextColor.r, this.nextColor.g, this.nextColor.b) },
             uMeshSize: { value: [this.rect.width, this.rect.height] },
             uTime: { value: 0 },
             uProg: { value: 0 },
@@ -57,7 +58,6 @@ export default class ColorBG extends O {
         this.GLscene.scene.add(this)
    
        
-       
 
     }
 
@@ -65,7 +65,7 @@ export default class ColorBG extends O {
         super.setBounds()
     }
    
-
+    /*
     changeColor(color, ease = 'inOut') {
         
         this.animating = true
@@ -73,17 +73,19 @@ export default class ColorBG extends O {
         this.nextColor = new THREE.Color(color)
         this.material.uniforms.uNextColor.value = new THREE.Vector3(this.nextColor.r, this.nextColor.g, this.nextColor.b)
         
-        this.material.uniforms.uCurrColor.value = new THREE.Vector3(this.currColor.r, this.currColor.g, this.currColor.b)
-        this.currColor = new THREE.Color(color)
+        //this.material.uniforms.uCurrColor.value = new THREE.Vector3(this.currColor.r, this.currColor.g, this.currColor.b)
+        //this.currColor = new THREE.Color(color)
         
-        const duration = ease === 'inOut' ? 1.2 : 0.8
+        const duration = ease === 'inOut' ? 1.4 : 0.8
         const tl = gsap.timeline({
 
           onComplete: () => {
 
             //this.GLscene.shouldRun = false
-            //this.animating = false
-            //this.currColor = new THREE.Color(color)
+            this.animating = false
+            this.currColor = new THREE.Color(color)
+            this.material.uniforms.uCurrColor.value = new THREE.Vector3(this.currColor.r, this.currColor.g, this.currColor.b)
+            
             
           }
 
@@ -93,17 +95,18 @@ export default class ColorBG extends O {
 
 
         tl.fromTo(this.material.uniforms.uProg, {
-            value: 0
+            value: this.material.uniforms.uProg.value != 1 ? this.material.uniforms.uProg.value : 0
         }, {
             duration: duration,
-            ease: `power2.${ease}`,
+            ease: `power3.${ease}`,
             value: 1,
         })
 
     
 
-    }
-
+    } 
+    */
+  /*
     changeShader(direction) {
 
         if( 'down' === direction ) {
@@ -115,29 +118,55 @@ export default class ColorBG extends O {
       
     }
 
+     
     previewColorInit(direction, color) {
-        
+       
         this.nextColor = new THREE.Color(color)
         this.material.uniforms.uNextColor.value = new THREE.Vector3(this.nextColor.r, this.nextColor.g, this.nextColor.b)
-
+        
         this.changeShader(direction);
   
     }
+  
+    previewColorRAF() {
+
+        if( this.preview ) {
+           this.material.uniforms.uProg.value += (Math.abs(this.previewX/APP.winW*1.5) - this.material.uniforms.uProg.value ) * 0.13 
+        }
+
+        requestAnimationFrame(() => { this.previewColorRAF() })
+    } 
+
+    previewColorReset() {
+
+        this.preview = false
+
+        gsap.to(this.material.uniforms.uProg, {
+            value: 0,
+            duration: 0.4,
+            ease: 'power1.out',
+            onComplete: () => {
+                //this.GLscene.shouldRun = false;
+            }
+        })
+    } */
 
     singleView() {
 
+        this.GLscene.shouldRun = true;
+        
         // change shader
         this.material.vertexShader = vertexShaderSingle
         this.material.needsUpdate = true
 
-        this.material.uniforms.uMeshScale.value.x = this.bounds.height*.4
-        this.material.uniforms.uMeshScale.value.y = this.bounds.height*.4
+        this.material.uniforms.uMeshScale.value.x = this.bounds.height*.1
+        this.material.uniforms.uMeshScale.value.y = this.bounds.height*.1
 
         const viewSize = this.GLscene.getViewSize()
         this.material.uniforms.uViewSize.value = new THREE.Vector2(
             viewSize.width,
             viewSize.height
-          )
+        )
          
 
         // full size color
@@ -240,11 +269,13 @@ export default class ColorBG extends O {
         this.setBounds()
 
         if(APP.state.view === 'slider') {
-            this.scale.x = this.bounds.height- this.bounds.height*.4
-            this.scale.y = this.bounds.height - this.bounds.height*.4
-        } else {
+            //this.scale.x = this.bounds.height - this.bounds.height*.4
+            //this.scale.y = this.bounds.height - this.bounds.height*.4
             this.scale.x = this.bounds.width 
             this.scale.y = this.bounds.height
+        } else {
+            this.scale.x = this.bounds.height - this.bounds.height*.4
+            this.scale.y = this.bounds.height - this.bounds.height*.4
         }
     
 

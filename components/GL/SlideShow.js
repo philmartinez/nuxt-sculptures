@@ -69,8 +69,6 @@ export default class Slideshow {
         this.slides = this.getSlides()
 
         // GL 
-        this.ColorBG = new ColorBG()
-        this.ColorBG.init(this.els.slideBGcolor)
         this.createGLTL()
 
         // DOM
@@ -113,11 +111,11 @@ export default class Slideshow {
                 this.slideTo(this.slides[this.state.activeSlideIndex])
 
                 // Quick Wave
-                this.ColorBG.quickWave()
+                //this.ColorBG.quickWave()
 
  
                 // stop all future events for 1 second
-                setTimeout( () => { this.state.changingSlides = false }, 1250 )
+                setTimeout( () => { this.state.changingSlides = false }, 1450 )
                 
                 
             }
@@ -142,16 +140,23 @@ export default class Slideshow {
     }
 
     createGLTL() {
-        this.GLTL.scene.to(APP.Scene.scene.position,{
-            z: -30,
-            duration: 0.6,
-            ease: 'power1.inOut'
+
+        let tweens = []
+        
+        this.slides.forEach((slide) => {
+
+            tweens.push( 
+                gsap.to(slide.Fish.position,{
+                    z: 40,
+                    duration: 0.6,
+                    ease: 'power1.inOut'
+                })
+            )
+
         })
-        this.GLTL.scene.to(this.ColorBG.position,{
-            z: -50,
-            duration: 0.6,
-            ease: 'power1.inOut'
-        },'-=0.6')
+
+        this.GLTL.scene.add(tweens)
+        
     }
     createMarkup() {
 
@@ -235,7 +240,7 @@ export default class Slideshow {
         this.startMouseX = this.getPosition(e).x
         this.endMouseX = 0 // reset
 
-        this.ColorBG.constantWaveStart()
+        //this.ColorBG.constantWaveStart()
 
         this.GLTL.scene.play()
         
@@ -245,28 +250,27 @@ export default class Slideshow {
         if( !this.state.dragging || this.state.changingSlides ) return
         
         APP.Scene.shouldRun = true;
-        const limit = this.slides[this.slides.length-1].Fish.bounds.left - APP.winW*0.325 + 50
+        const limit = this.slides[this.slides.length-1].Fish.bounds.left - APP.winW*0.325 
 
 
         let currentX = this.getPosition(e).x
         this.endMouseX = (currentX - this.startMouseX) 
-        this.state.targetX = clamp(this.state.offX + this.endMouseX * 1.6, `-${limit}`, 50)
+      
+        this.state.targetX = clamp(this.state.offX + this.endMouseX * (1 + APP.winW/1400), `-${limit}`, 0)
        
         // when dragging past bounds, reset tracking
-        if( this.state.targetX == `-${limit}` || this.state.targetX == 50) {
+        if( this.state.targetX == `-${limit}` || this.state.targetX == 0) {
             this.state.offX = this.state.targetX
             this.endMouseX = 0
             this.startMouseX = this.getPosition(e).x
+            return;
         }
       
     
         
-        //let color;
+        let color;
 
-        if( !this.state.previewColorTracked && (this.endMouseX > 15 || this.endMouseX < -15) ) {
-            
-            /*
-            this.ColorBG.material.uniforms.uProg.value = 0
+        if( this.endMouseX >= 0 || this.endMouseX < 0 ) {
 
             if( this.endMouseX < 0 ) {
                 color = this.slides[this.getNextSlideI()].bg_color 
@@ -274,17 +278,25 @@ export default class Slideshow {
             } else {
                 color = this.slides[this.getPrevSlideI()].bg_color 
                 this.state.previewColorDir = 'up'
-            } */
-            
-            this.state.previewColorTracked = true
-
-            /*this.ColorBG.preview = true
-            this.ColorBG.previewColorInit(this.state.previewColorDir,color)
-            this.ColorBG.previewColor = color */
+            } 
+         
 
         }
+
+        if( this.state.previewColorTracked != this.state.previewColorDir) {
+
+            //this.ColorBG.material.uniforms.uProg.value = 0
+            //this.ColorBG.preview = true
+            
+           //this.ColorBG.previewColorInit(this.state.previewColorDir,color)
+           
+
+        } 
+
+        // previous
+        this.state.previewColorTracked = this.state.previewColorDir
         
-        this.ColorBG.previewX = this.state.previewColorDir === 'down' ? clamp(this.endMouseX,-3000, 0) : clamp(this.endMouseX,0, 3000)
+        //this.ColorBG.previewX = this.endMouseX
        
      
     }   
@@ -300,26 +312,21 @@ export default class Slideshow {
         this.state.offX = this.state.targetX
 
         this.state.previewColorTracked = false
-        this.ColorBG.constantWaveEnd()
+        //this.ColorBG.constantWaveEnd()
 
         this.GLTL.scene.reverse()
         
-        if( this.endMouseX <= -20 ) {
-            this.state.direction = 'down'
-           // this.state.activeSlideIndex = this.getNextSlideI()
-        } else if( this.endMouseX >= 20 ) {
-            this.state.direction = 'up'
-            //this.state.activeSlideIndex = this.getPrevSlideI()
-        }
+        
+        this.state.direction = this.state.previewColorDir
 
         if( this.endMouseX <= -20 || this.endMouseX >= 20) {
         
             this.state.easing = 'out'
-            //this.changeSlide(this.state.activeSlideIndex, 'out')
+           
             return
         }
         
-        //this.ColorBG.previewColorReset()
+    
     
     }
 
@@ -334,7 +341,7 @@ export default class Slideshow {
         this.updateSculptureLink()
    
         //this.Fish.switchTextures(index, ease)
-        this.ColorBG.changeColor(this.state.activeSlide.bg_color, ease)
+        //this.ColorBG.changeColor(this.state.activeSlide.bg_color, ease)
         //this.ColorBG.changeShader(this.state.direction)
         //this.ColorBG.preview = false
 
@@ -363,11 +370,13 @@ export default class Slideshow {
         this.slides.forEach((slide) => {
             // Move
             slide.Fish.updateX(this.state.lerpX)
+            slide.ColorPlane.updateX(this.state.lerpX)
             // Send uniforms
             slide.Fish.material.uniforms.uVelo.value = this.state.velocity
+            slide.ColorPlane.material.uniforms.uVelo.value = this.state.velocity
     
         })
-        this.ColorBG.material.uniforms.uVelo.value = this.state.velocity
+        //this.ColorBG.material.uniforms.uVelo.value = this.state.velocity
         
         this.state.instant = false
 
@@ -445,7 +454,7 @@ export default class Slideshow {
         }, {
             y: this.state.direction == 'down' ? '-100%' : '100%',
             ease: this.state.easing == 'inOut' ? "power2.in" : "power1.out",
-            duration: this.state.easing == 'inOut' ? 0.6 : 0.3,
+            duration: this.state.easing == 'inOut' ? 0.7 : 0.3,
             onComplete: () => {
                 
                 nameTL.call(callback)
@@ -454,7 +463,7 @@ export default class Slideshow {
                 }, {
                     y: '0%',
                     ease: this.state.easing == 'inOut' ? "power2.out" : "power1.out",
-                    duration: this.state.easing == 'inOut' ? 0.6 : 0.5,
+                    duration: this.state.easing == 'inOut' ? 0.7 : 0.5,
                 })
             }
         })
@@ -478,8 +487,9 @@ export default class Slideshow {
 
         // Transform Color BG
         this.GLTL.scene.reverse()
-        this.ColorBG.constantWaveEnd()
-        this.ColorBG.singleView()
+        //this.ColorBG.constantWaveEnd()
+        
+        this.slides[this.state.activeSlideIndex].ColorPlane.singleView()
         
      }
 
@@ -528,6 +538,9 @@ export default class Slideshow {
             const fish = new Fish()
             fish.init(el.querySelector('.img-wrap'), this.els.parent)
 
+            const plane = new ColorBG()
+            plane.init(el.querySelector('.color-plane'),bg_color)
+
             return {
                 el: el,
                 index: i,
@@ -535,7 +548,8 @@ export default class Slideshow {
                 type: type,
                 font_color: font_color,
                 bg_color: bg_color,
-                Fish: fish
+                Fish: fish,
+                ColorPlane: plane
             }
         })
     }
@@ -570,12 +584,12 @@ export default class Slideshow {
             this.state.lerpX2 = targetX - this.state.velocity * 200
             this.state.easing = 'out'
         } else {
-            state.ease = 0.16
+            state.ease = 0.18
             this.state.easing = 'inOut'
             gsap.to(state,{
                 targetX,
                 ease: 'power2.in',
-                duration: 0.6,
+                duration: 0.8,
                 onComplete: () => {
                     state.offX = state.targetX
                 }
@@ -594,6 +608,8 @@ export default class Slideshow {
 
         if( this.state.activeSlideIndex !== this.state.prevSlideIndex ) {
             this.changeSlide(slide.index,this.state.easing)
+        } else {
+          //  this.ColorBG.previewColorReset()
         }
 
         this.state.prevSlideIndex = slide.index

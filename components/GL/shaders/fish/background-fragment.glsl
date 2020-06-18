@@ -4,8 +4,8 @@ varying vec2 vUv;
 varying vec3 vPos;
 varying float vWave;
 
-uniform vec3 uCurrColor;
-uniform vec3 uNextColor;
+uniform vec3 uColor;
+
 uniform vec2 uMeshSize;
 uniform float uTime;
 uniform float uProg;
@@ -60,17 +60,16 @@ float map(float value, float min1, float max1, float min2, float max2) {
 float PI = 3.14159;
 
 void main() {
- 
+
   float wave = vWave;
   wave = map(wave, -1., 1., 0.13, 0.);
   float shadow = 1. - (wave*uShadowAmp);
-
+ 
   vec2 uv = vUv;
 
+ // vec3 finalColor = mix(uCurrColor*shadow, uNextColor*shadow, uProg); 
   
-  vec3 finalColor = mix(uCurrColor*shadow, uNextColor*shadow, uProg); 
-  
-  gl_FragColor = vec4(finalColor,1.0); 
+  gl_FragColor = vec4(uColor,1.0); 
   
 /*
 	float dt = parabola(uProg,0.9);
@@ -89,6 +88,6 @@ void main() {
 	float mask = maskvalue + maskvalue*noise+0.4;
 
 	float final = smoothstep(border,border+.005,mask); 
-	gl_FragColor = vec4(mix(color1,color2,final),1.); */
+	gl_FragColor = vec4(mix(color1,color2,final),1.);  */
 
 }
