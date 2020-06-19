@@ -3,6 +3,7 @@ uniform float uTime;
 uniform float uAmp;
 uniform float uTimeProg;
 uniform float uVelo;
+
 uniform vec2 uMeshScale;
 uniform vec2 uViewSize;
 uniform vec2 uMeshPosition;

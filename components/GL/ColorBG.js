@@ -159,13 +159,15 @@ export default class ColorBG extends O {
         this.material.vertexShader = vertexShaderSingle
         this.material.needsUpdate = true
 
-        this.material.uniforms.uMeshScale.value.x = this.bounds.height*.1
-        this.material.uniforms.uMeshScale.value.y = this.bounds.height*.1
 
         const viewSize = this.GLscene.getViewSize()
+
+        this.material.uniforms.uMeshScale.value.x = viewSize.width
+        this.material.uniforms.uMeshScale.value.y = viewSize.height
+
         this.material.uniforms.uViewSize.value = new THREE.Vector2(
-            viewSize.width,
-            viewSize.height
+            this.bounds.height*.6,
+            this.bounds.height*.6,
         )
          
 
@@ -268,15 +270,8 @@ export default class ColorBG extends O {
 
         this.setBounds()
 
-        if(APP.state.view === 'slider') {
-            //this.scale.x = this.bounds.height - this.bounds.height*.4
-            //this.scale.y = this.bounds.height - this.bounds.height*.4
-            this.scale.x = this.bounds.width 
-            this.scale.y = this.bounds.height
-        } else {
-            this.scale.x = this.bounds.height - this.bounds.height*.4
-            this.scale.y = this.bounds.height - this.bounds.height*.4
-        }
+        this.scale.x = this.bounds.width 
+        this.scale.y = this.bounds.height
     
 
         if (!this.material) return;
