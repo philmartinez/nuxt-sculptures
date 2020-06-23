@@ -41,6 +41,12 @@ export default {
   modules: [
   ],
   /*
+  ** Router
+  */
+  router: {
+    middleware: 'pages'
+  },
+  /*
   ** Build configuration
   */
   build: {

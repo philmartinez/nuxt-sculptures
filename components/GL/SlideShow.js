@@ -125,8 +125,7 @@ export default class Slideshow {
         document.addEventListener('mousedown', this.onDown.bind(this) )
         document.addEventListener('mousemove', this.onMove.bind(this) )
         document.addEventListener('mouseup', this.onUp.bind(this) )
-        
-        this.els.parent.querySelector('.link').addEventListener('mouseup', this.viewDetailOpen.bind(this) )
+    
         
         this.els.parent.querySelector('.link').addEventListener('mouseover', this.viewDetailOver.bind(this) )
         this.els.parent.querySelector('.link').addEventListener('mouseleave', this.viewDetailLeave.bind(this) )
@@ -226,10 +225,6 @@ export default class Slideshow {
        
     }
 
-    viewDetailOpen() {
-        this.singleSculptureEnter()
-    }
-
     onDown(e) {
         if( this.state.changingSlides ) return
 
@@ -302,11 +297,15 @@ export default class Slideshow {
     }   
 
     onUp() {
+
         if( !this.state.dragging || this.state.changingSlides ) return
 
         this.state.dragging = false
   
-        setTimeout( () => { this.slideTo(this.getClosestSlide()) },200)
+        setTimeout( () => { 
+            if(APP.state.view === 'single') return
+            this.slideTo(this.getClosestSlide()) 
+        },200)
         
         
         this.state.offX = this.state.targetX
@@ -475,7 +474,9 @@ export default class Slideshow {
 
      singleSculptureEnter() {
 
+        //this.slideTo(APP.state.fish)
         this.state.changingSlides = true
+        
         APP.state.view = 'single'
         gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail], {
             opacity: 0,
@@ -496,6 +497,16 @@ export default class Slideshow {
      singleSculptureExit() {
         this.state.changingSlides = false
         APP.state.view = 'slider'
+        gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail], {
+            opacity: 1,
+            stagger: 0.2,
+            y: '0px',
+            duration: 0.6,
+            ease: "power2.Out"
+        })
+
+        this.slides[this.state.activeSlideIndex].ColorPlane.singleViewExit()
+        
      }
 
 
@@ -615,6 +626,8 @@ export default class Slideshow {
         this.state.prevSlideIndex = slide.index
 
     }
+
+    
 
     // normalize touch and mouse
     getPosition({clientX, clientY, changedTouches, target}) {

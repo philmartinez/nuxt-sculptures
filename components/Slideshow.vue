@@ -1,5 +1,4 @@
 <template>
-
     <div class="sculpture-slideshow">
 
         <!--<canvas id="sculpture-bg-gl"></canvas>-->
@@ -25,7 +24,7 @@
                     </span>
                 </div>
                 <div class="view-detail">View Detail</div>
-                <div class="link">
+                <div class="link" :class="{ active: this.page === 'index' }">
                     <nuxt-link v-for="item in this.items" :key="item.id" :to="getURL(item)" class="detail-link"></nuxt-link>
                 </div>
             </div>
@@ -42,49 +41,13 @@ import Scene from '~/components/GL/Scene.js'
 //import SceneBG from '~/components/GL/SceneBG.js'
 import Slideshow from '~/components/GL/Slideshow.js'
 import App from '~/components/GL/App.js'
+import { mapState, mapMutations } from 'vuex'
 
 export default {
-data() {
-        return {
-            items: [
-                {
-                    name: 'S3',
-                    type: 'snapper',
-                    image: 'fish.png',
-                    bg_color: '#ffd493',
-                    font_color: '#e4ba7b',
-                    id: 1
-                },
-                {
-                    name: 'W9',
-                    type: 'bowhead',
-                    image: 'whale.png',
-                    bg_color: '#8198ff',
-                    font_color: '#c1c1f1',
-                    id: 2
-                },
-                {
-                    name: 'G4',
-                    type: 'grouper',
-                    image: 'fish2.png',
-                    bg_color: '#e4434f',
-                    font_color: '#ff561a',
-                    id: 3
-                },
-                {
-                    name: 'W2',
-                    type: 'bowhead',
-                    image: 'fish4.png',
-                    bg_color: '#f9f9c5',
-                    font_color: '#333',
-                    id: 4
-                },
-            ]
-        }
-    },
     methods: {
+        ...mapMutations(['updateLoaded']),
         getURL(sculpture) {
-            return `sculptures/${sculpture.type}-${sculpture.name.toLowerCase()}`
+            return `sculptures/${sculpture.name.toLowerCase()}`
         },
         createSlideshow() {
             window.APP = new App()
@@ -92,12 +55,33 @@ data() {
 
             preloadImages('.sculpture-slideshow').then(() => {
                 APP.Slideshow = new Slideshow(this.items)
+                
+                this.updateLoaded(true)
+
+               if(this.page !== 'index') {
+                    this.setFishView(this.page)
+                }
             })
             
+        },
+        setFishView(page) {
+           if( page === 'index' ) {
+                APP.Slideshow.singleSculptureExit()
+           } else if( page === 'sculptures-sculpture' ) {
+                APP.Slideshow.singleSculptureEnter()
+           }
+        }
+    },
+    computed: mapState(['page','items','loaded']),
+    watch: {
+        page: function(page) {
+           this.setFishView(page)
         }
     },
     mounted() {
        this.createSlideshow()
+
+
     }
 }
 
@@ -243,6 +227,9 @@ data() {
             position: relative;
             -webkit-user-select: none;
             user-select: none;
+            .link:not(.active) {
+                pointer-events: none;
+            }
             .link, .link a {
                 position: absolute;
                 left: 0;

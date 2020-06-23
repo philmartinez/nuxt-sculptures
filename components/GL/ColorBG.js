@@ -166,8 +166,8 @@ export default class ColorBG extends O {
         this.material.uniforms.uMeshScale.value.y = viewSize.height
 
         this.material.uniforms.uViewSize.value = new THREE.Vector2(
-            this.bounds.height*.6,
-            this.bounds.height*.6,
+            this.bounds.height*.5,
+            this.bounds.height*.5,
         )
          
 
@@ -178,6 +178,48 @@ export default class ColorBG extends O {
             value: 1,
             duration: 1.3,
             ease: 'power1.inOut',
+        })
+
+        gsap.fromTo(this.material.uniforms.uShadowAmp, {
+            value: 0
+        },{
+            value: 1,
+            duration: 0.6,
+            ease: 'power1.inOut'
+        })
+        gsap.to(this.material.uniforms.uShadowAmp,{
+            value: 0,
+            delay: 0.6,
+            duration: 0.6,
+            ease: 'power1.out'
+        })
+        gsap.fromTo(this.material.uniforms.uTimeProg, {
+            value: 4.5,
+        },{
+            value: 6,
+            duration:1,
+            ease: 'power1.inOut'
+        })
+       
+       
+    }
+
+    singleViewExit() {
+
+        this.GLscene.shouldRun = true;
+        
+        // full size color
+        gsap.fromTo(this.material.uniforms.uAmp, {
+            value: 1
+        },{
+            value: 0,
+            duration: 1.3,
+            ease: 'power1.inOut',
+            onComplete: () => {
+                // change shader
+                this.material.vertexShader = vertexShader
+                this.material.needsUpdate = true
+            }
         })
 
         gsap.fromTo(this.material.uniforms.uShadowAmp, {

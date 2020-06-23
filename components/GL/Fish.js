@@ -77,7 +77,7 @@ export default class Fish extends O {
             this.material.uniforms.uTexture.value = texture;
 
             setTimeout(() => {
-              this.GLscene.shouldRun = false;
+              //this.GLscene.shouldRun = false;
             }, 300)
            
 

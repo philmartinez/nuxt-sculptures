@@ -2,7 +2,8 @@ export default class App {
 
     constructor() {
         this.state = {
-            view: 'slider'
+            view: 'slider',
+            fish: 0
         }
         this.resize()
         window.addEventListener('resize', () => { this.resize() })
