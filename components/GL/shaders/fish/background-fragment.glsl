@@ -62,14 +62,14 @@ float PI = 3.14159;
 void main() {
 
   float wave = vWave;
-  wave = map(wave, -1., 1., 0.13, 0.);
+  wave = map(wave, -1., 1., 0.53, 0.);
   float shadow = 1. - (wave*uShadowAmp);
  
   vec2 uv = vUv;
 
  // vec3 finalColor = mix(uCurrColor*shadow, uNextColor*shadow, uProg); 
   
-  gl_FragColor = vec4(uColor,1.0); 
+  gl_FragColor = vec4(uColor*shadow,1.0); 
   
 /*
 	float dt = parabola(uProg,0.9);

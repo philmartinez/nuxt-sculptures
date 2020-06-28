@@ -13,7 +13,8 @@ import gsap from 'gsap'
 const geometry = new THREE.PlaneBufferGeometry(1,1,20,20)
 const material = new THREE.ShaderMaterial({
     fragmentShader: fragmentShader,
-    vertexShader: vertexShader
+    vertexShader: vertexShader,
+    side: THREE.DoubleSide
 })
 
 export default class ColorBG extends O {
@@ -172,32 +173,28 @@ export default class ColorBG extends O {
          
 
         // full size color
-        gsap.fromTo(this.material.uniforms.uAmp, {
-            value: 0
-        },{
-            value: 1,
-            duration: 1.3,
-            ease: 'power1.inOut',
-        })
-
+        this.singleTL.play()
+        /*
         gsap.fromTo(this.material.uniforms.uShadowAmp, {
             value: 0
         },{
             value: 1,
-            duration: 0.6,
+            delay: 0.45,
+            duration: 0.55,
             ease: 'power1.inOut'
         })
         gsap.to(this.material.uniforms.uShadowAmp,{
             value: 0,
-            delay: 0.6,
-            duration: 0.6,
+            delay: 0.75,
+            duration: 0.75,
             ease: 'power1.out'
-        })
+        })*/
+        
         gsap.fromTo(this.material.uniforms.uTimeProg, {
             value: 4.5,
         },{
             value: 6,
-            duration:1,
+            duration:1.5,
             ease: 'power1.inOut'
         })
        
@@ -209,37 +206,27 @@ export default class ColorBG extends O {
         this.GLscene.shouldRun = true;
         
         // full size color
-        gsap.fromTo(this.material.uniforms.uAmp, {
-            value: 1
-        },{
-            value: 0,
-            duration: 1.3,
-            ease: 'power1.inOut',
-            onComplete: () => {
-                // change shader
-                this.material.vertexShader = vertexShader
-                this.material.needsUpdate = true
-            }
-        })
-
+        this.singleTL.reverse()
+        
+        /*
         gsap.fromTo(this.material.uniforms.uShadowAmp, {
             value: 0
         },{
             value: 1,
-            duration: 0.6,
+            duration: 0.75,
             ease: 'power1.inOut'
         })
         gsap.to(this.material.uniforms.uShadowAmp,{
             value: 0,
             delay: 0.6,
-            duration: 0.6,
+            duration: 0.75,
             ease: 'power1.out'
-        })
+        }) */
         gsap.fromTo(this.material.uniforms.uTimeProg, {
             value: 4.5,
         },{
             value: 6,
-            duration:1,
+            duration:1.5,
             ease: 'power1.inOut'
         })
        
@@ -248,9 +235,26 @@ export default class ColorBG extends O {
     
    
     waveTLs() {
-        this.waveTL = gsap.timeline({paused: true})
-        this.quickWaveTL = gsap.timeline({paused: true})
+        this.waveTL = gsap.timeline({ paused: true })
+        this.quickWaveTL = gsap.timeline({ paused: true })
+        this.singleTL = gsap.timeline({ 
+            paused: true,
+            onReverseComplete: () => {
+                // change shader
+                this.material.vertexShader = vertexShader
+                this.material.needsUpdate = true
+            }
+         })
 
+        this.singleTL.fromTo(this.material.uniforms.uAmp,{
+            value: 0
+        }, {
+            value: 1,
+            duration: 1.5,
+            ease: 'power1.inOut'
+        })
+
+        /*
         this.waveTL
             .fromTo(this.material.uniforms.uAmp, {
                 value: 0    
@@ -261,7 +265,7 @@ export default class ColorBG extends O {
                 ease: 'sine.out',
             })
 
-        this.waveTL.pause()
+        this.waveTL.pause() */
 
   
     }
@@ -303,6 +307,7 @@ export default class ColorBG extends O {
     constantWaveEnd() {
         this.waveTL.reverse()
     }
+
 
     updateTime(time) {
         this.material.uniforms.uTime.value = time;

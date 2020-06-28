@@ -166,14 +166,14 @@ export default class Fish extends O {
           value: 0
       }, {
           value: 1,
-          duration: 0.5,
+          duration: 0.75,
           ease: 'power1.in'
       },'start')
       
 
       this.previewTL.to(this.material.uniforms.uPreview, {
         value: 0,
-        duration: 0.5,
+        duration: 0.75,
         ease: 'power1.out',
         onComplete: () => {
           //this.GLscene.shouldRun = false;
@@ -184,7 +184,7 @@ export default class Fish extends O {
           value: 1.7
       }, {
           value: 11,
-          duration: 1,
+          duration: 1.5,
           ease: 'sine.inOut'
       },'-=1')
 

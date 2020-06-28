@@ -46,7 +46,7 @@ export default class Slideshow {
             previewColorDir: 'down',
             direction: 'down',
             dragging: false,
-            instant: false,
+            instant: true,
             targetX: 0,
             velocity: 0,
             offX: 0,
@@ -75,10 +75,10 @@ export default class Slideshow {
         this.createMarkup()
 
         // Start the slider
-        this.transformSlides()
         this.state.prevSlideType = this.slides[0].type
         this.changeSlide(0)
         this.state.duration = 0.7
+        this.transformSlides()
 
     }
 
@@ -352,6 +352,7 @@ export default class Slideshow {
 
     transformSlides() {
 
+      
         // Lerp Movement
         let ease = this.state.instant ? 1 : this.state.ease
         this.state.lerpX += (this.state.targetX - this.state.lerpX) * ease
@@ -448,12 +449,15 @@ export default class Slideshow {
         
         nameTL.pause()
         
+        let duration1 = (this.state.easing == 'inOut') ? 0.7 : 0.3
+        let duration2 = (this.state.easing == 'inOut') ? 0.7 : 0.5
+
         nameTL.fromTo(el,{
             y: '0%'
         }, {
             y: this.state.direction == 'down' ? '-100%' : '100%',
             ease: this.state.easing == 'inOut' ? "power2.in" : "power1.out",
-            duration: this.state.easing == 'inOut' ? 0.7 : 0.3,
+            duration: APP.state.view !== 'single' && !this.state.instant ? duration1 : 0,
             onComplete: () => {
                 
                 nameTL.call(callback)
@@ -462,7 +466,7 @@ export default class Slideshow {
                 }, {
                     y: '0%',
                     ease: this.state.easing == 'inOut' ? "power2.out" : "power1.out",
-                    duration: this.state.easing == 'inOut' ? 0.7 : 0.5,
+                    duration: APP.state.view !== 'single' && !this.state.instant ? duration2 : 0,
                 })
             }
         })
@@ -476,6 +480,7 @@ export default class Slideshow {
 
         //this.slideTo(APP.state.fish)
         this.state.changingSlides = true
+        this.state.single = true
         
         APP.state.view = 'single'
         gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail], {
@@ -490,12 +495,17 @@ export default class Slideshow {
         this.GLTL.scene.reverse()
         //this.ColorBG.constantWaveEnd()
         
-        this.slides[this.state.activeSlideIndex].ColorPlane.singleView()
+        this.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
+            colorBG.singleView()
+        })
+        this.slides[this.state.activeSlideIndex].Fish.previewFlopInit()
         
      }
 
      singleSculptureExit() {
         this.state.changingSlides = false
+        this.state.single = false
+
         APP.state.view = 'slider'
         gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail], {
             opacity: 1,
@@ -505,7 +515,9 @@ export default class Slideshow {
             ease: "power2.Out"
         })
 
-        this.slides[this.state.activeSlideIndex].ColorPlane.singleViewExit()
+        this.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
+            colorBG.singleViewExit()
+        })
         
      }
 
@@ -609,9 +621,12 @@ export default class Slideshow {
 
 
         // pause GL after animation complete
-        this.glAnimation = setTimeout(() => {
-            APP.Scene.shouldRun = false
-        }, !this.state.changingSlides ? 1000 : 1800)
+        /*this.glAnimation = setTimeout(() => {
+            if(APP.state.view !== 'single') {
+                APP.Scene.shouldRun = false
+            }
+        }, !this.state.changingSlides ? 1000 : 1800)*/
+    
 
 
         this.state.activeSlideIndex = slide.index

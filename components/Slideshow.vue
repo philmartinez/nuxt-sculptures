@@ -68,6 +68,7 @@ export default {
            if( page === 'index' ) {
                 APP.Slideshow.singleSculptureExit()
            } else if( page === 'sculptures-sculpture' ) {
+              
                 APP.Slideshow.singleSculptureEnter()
            }
         }

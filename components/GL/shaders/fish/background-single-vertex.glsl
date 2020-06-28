@@ -15,24 +15,32 @@ varying float vWave;
 void main() {
 
   vUv = uv;
-  vPos = position;
+  //vPos = position;
+  vec3 pos = position.xyz;
 
-  // Activation for left-to-right
-  float activation = uv.x;
+
+  float activation = (+uv.x-uv.y+1.)/2.;
+  
+  // delayed activation
   float latestStart = 0.5;
   float startAt = activation * latestStart;
-
   float vertexProgress = smoothstep(startAt,1.,uAmp);
+
+  // flip
+  float flippedX = -pos.x;
+  pos.x = mix(pos.x,flippedX, vertexProgress);
+	pos.z += vertexProgress;
+
 		
   vec2 scaleToViewSize = uViewSize / uMeshScale - 1.;
   vec2 scale = vec2(
     1. + scaleToViewSize * vertexProgress
   );
-  vPos.xy *= scale;
+  pos.xy *= scale;
 
-  vWave = -vPos.x;
+  vWave = pos.x;
   //vPos.z = vWave*10.;
 
 
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(vPos.x, vPos.y, vPos.z, 1.0);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.);
 }
