@@ -66,6 +66,7 @@ void main() {
   float shadow = 1. - (wave*uShadowAmp);
  
   vec2 uv = vUv;
+  
 
  // vec3 finalColor = mix(uCurrColor*shadow, uNextColor*shadow, uProg); 
   

@@ -483,9 +483,9 @@ export default class Slideshow {
         this.state.single = true
         
         APP.state.view = 'single'
-        gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail], {
+        gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail, this.els.sculptureMetaName], {
             opacity: 0,
-            stagger: 0.2,
+            stagger: 0.1,
             y: '20px',
             duration: 0.6,
             ease: "power2.Out"
@@ -507,9 +507,9 @@ export default class Slideshow {
         this.state.single = false
 
         APP.state.view = 'slider'
-        gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail], {
+        gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail, this.els.sculptureMetaName], {
             opacity: 1,
-            stagger: 0.2,
+            stagger: 0.1,
             y: '0px',
             duration: 0.6,
             ease: "power2.Out"
@@ -597,7 +597,11 @@ export default class Slideshow {
     slideTo(slide) {
 
         const state = this.state
-        const targetX = (slide.Fish.bounds.left - (APP.winW*.325)) * -1
+        let targetX = (slide.Fish.bounds.left - (APP.winW*.325)) * -1
+        
+        //if(APP.state.view === 'single') {
+        //    targetX += APP.winW*0.25;
+        //}
 
         //drag
         if(!this.state.changingSlides) {
@@ -621,11 +625,11 @@ export default class Slideshow {
 
 
         // pause GL after animation complete
-        /*this.glAnimation = setTimeout(() => {
+        this.glAnimation = setTimeout(() => {
             if(APP.state.view !== 'single') {
                 APP.Scene.shouldRun = false
             }
-        }, !this.state.changingSlides ? 1000 : 1800)*/
+        }, !this.state.changingSlides ? 1000 : 1800)
     
 
 

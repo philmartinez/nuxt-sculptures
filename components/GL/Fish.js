@@ -29,6 +29,8 @@ export default class Fish extends O {
             uTexture: { value: 0 },
             uMeshSize: { value: [this.rect.width, this.rect.height] },
             uImageSize: { value: [0, 0] },
+            uDisp: { value: 0 },
+            uDistort: { value: 0 },
             uTime: { value: 0 },
             uMultiplier: { value: 9.0 },
             uTimeProg: { value: 0 },
@@ -66,7 +68,7 @@ export default class Fish extends O {
 
         const loader = new THREE.TextureLoader();
         const fishImg = this.el.querySelector('img')
-
+        const disp = 'displacement-2.png'
        
         loader.load(fishImg.src, texture => {
 
@@ -76,12 +78,16 @@ export default class Fish extends O {
             this.material.uniforms.uImageSize.value = [fishImg.naturalWidth, fishImg.naturalHeight]
             this.material.uniforms.uTexture.value = texture;
 
-            setTimeout(() => {
-              //this.GLscene.shouldRun = false;
-            }, 300)
-           
-
         })
+
+        loader.load(disp, texture => {
+
+          texture.minFilter = THREE.LinearFilter
+          texture.generateMipmaps = false
+          this.material.uniforms.uDisp.value = texture;
+    
+
+      })
        
     }
     /*
@@ -189,6 +195,14 @@ export default class Fish extends O {
       },'-=1')
 
       this.previewTL.pause()
+
+      gsap.fromTo(this.material.uniforms.uDistort,{
+        value: 0
+      }, {
+        value: 2,
+        duration: 3,
+        repeat: -1
+      });
 
     }
 

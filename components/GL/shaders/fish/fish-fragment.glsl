@@ -2,13 +2,15 @@ precision mediump float;
 
 varying vec2 vUv;
 
-
 uniform sampler2D uTexture;
 uniform sampler2D uDisp;
+
 uniform vec2 uMeshSize;
 uniform vec2 uImageSize;
+
 uniform float uTime;
 uniform float uProg;
+uniform float uDistort;
 
 vec2 backgroundCoverUv(vec2 uv, vec2 canvasSize, vec2 textureSize){
   vec2 ratio = vec2(
@@ -24,13 +26,39 @@ vec2 backgroundCoverUv(vec2 uv, vec2 canvasSize, vec2 textureSize){
   );
 }
 
+mat2 getRotM(float angle) {
+    float s = sin(angle);
+    float c = cos(angle);
+    return mat2(c, -s, s, c);
+}
+
+const float PI = 3.1415;
+const float angle1 = PI*0.1;
+const float angle2 = -PI *0.75;
+
 void main() {
+
   vec2 uv = vUv;
   vec2 texUv = backgroundCoverUv(uv, uMeshSize, uImageSize);
   
-  vec4 texture = texture2D(uTexture, texUv );
   
-  gl_FragColor = texture;
+  vec4 texture = texture2D(uTexture, texUv);
+  vec4 dispTexture = texture2D(uDisp, texUv);
+
+
+  vec2 dispVec = vec2(dispTexture.r, dispTexture.g);
+
+  vec2 distortedPosition1 = texUv * smoothstep(1.,1.5,dispVec / uDistort );
+  vec4 t1 = texture2D(uTexture, distortedPosition1);
+
+  //vec2 distortedPosition1 = dispVec;
+  //vec2 t = mix(texUv,distortedPosition1,uDistort);
+	//vec4 t1 = texture2D(uTexture, t);
+ 
+
+  gl_FragColor = t1;
+
+  //gl_FragColor = vec4(vec3(n), 1.);
 }
 
 

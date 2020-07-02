@@ -167,8 +167,8 @@ export default class ColorBG extends O {
         this.material.uniforms.uMeshScale.value.y = viewSize.height
 
         this.material.uniforms.uViewSize.value = new THREE.Vector2(
-            this.bounds.height*.5,
-            this.bounds.height*.5,
+            this.bounds.width,
+            this.bounds.height,
         )
          
 
