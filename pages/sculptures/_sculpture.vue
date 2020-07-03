@@ -40,7 +40,8 @@ export default {
     methods: {
         changeFish() {
             const index = this.fish.id-1
-
+            APP.Slideshow.state.activeSlideIndex = index
+            APP.Slideshow.singleSculptureEnter()
             APP.Slideshow.changeSlide(index)
             APP.Slideshow.state.instant = true
             APP.Scene.shouldRun = true

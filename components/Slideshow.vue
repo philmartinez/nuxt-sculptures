@@ -66,10 +66,12 @@ export default {
         },
         setFishView(page) {
            if( page === 'index' ) {
+               
                 APP.Slideshow.singleSculptureExit()
            } else if( page === 'sculptures-sculpture' ) {
-              
-                APP.Slideshow.singleSculptureEnter()
+              ///console.log('enter');
+              // moved to _sculpture
+             // APP.Slideshow.singleSculptureEnter()
            }
         }
     },

@@ -478,26 +478,33 @@ export default class Slideshow {
 
      singleSculptureEnter() {
 
-        //this.slideTo(APP.state.fish)
         this.state.changingSlides = true
         this.state.single = true
         
         APP.state.view = 'single'
-        gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail, this.els.sculptureMetaName], {
-            opacity: 0,
-            stagger: 0.1,
-            y: '20px',
-            duration: 0.6,
-            ease: "power2.Out"
-        })
-
-        // Transform Color BG
-        this.GLTL.scene.reverse()
-        //this.ColorBG.constantWaveEnd()
         
-        this.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
-            colorBG.singleView()
-        })
+        setTimeout(() => {
+
+            gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail, this.els.sculptureMetaName], {
+                opacity: 0,
+                stagger: 0.1,
+                y: '20px',
+                duration: 0.6,
+                ease: "power2.Out"
+            })
+    
+            // Transform Color BG
+            this.GLTL.scene.reverse()
+            //this.ColorBG.constantWaveEnd()
+            
+            this.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
+                colorBG.singleView()
+            })
+
+        }, 800)
+
+       
+       console.log(this.state.activeSlideIndex);
         this.slides[this.state.activeSlideIndex].Fish.hideFishWithDisplacement()
         
      }
