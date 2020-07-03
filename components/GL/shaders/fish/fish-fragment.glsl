@@ -41,20 +41,23 @@ void main() {
   vec2 uv = vUv;
   vec2 texUv = backgroundCoverUv(uv, uMeshSize, uImageSize);
   
-  
   vec4 texture = texture2D(uTexture, texUv);
   vec4 dispTexture = texture2D(uDisp, texUv);
 
 
-  vec2 dispVec = vec2(dispTexture.r, dispTexture.g);
+  vec2 dispVec = vec2(dispTexture.r, dispTexture.b);
 
-  vec2 distortedPosition1 = texUv * smoothstep(1.,1.5,dispVec / uDistort );
+ dispVec -= 5.*uDistort;
+
+  vec2 distortedPosition1 = (texUv / smoothstep( 0., uDistort*.6, dispVec / uDistort ));
+  
+ 
+  
   vec4 t1 = texture2D(uTexture, distortedPosition1);
 
   //vec2 distortedPosition1 = dispVec;
   //vec2 t = mix(texUv,distortedPosition1,uDistort);
 	//vec4 t1 = texture2D(uTexture, t);
- 
 
   gl_FragColor = t1;
 

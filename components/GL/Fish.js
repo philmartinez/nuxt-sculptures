@@ -68,7 +68,7 @@ export default class Fish extends O {
 
         const loader = new THREE.TextureLoader();
         const fishImg = this.el.querySelector('img')
-        const disp = 'displacement-2.png'
+        const disp = 'displacement-4.png'
        
         loader.load(fishImg.src, texture => {
 
@@ -185,30 +185,30 @@ export default class Fish extends O {
           //this.GLscene.shouldRun = false;
         }
       })
-      
-      this.previewTL.fromTo(this.material.uniforms.uPreviewTimeProg, {
-          value: 1.7
+
+
+      this.previewTL.fromTo(this.material.uniforms.uDistort,{
+        value: 0
       }, {
-          value: 11,
-          duration: 1.5,
-          ease: 'sine.inOut'
-      },'-=1')
+        value: 0.2,
+        duration: 1.5,
+        ease: 'power1.out',
+      },'-=0.9')
+
+ 
+
 
       this.previewTL.pause()
 
-      gsap.fromTo(this.material.uniforms.uDistort,{
-        value: 0
-      }, {
-        value: 2,
-        duration: 3,
-        repeat: -1
-      });
+
 
     }
 
-    previewFlopInit() {
-      //this.GLscene.shouldRun = true;
+    hideFishWithDisplacement() {
       this.previewTL.play('start')
+    }
+    showFishWithDisplacement() {
+      this.previewTL.reverse();
     }
 
 

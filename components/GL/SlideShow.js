@@ -498,7 +498,7 @@ export default class Slideshow {
         this.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
             colorBG.singleView()
         })
-        this.slides[this.state.activeSlideIndex].Fish.previewFlopInit()
+        this.slides[this.state.activeSlideIndex].Fish.hideFishWithDisplacement()
         
      }
 
@@ -518,6 +518,7 @@ export default class Slideshow {
         this.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
             colorBG.singleViewExit()
         })
+        this.slides[this.state.activeSlideIndex].Fish.showFishWithDisplacement()
         
      }
 
