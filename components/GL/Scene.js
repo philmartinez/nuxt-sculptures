@@ -91,6 +91,7 @@ export default class Scene {
     run() {
         
         if( this.shouldRun ) {
+            console.log('run');
             let elapsed = this.clock.getElapsedTime()
            
             this.scene.children.forEach( (el, i) => {
@@ -108,8 +109,19 @@ export default class Scene {
     }
 
     render() {
-   
         this.renderer.render(this.scene, this.camera);
+    }
+
+
+    stopRender(timeout = 0) {
+        clearTimeout(this.stopRenderTimeout)
+        this.stopRenderTimeout = setTimeout(() => {
+            this.shouldRun = false
+        }, timeout)
+    }
+    startRender() {
+        clearTimeout(this.stopRenderTimeout)
+        this.shouldRun = true
     }
 
 }

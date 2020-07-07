@@ -45,7 +45,10 @@ export default class ColorBG extends O {
             uVelo: { value: 0 },
             uMeshScale: new THREE.Uniform(new THREE.Vector2(1, 1)),
             uMeshPosition: new THREE.Uniform(new THREE.Vector2(0, 0)),
-            uViewSize: new THREE.Uniform(new THREE.Vector2(1, 1))
+            uResolution: new THREE.Uniform(new THREE.Vector2(APP.winW, APP.winH)),
+            uViewHeight: { value: 0 },
+            uEndSize: new THREE.Uniform(new THREE.Vector2(1, 1)),
+            uPlaneCenter: new THREE.Uniform(new THREE.Vector2(0, 0)),
         }
         this.waveTLs()
 
@@ -153,8 +156,6 @@ export default class ColorBG extends O {
     } */
 
     singleView() {
-
-        this.GLscene.shouldRun = true;
         
         // change shader
         this.material.vertexShader = vertexShaderSingle
@@ -163,13 +164,16 @@ export default class ColorBG extends O {
 
         const viewSize = this.GLscene.getViewSize()
 
-        this.material.uniforms.uMeshScale.value.x = viewSize.width
-        this.material.uniforms.uMeshScale.value.y = viewSize.height
+        this.material.uniforms.uMeshScale.value.x = this.bounds.width
+        this.material.uniforms.uMeshScale.value.y = this.bounds.height
 
-        this.material.uniforms.uViewSize.value = new THREE.Vector2(
-            this.bounds.width,
-            this.bounds.height,
+        this.material.uniforms.uViewHeight.value = viewSize.height
+        
+        this.material.uniforms.uEndSize.value = new THREE.Vector2(
+            viewSize.width,
+            viewSize.height,
         )
+        
          
 
         // full size color
@@ -202,8 +206,6 @@ export default class ColorBG extends O {
     }
 
     singleViewExit() {
-
-        this.GLscene.shouldRun = true;
         
         // full size color
         this.singleTL.reverse()
@@ -272,9 +274,6 @@ export default class ColorBG extends O {
 
     quickWave() {
 
-        this.GLscene.shouldRun = true;
-
-
         gsap.fromTo(this.material.uniforms.uAmp, {
             value: 0    
         },{
@@ -298,8 +297,6 @@ export default class ColorBG extends O {
 
 
     constantWaveStart() {
-
-        this.GLscene.shouldRun = true;
         this.waveTL.play()
         this.material.uniforms.uTimeProg.value = 2.5 // slower rate
           

@@ -64,11 +64,11 @@ html {
 }
 
 $mod_1: 1.2; // mobile
-$mod_2: 1.5; // desktop
+$mod_2: 1.4; // desktop
 
 h1 {  
-  font-size: $mod_1*$mod_1*$mod_1*$mod_1 *1rem; 
-  @include fluid-type($min_width, $max_width, $mod_1*$mod_1*$mod_1 *$min_font, $mod_2*$mod_2*$mod_2 *$min_font);
+  font-size: $mod_1*$mod_1*$mod_1*$mod_1*$mod_1 *1rem; 
+  @include fluid-type($min_width, $max_width, $mod_1*$mod_1*$mod_1*$mod_1 *$min_font, $mod_2*$mod_2*$mod_2*$mod_2 *$min_font);
 }
 h2 {  
   font-size: $mod_1*$mod_1*$mod_1 *1rem; 

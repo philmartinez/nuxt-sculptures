@@ -4,8 +4,11 @@ uniform float uAmp;
 uniform float uTimeProg;
 uniform float uVelo;
 
+uniform vec2 uResolution;
 uniform vec2 uMeshScale;
-uniform vec2 uViewSize;
+uniform float uViewHeight;
+uniform vec2 uEndSize;
+uniform vec2 uPlaneCenter;
 uniform vec2 uMeshPosition;
 
 varying vec3 vPos;
@@ -27,17 +30,25 @@ void main() {
   float vertexProgress = smoothstep(startAt,1.,uAmp);
 
   // flip
-  float flippedX = -pos.x;
+  float flippedX = pos.x;
   pos.x = mix(pos.x,flippedX, vertexProgress);
-	pos.z += vertexProgress;
+	//pos.z += vertexProgress;
 
-		
-  vec2 scaleToViewSize = uViewSize / uMeshScale - 1.;
+	// Alter size
+  vec2 scaleToViewSize = uEndSize / uMeshScale - 1.;
   vec2 scale = vec2(
     1. + scaleToViewSize * vertexProgress
   );
   pos.xy *= scale;
 
+
+  //pos.y += -uPlaneCenter.y * vertexProgress;
+
+
+  // Move towards top
+  //os.y += ((uViewHeight / uResolution.y)/2. - (uEndSize.y/ uResolution.y)/2.) * vertexProgress;
+
+//pos.y += (uViewHeight/ uResolution.y)  * vertexProgress;
   vWave = pos.x;
   //vPos.z = vWave*10.;
 

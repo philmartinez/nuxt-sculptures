@@ -22,16 +22,19 @@ export default class O extends Object3D {
           height: this.rect.height
         }
         this.pos = {
-          x: (this.bounds.left + (this.bounds.width / 2)) - (APP.winW / 2)
+          x: (this.bounds.left + (this.bounds.width / 2)) - (APP.winW / 2),
+          y: ( APP.winH / 2 ) - this.bounds.top - ( this.bounds.height / 2) 
         }
 
 
 
       }
 
-      updateX(current) {
-         current && (this.position.x = current + this.pos.x)
+      updatePos(x,y) {
+         x && (this.position.x = x + this.pos.x)
+         y && (this.position.y = y + this.pos.y)
       }
+
       
       
       /*calculateUnitSize(distance = this.position.z) {

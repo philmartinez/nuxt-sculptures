@@ -7,7 +7,7 @@
     </div>
     <div class="product-meta">
         <div class="inner">
-            <span class="type">{{ fish.type }}</span>
+            <span class="collection">{{ fish.type }} Collection <span class="sep"></span> {{ fish.artist}}</span>
             <h1 :style="`color: ${fish.bg_color};`">Model {{ fish.name }} </h1>
             <div class="description">{{ fish.description }}</div>
             <div class="buttons">
@@ -75,25 +75,34 @@ export default {
     position: relative;
     z-index: 10;
     .product-images {
-        width: 60%;
+        width: 50%;
     }
     .product-meta {
         background-color: #fff;
         padding: 6%;
         display: flex;
         flex-wrap: wrap;
-        width: 40%;
+        width: 50%;
         font-size: 16px;
         align-items: center;
         .inner {
             width: 100%;
             height: auto;
         }
-        .type {
+        .collection {
             font-size: 14px;
             display: block;
             text-transform: capitalize;
             margin-bottom: -5px;
+            display: flex;
+            align-items: center;
+        }
+        .sep {
+            display: inline-block;
+            height: 1px;
+            width: 20px;
+            margin: 0 10px;
+            background-color: #000;
         }
         h1 {
             margin-bottom: 30px;

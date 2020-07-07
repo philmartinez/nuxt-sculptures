@@ -35,6 +35,7 @@ export default class Fish extends O {
             uMultiplier: { value: 9.0 },
             uTimeProg: { value: 0 },
             uPreview: { value: 0 },
+            u_resolution: new THREE.Uniform(new THREE.Vector2(APP.winW, APP.winH)),
             uPreviewTimeProg: { value: 0},
             uProg: { value: 0 },
             uAmp: { value: 0 },
@@ -48,7 +49,7 @@ export default class Fish extends O {
         this.mesh = new THREE.Mesh(this.geometry, this.material)
         this.add(this.mesh)
         
-        this.position.z = 120
+        this.position.z = 70
 
         this.resize()
         window.addEventListener('resize',() => { this.resize() })
@@ -68,7 +69,7 @@ export default class Fish extends O {
 
         const loader = new THREE.TextureLoader();
         const fishImg = this.el.querySelector('img')
-        const disp = 'displacement-4.png'
+        const disp = require('@/assets/displacement-4.png')
        
         loader.load(fishImg.src, texture => {
 
@@ -77,6 +78,10 @@ export default class Fish extends O {
     
             this.material.uniforms.uImageSize.value = [fishImg.naturalWidth, fishImg.naturalHeight]
             this.material.uniforms.uTexture.value = texture;
+
+            if(APP.state.view == 'slider') {
+              APP.Scene.stopRender(200)
+            }
 
         })
 
@@ -196,13 +201,11 @@ export default class Fish extends O {
       },'-=0.9')
 
  
-
-
       this.previewTL.pause()
 
 
-
     }
+    
 
     hideFishWithDisplacement() {
       this.previewTL.play('start')

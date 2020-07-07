@@ -10,6 +10,7 @@ export const state = () => ({
             image: 'fish.png',
             bg_color: '#ffd493',
             font_color: '#e4ba7b',
+            artist: 'Ernesto',
             id: 1
         },
         {
@@ -20,6 +21,7 @@ export const state = () => ({
             image: 'whale.png',
             bg_color: '#8198ff',
             font_color: '#c1c1f1',
+            artist: 'Ernesto',
             id: 2
         },
         {
@@ -30,6 +32,7 @@ export const state = () => ({
             image: 'fish2.png',
             bg_color: '#e4434f',
             font_color: '#ff561a',
+            artist: 'Ernesto',
             id: 3
         },
         {
@@ -40,6 +43,7 @@ export const state = () => ({
             image: 'fish4.png',
             bg_color: '#f9f9c5',
             font_color: '#333',
+            artist: 'Ernesto',
             id: 4
         }
     ]

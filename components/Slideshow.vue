@@ -121,17 +121,20 @@ export default {
             flex: 0 0 35%;
             align-items: center;
             justify-content: center;
-            margin-right: 32.5%;
-            margin-left: 32.5%;
+            margin-right: 24%;
+            margin-left: 24%;
             @media only screen and (max-width: $breakpoint-tablet) {
                 //padding: 0 10%;
             }
             .color-plane {
                 position: absolute;
-                width: 100vw;
-                height: 100vh;
-                left: -32.5vw;
+                width: calc(100% + 30vw);
+                height: calc(100vh - 250px);
+                left: calc(-15vw);
                 top: 0;
+            }
+            &:first-child {
+                margin-left: 32.5%;
             }
             h2 {
                 position: absolute

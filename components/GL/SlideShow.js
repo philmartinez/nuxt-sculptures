@@ -51,6 +51,7 @@ export default class Slideshow {
             velocity: 0,
             offX: 0,
             lerpX: 0,
+            lerpColorX: 0,
             lerpX2: 0
         }
         this.GLTL = {
@@ -133,7 +134,7 @@ export default class Slideshow {
         window.addEventListener('resize',() => { 
             this.state.instant = true
             clearTimeout(this.glAnimation)
-            APP.Scene.shouldRun = true
+            APP.Scene.startRender()
             this.slideTo(this.getClosestSlide())
         })
     }
@@ -146,7 +147,7 @@ export default class Slideshow {
 
             tweens.push( 
                 gsap.to(slide.Fish.position,{
-                    z: 40,
+                    z: 30,
                     duration: 0.6,
                     ease: 'power1.inOut'
                 })
@@ -244,7 +245,7 @@ export default class Slideshow {
     onMove(e) {
         if( !this.state.dragging || this.state.changingSlides ) return
         
-        APP.Scene.shouldRun = true;
+        APP.Scene.startRender()
         const limit = this.slides[this.slides.length-1].Fish.bounds.left - APP.winW*0.325 
 
 
@@ -356,6 +357,7 @@ export default class Slideshow {
         // Lerp Movement
         let ease = this.state.instant ? 1 : this.state.ease
         this.state.lerpX += (this.state.targetX - this.state.lerpX) * ease
+        this.state.lerpColorX += (this.state.targetX - this.state.lerpColorX) * ease/1.1
         
         // Track Velocity
         this.state.lerpX2 += (this.state.targetX - this.state.lerpX2) * ease
@@ -369,8 +371,9 @@ export default class Slideshow {
         // Update GL
         this.slides.forEach((slide) => {
             // Move
-            slide.Fish.updateX(this.state.lerpX)
-            slide.ColorPlane.updateX(this.state.lerpX)
+            slide.Fish.updatePos(this.state.lerpX, 0)
+            slide.ColorPlane.updatePos(this.state.lerpColorX, 0)
+        
             // Send uniforms
             slide.Fish.material.uniforms.uVelo.value = this.state.velocity
             slide.ColorPlane.material.uniforms.uVelo.value = this.state.velocity
@@ -483,7 +486,7 @@ export default class Slideshow {
         
         APP.state.view = 'single'
         
-        setTimeout(() => {
+        //setTimeout(() => {
 
             gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail, this.els.sculptureMetaName], {
                 opacity: 0,
@@ -497,14 +500,18 @@ export default class Slideshow {
             this.GLTL.scene.reverse()
             //this.ColorBG.constantWaveEnd()
             
-            this.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
-                colorBG.singleView()
-            })
+            //this.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
+            //    colorBG.singleView()
+            //})
 
-        }, 800)
+       // }, 800)
+
+       const planes = [...this.els.slides].map((el) => {
+           el.querySelector('.color-plane').classList.add('top-aligned')
+       })
 
        
-       console.log(this.state.activeSlideIndex);
+        this.slides[this.state.activeSlideIndex].ColorPlane.singleView()
         this.slides[this.state.activeSlideIndex].Fish.hideFishWithDisplacement()
         
      }
@@ -512,7 +519,8 @@ export default class Slideshow {
      singleSculptureExit() {
         this.state.changingSlides = false
         this.state.single = false
-
+        APP.Scene.startRender()
+        APP.Scene.stopRender(2200)
         APP.state.view = 'slider'
         gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail, this.els.sculptureMetaName], {
             opacity: 1,
@@ -520,6 +528,10 @@ export default class Slideshow {
             y: '0px',
             duration: 0.6,
             ease: "power2.Out"
+        })
+
+        const planes = [...this.els.slides].map((el) => {
+            el.querySelector('.color-plane').classList.remove('top-aligned')
         })
 
         this.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
@@ -633,11 +645,7 @@ export default class Slideshow {
 
 
         // pause GL after animation complete
-        this.glAnimation = setTimeout(() => {
-            if(APP.state.view !== 'single') {
-                APP.Scene.shouldRun = false
-            }
-        }, !this.state.changingSlides ? 1000 : 1800)
+        APP.Scene.stopRender(2200)
     
 
 

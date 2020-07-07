@@ -7,6 +7,7 @@ uniform sampler2D uDisp;
 
 uniform vec2 uMeshSize;
 uniform vec2 uImageSize;
+uniform vec2 u_resolution;
 
 uniform float uTime;
 uniform float uProg;
@@ -36,12 +37,17 @@ const float PI = 3.1415;
 const float angle1 = PI*0.1;
 const float angle2 = -PI *0.75;
 
+mat2 scale(vec2 _scale){
+    return mat2(_scale.x,0.0,
+                0.0,_scale.y);
+}
+
 void main() {
 
   vec2 uv = vUv;
   vec2 texUv = backgroundCoverUv(uv, uMeshSize, uImageSize);
   
-  vec4 texture = texture2D(uTexture, texUv);
+  //vec4 texture = texture2D(uTexture, texUv);
   vec4 dispTexture = texture2D(uDisp, texUv);
 
 
@@ -49,11 +55,21 @@ void main() {
 
  dispVec -= 5.*uDistort;
 
-  vec2 distortedPosition1 = (texUv / smoothstep( 0., uDistort*.6, dispVec / uDistort ));
+//relative to window
+//vec2 st = gl_FragCoord.xy/u_resolution.xy;
+
+// uv of vertex 
+vec2 st = uv;
+ st -= vec2(0.5); //scale from center
+
+ st = st / smoothstep( 0., uDistort*5., dispVec / uDistort );
+  // vec2 distortedPosition1 = (texUv / smoothstep( 0., uDistort*.6, dispVec / uDistort ));
   
+ //st =  scale(vec2(sin(uTime)/2.+1.0)) * st;
+ st += vec2(0.5); //scale from center
  
   
-  vec4 t1 = texture2D(uTexture, distortedPosition1);
+  vec4 t1 = texture2D(uTexture, st);
 
   //vec2 distortedPosition1 = dispVec;
   //vec2 t = mix(texUv,distortedPosition1,uDistort);
