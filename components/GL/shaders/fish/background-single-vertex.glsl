@@ -22,7 +22,7 @@ void main() {
   vec3 pos = position.xyz;
 
 
-  float activation = (+uv.x-uv.y+1.)/2.;
+  float activation = 1.- uv.y;
   
   // delayed activation
   float latestStart = 0.5;
@@ -30,8 +30,8 @@ void main() {
   float vertexProgress = smoothstep(startAt,1.,uAmp);
 
   // flip
-  float flippedX = pos.x;
-  pos.x = mix(pos.x,flippedX, vertexProgress);
+  //float flippedX = -pos.x;
+  //pos.x = mix(pos.x,flippedX, vertexProgress);
 	//pos.z += vertexProgress;
 
 	// Alter size

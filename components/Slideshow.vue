@@ -131,7 +131,12 @@ export default {
                 width: calc(100% + 30vw);
                 height: calc(100vh - 250px);
                 left: calc(-15vw);
-                top: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                .top-aligned {
+                    top: 0;
+                    left:0;
+                }
             }
             &:first-child {
                 margin-left: 32.5%;

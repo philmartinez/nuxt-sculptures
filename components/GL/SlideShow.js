@@ -48,11 +48,12 @@ export default class Slideshow {
             dragging: false,
             instant: true,
             targetX: 0,
+            targetY: 0,
             velocity: 0,
             offX: 0,
             lerpX: 0,
             lerpColorX: 0,
-            lerpX2: 0
+            lerpVel: 0
         }
         this.GLTL = {
             scene: gsap.timeline({ paused: true })
@@ -147,7 +148,14 @@ export default class Slideshow {
 
             tweens.push( 
                 gsap.to(slide.Fish.position,{
-                    z: 30,
+                    z: 10,
+                    duration: 0.6,
+                    ease: 'power1.inOut'
+                })
+            )
+            tweens.push( 
+                gsap.to(slide.ColorPlane.position,{
+                    z: -40,
                     duration: 0.6,
                     ease: 'power1.inOut'
                 })
@@ -353,30 +361,35 @@ export default class Slideshow {
 
     transformSlides() {
 
-      
-        // Lerp Movement
         let ease = this.state.instant ? 1 : this.state.ease
+
+
+        // Lerp Movement
         this.state.lerpX += (this.state.targetX - this.state.lerpX) * ease
-        this.state.lerpColorX += (this.state.targetX - this.state.lerpColorX) * ease/1.1
+        this.state.lerpColorX += (this.state.targetX - this.state.lerpColorX) * ease/1.05
         
         // Track Velocity
-        this.state.lerpX2 += (this.state.targetX - this.state.lerpX2) * ease
+        this.state.lerpVel += (this.state.targetX - this.state.lerpVel) * ease
 
-        let clampVal = (this.state.changingSlides) ? 0.8 : 1.5;
-        let multVal  = (this.state.changingSlides) ? 0.006 :  0.0065;
-
-        this.state.velocity = clamp((this.state.targetX - this.state.lerpX2 ) * multVal, `-${clampVal}`, clampVal)
+        let clampVal = (this.state.changingSlides) ? 0.8 : 1.1;
+        let multVal  = (this.state.changingSlides) ? 0.006 :  0.004;
+        if( APP.onMobile ) {
+            clampVal = clampVal*2;
+            multVal =  multVal*2;
+        }
+        this.state.velocity = clamp((this.state.targetX - this.state.lerpVel ) * multVal, `-${clampVal}`, clampVal)
 
 
         // Update GL
         this.slides.forEach((slide) => {
+             
             // Move
-            slide.Fish.updatePos(this.state.lerpX, 0)
-            slide.ColorPlane.updatePos(this.state.lerpColorX, 0)
+            slide.Fish.updatePos(this.state.lerpX, 1)
+            slide.ColorPlane.updatePos(this.state.lerpColorX, this.state.targetY)
         
             // Send uniforms
             slide.Fish.material.uniforms.uVelo.value = this.state.velocity
-            slide.ColorPlane.material.uniforms.uVelo.value = this.state.velocity
+            slide.ColorPlane.material.uniforms.uVelo.value = this.state.velocity/2.0
     
         })
         //this.ColorBG.material.uniforms.uVelo.value = this.state.velocity
@@ -506,12 +519,21 @@ export default class Slideshow {
 
        // }, 800)
 
-       const planes = [...this.els.slides].map((el) => {
+       /*const planes = [...this.els.slides].map((el) => {
            el.querySelector('.color-plane').classList.add('top-aligned')
-       })
+       })*/
 
-       
-        this.slides[this.state.activeSlideIndex].ColorPlane.singleView()
+       const curPlane = this.slides[this.state.activeSlideIndex].ColorPlane
+
+       // objects are already aligned in the middle, 
+       // so we manually caluclate the new Y top move it to the top
+        gsap.to(this.state, {
+            targetY: APP.winH/3.09, // move up by 32%
+            duration: 1.2,
+            ease: 'power1.inOut'
+        })
+ 
+        curPlane.singleView()
         this.slides[this.state.activeSlideIndex].Fish.hideFishWithDisplacement()
         
      }
@@ -528,6 +550,12 @@ export default class Slideshow {
             y: '0px',
             duration: 0.6,
             ease: "power2.Out"
+        })
+
+        gsap.to(this.state, {
+            targetY: 0,
+            duration: 1.2,
+            ease: 'power1.inOut'
         })
 
         const planes = [...this.els.slides].map((el) => {
@@ -628,7 +656,7 @@ export default class Slideshow {
             this.state.targetX = targetX
              state.offX = state.targetX
              // smoothe harsh velocity diff on drag
-            this.state.lerpX2 = targetX - this.state.velocity * 200
+            this.state.lerpVel = targetX - this.state.velocity * 200
             this.state.easing = 'out'
         } else {
             state.ease = 0.18

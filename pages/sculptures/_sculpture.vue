@@ -71,18 +71,16 @@ export default {
 
 .single-sculpture {
     display: flex;
-    min-height: 100vh;
     position: relative;
     z-index: 10;
     .product-images {
         width: 50%;
     }
     .product-meta {
-        background-color: #fff;
         padding: 6%;
         display: flex;
         flex-wrap: wrap;
-        width: 50%;
+        width: 100%;
         font-size: 16px;
         align-items: center;
         .inner {

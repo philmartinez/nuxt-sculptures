@@ -5,6 +5,7 @@ export default class App {
             view: 'slider',
             fish: 0
         }
+        this.onMobile = false;
         this.resize()
         window.addEventListener('resize', () => { this.resize() })
     }
@@ -12,5 +13,10 @@ export default class App {
     resize() {
         this.winH = window.innerHeight
         this.winW = window.innerWidth
+
+        this.onMobile = false
+        if( this.winW < 1000 ) {
+            this.onMobile = true
+        }
     }
 } 

@@ -169,9 +169,11 @@ export default class ColorBG extends O {
 
         this.material.uniforms.uViewHeight.value = viewSize.height
         
+        // objects are already aligned in the middle, 
+        // so we manually caluclate the new Y top move it to the top
         this.material.uniforms.uEndSize.value = new THREE.Vector2(
             viewSize.width,
-            viewSize.height,
+            viewSize.height/2.857, // shink to 35% of the screen height
         )
         
          
@@ -252,8 +254,8 @@ export default class ColorBG extends O {
             value: 0
         }, {
             value: 1,
-            duration: 1.5,
-            ease: 'power1.inOut'
+            duration: 1.2,
+            ease: 'sine.inOut'
         })
 
         /*
