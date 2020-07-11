@@ -15,7 +15,7 @@ export default class App {
         this.winW = window.innerWidth
 
         this.onMobile = false
-        if( this.winW < 1000 ) {
+        if( this.winW < 768 ) {
             this.onMobile = true
         }
     }

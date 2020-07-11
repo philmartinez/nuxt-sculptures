@@ -62,7 +62,7 @@ void main() {
 vec2 st = uv;
  st -= vec2(0.5); //scale from center
 
- st = st / smoothstep( 0., uDistort*5., dispVec / uDistort );
+ st = st / smoothstep( 0., uDistort*.6, dispVec / uDistort );
   // vec2 distortedPosition1 = (texUv / smoothstep( 0., uDistort*.6, dispVec / uDistort ));
   
  //st =  scale(vec2(sin(uTime)/2.+1.0)) * st;

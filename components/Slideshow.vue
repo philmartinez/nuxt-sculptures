@@ -123,9 +123,6 @@ export default {
             justify-content: center;
             margin-right: 24%;
             margin-left: 24%;
-            @media only screen and (max-width: $breakpoint-tablet) {
-                //padding: 0 10%;
-            }
             .color-plane {
                 position: absolute;
                 width: calc(100% + 30vw);
@@ -140,6 +137,12 @@ export default {
             }
             &:first-child {
                 margin-left: 32.5%;
+            }
+            @media only screen and (max-width: $breakpoint-tablet) {
+                flex: 0 0 50%;
+                &:first-child {
+                    margin-left: 25%;
+                }
             }
             h2 {
                 position: absolute

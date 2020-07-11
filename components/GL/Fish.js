@@ -80,7 +80,18 @@ export default class Fish extends O {
             this.material.uniforms.uTexture.value = texture;
 
             if(APP.state.view == 'slider') {
-              APP.Scene.stopRender(200)
+              this.showFishWithDisplacement()
+              // Also show shadows
+              APP.Slideshow.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
+                gsap.to(colorBG.material.uniforms.uShadowAmp,{
+                  value: 1,
+                  duration: 1,
+                  ease: 'power1.inOut' 
+                });
+               
+              })
+
+              APP.Scene.stopRender(1500)
             }
 
         })
@@ -177,41 +188,59 @@ export default class Fish extends O {
           value: 0
       }, {
           value: 1,
-          duration: 0.75,
+          duration: 0.5,
           ease: 'power1.in'
       },'start')
       
 
       this.previewTL.to(this.material.uniforms.uPreview, {
         value: 0,
-        duration: 0.75,
-        ease: 'power1.out',
-        onComplete: () => {
-          //this.GLscene.shouldRun = false;
-        }
+        duration: 0.5,
+        ease: 'power1.out'
       })
-
-
-      this.previewTL.fromTo(this.material.uniforms.uDistort,{
-        value: 0
-      }, {
-        value: 0.2,
-        duration: 1.5,
-        ease: 'power1.out',
-      },'-=0.9')
-
  
       this.previewTL.pause()
 
 
+      this.displacementTL = gsap.timeline({ paused: true })
+      this.displacementTL.fromTo(this.material.uniforms.uPreview,{
+          value: 0
+      }, {
+          value: 1,
+          duration: 0.7,
+          ease: 'power1.in',
+      },'start')
+      
+      this.displacementTL.to(this.material.uniforms.uPreview, {
+        value: 0,
+        duration: 0.7,
+        ease: 'power1.out'
+      })
+
+      this.displacementTL.fromTo(this.material.uniforms.uDistort, {
+        value: 0.22
+      }, {
+        value: 0.01,
+        duration: 1.4,
+        ease: 'sine.inOut',
+      },'-=1.7')
+      
+
+
     }
     
-
-    hideFishWithDisplacement() {
+    flopStart() {
       this.previewTL.play('start')
     }
-    showFishWithDisplacement() {
+    flopReverse() {
       this.previewTL.reverse();
+    }
+
+    showFishWithDisplacement() {
+      this.displacementTL.play()
+    }
+    hideFishWithDisplacement() {
+      this.displacementTL.reverse()
     }
 
 

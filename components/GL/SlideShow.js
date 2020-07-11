@@ -42,13 +42,13 @@ export default class Slideshow {
             easing: 'inOut',
             ease: 0.12,
             changingSlides: false,
-            previewColorTracked: false,
             previewColorDir: 'down',
             direction: 'down',
             dragging: false,
             instant: true,
             targetX: 0,
             targetY: 0,
+            fishTargetY: 0,
             velocity: 0,
             offX: 0,
             lerpX: 0,
@@ -239,6 +239,7 @@ export default class Slideshow {
 
         clearTimeout(this.glAnimation)
 
+        APP.Scene.startRender()
         this.state.dragging = true
         this.state.ease = 0.11
         this.startMouseX = this.getPosition(e).x
@@ -253,7 +254,7 @@ export default class Slideshow {
     onMove(e) {
         if( !this.state.dragging || this.state.changingSlides ) return
         
-        APP.Scene.startRender()
+        
         const limit = this.slides[this.slides.length-1].Fish.bounds.left - APP.winW*0.325 
 
 
@@ -270,10 +271,7 @@ export default class Slideshow {
             return;
         }
       
-    
-        
-        let color;
-
+        /*
         if( this.endMouseX >= 0 || this.endMouseX < 0 ) {
 
             if( this.endMouseX < 0 ) {
@@ -285,24 +283,9 @@ export default class Slideshow {
             } 
          
 
-        }
+        } */
 
-        if( this.state.previewColorTracked != this.state.previewColorDir) {
 
-            //this.ColorBG.material.uniforms.uProg.value = 0
-            //this.ColorBG.preview = true
-            
-           //this.ColorBG.previewColorInit(this.state.previewColorDir,color)
-           
-
-        } 
-
-        // previous
-        this.state.previewColorTracked = this.state.previewColorDir
-        
-        //this.ColorBG.previewX = this.endMouseX
-       
-     
     }   
 
     onUp() {
@@ -318,9 +301,6 @@ export default class Slideshow {
         
         
         this.state.offX = this.state.targetX
-
-        this.state.previewColorTracked = false
-        //this.ColorBG.constantWaveEnd()
 
         this.GLTL.scene.reverse()
         
@@ -371,11 +351,14 @@ export default class Slideshow {
         // Track Velocity
         this.state.lerpVel += (this.state.targetX - this.state.lerpVel) * ease
 
-        let clampVal = (this.state.changingSlides) ? 0.8 : 1.1;
-        let multVal  = (this.state.changingSlides) ? 0.006 :  0.004;
+        let clampVal  = (this.state.changingSlides) ? 0.8 : 1.1
+        let multVal   = (this.state.changingSlides) ? 0.006 :  0.004
+        let colorVelD = 2.0
+
         if( APP.onMobile ) {
-            clampVal = clampVal*2;
-            multVal =  multVal*2;
+            clampVal = clampVal*2
+            multVal =  multVal*2
+            colorVelD = 1
         }
         this.state.velocity = clamp((this.state.targetX - this.state.lerpVel ) * multVal, `-${clampVal}`, clampVal)
 
@@ -384,12 +367,12 @@ export default class Slideshow {
         this.slides.forEach((slide) => {
              
             // Move
-            slide.Fish.updatePos(this.state.lerpX, 1)
+            slide.Fish.updatePos(this.state.lerpX, this.state.fishTargetY)
             slide.ColorPlane.updatePos(this.state.lerpColorX, this.state.targetY)
         
             // Send uniforms
             slide.Fish.material.uniforms.uVelo.value = this.state.velocity
-            slide.ColorPlane.material.uniforms.uVelo.value = this.state.velocity/2.0
+            slide.ColorPlane.material.uniforms.uVelo.value = this.state.velocity/colorVelD
     
         })
         //this.ColorBG.material.uniforms.uVelo.value = this.state.velocity
@@ -498,42 +481,37 @@ export default class Slideshow {
         this.state.single = true
         
         APP.state.view = 'single'
+
+        gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail, this.els.sculptureMetaName], {
+            opacity: 0,
+            stagger: 0.1,
+            y: '20px',
+            duration: 0.6,
+            ease: "power2.Out"
+        })
+
+        // Transform Color BG
+        this.GLTL.scene.reverse()
         
-        //setTimeout(() => {
-
-            gsap.to([this.els.sculptureTotal, this.els.sculptureViewDetail, this.els.sculptureMetaName], {
-                opacity: 0,
-                stagger: 0.1,
-                y: '20px',
-                duration: 0.6,
-                ease: "power2.Out"
-            })
-    
-            // Transform Color BG
-            this.GLTL.scene.reverse()
-            //this.ColorBG.constantWaveEnd()
-            
-            //this.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
-            //    colorBG.singleView()
-            //})
-
-       // }, 800)
-
-       /*const planes = [...this.els.slides].map((el) => {
-           el.querySelector('.color-plane').classList.add('top-aligned')
-       })*/
 
        const curPlane = this.slides[this.state.activeSlideIndex].ColorPlane
 
        // objects are already aligned in the middle, 
        // so we manually caluclate the new Y top move it to the top
+        /*const tarY = APP.onMobile ? APP.winH/3.09 : 0
+        const fishTarY = APP.onMobile ? APP.winH/8 : 0
+        const tarX = APP.onMobile ? this.state.targetX  : this.state.targetX - APP.winW/3.09
+        
         gsap.to(this.state, {
-            targetY: APP.winH/3.09, // move up by 32%
-            duration: 1.2,
+            targetY: tarY, // move up by 32%
+            fishTargetY: fishTarY, // move up by 32%
+            targetX: tarX,
+            duration: 1,
             ease: 'power1.inOut'
-        })
+        }) */
  
         curPlane.singleView()
+        //this.slides[this.state.activeSlideIndex].Fish.flopStart()
         this.slides[this.state.activeSlideIndex].Fish.hideFishWithDisplacement()
         
      }
@@ -554,7 +532,8 @@ export default class Slideshow {
 
         gsap.to(this.state, {
             targetY: 0,
-            duration: 1.2,
+            fishTargetY: 0,
+            duration: 1,
             ease: 'power1.inOut'
         })
 
@@ -565,6 +544,7 @@ export default class Slideshow {
         this.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
             colorBG.singleViewExit()
         })
+        //this.slides[this.state.activeSlideIndex].Fish.flopReverse()
         this.slides[this.state.activeSlideIndex].Fish.showFishWithDisplacement()
         
      }
@@ -645,7 +625,9 @@ export default class Slideshow {
     slideTo(slide) {
 
         const state = this.state
-        let targetX = (slide.Fish.bounds.left - (APP.winW*.325)) * -1
+        let margin = APP.onMobile ? .25 : .325
+       
+        let targetX = (slide.Fish.bounds.left - (APP.winW*margin)) * -1
         
         //if(APP.state.view === 'single') {
         //    targetX += APP.winW*0.25;

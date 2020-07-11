@@ -171,30 +171,23 @@ export default class ColorBG extends O {
         
         // objects are already aligned in the middle, 
         // so we manually caluclate the new Y top move it to the top
+
+        /*if(APP.onMobile) {
+            this.material.uniforms.uEndSize.value = new THREE.Vector2(
+                viewSize.width,
+                viewSize.height/2.857, // shink to 35% of the screen height
+            )
+        } else { */
         this.material.uniforms.uEndSize.value = new THREE.Vector2(
             viewSize.width,
-            viewSize.height/2.857, // shink to 35% of the screen height
+            viewSize.height
         )
         
-         
-
+        
+        
         // full size color
         this.singleTL.play()
-        /*
-        gsap.fromTo(this.material.uniforms.uShadowAmp, {
-            value: 0
-        },{
-            value: 1,
-            delay: 0.45,
-            duration: 0.55,
-            ease: 'power1.inOut'
-        })
-        gsap.to(this.material.uniforms.uShadowAmp,{
-            value: 0,
-            delay: 0.75,
-            duration: 0.75,
-            ease: 'power1.out'
-        })*/
+            
         
         gsap.fromTo(this.material.uniforms.uTimeProg, {
             value: 4.5,
@@ -212,20 +205,7 @@ export default class ColorBG extends O {
         // full size color
         this.singleTL.reverse()
         
-        /*
-        gsap.fromTo(this.material.uniforms.uShadowAmp, {
-            value: 0
-        },{
-            value: 1,
-            duration: 0.75,
-            ease: 'power1.inOut'
-        })
-        gsap.to(this.material.uniforms.uShadowAmp,{
-            value: 0,
-            delay: 0.6,
-            duration: 0.75,
-            ease: 'power1.out'
-        }) */
+
         gsap.fromTo(this.material.uniforms.uTimeProg, {
             value: 4.5,
         },{
@@ -254,8 +234,8 @@ export default class ColorBG extends O {
             value: 0
         }, {
             value: 1,
-            duration: 1.2,
-            ease: 'sine.inOut'
+            duration: 1.4,
+            ease: 'power1.inOut'
         })
 
         /*
