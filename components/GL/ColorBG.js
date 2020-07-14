@@ -182,6 +182,13 @@ export default class ColorBG extends O {
             viewSize.width,
             viewSize.height
         )
+
+        // remove shadow
+        gsap.to(this.material.uniforms.uShadowAmp,{
+            value: 0,
+            duration: 1,
+            ease: 'power1.inOut' 
+        });
         
         
         
@@ -212,7 +219,15 @@ export default class ColorBG extends O {
             value: 6,
             duration:1.5,
             ease: 'power1.inOut'
-        })
+        });
+
+        // add shadow
+        gsap.to(this.material.uniforms.uShadowAmp,{
+            value: 1,
+            duration: 1,
+            ease: 'power1.inOut',
+            delay: 0.5
+        });
        
        
     }

@@ -34,11 +34,12 @@ void main() {
   */
 
   vec2 uv = vUv;
-  float shadow = smoothstep(0., 0.35, length(vec2(uv.x,uv.y*2.8) - vec2( (uVelo*-0.1)+0.45,0.9) ) );
+  float shadow = smoothstep(0., 0.3, length(vec2(uv.x,uv.y*3.5) - vec2( (uVelo*0.1)+0.45,1.) ) );
+ // ^ ss creates size // length makes circle - offset pos
 
  // vec3 finalColor = mix(uCurrColor*shadow, uNextColor*shadow, uProg); 
   vec3 shadowColor =uColor*shadow;
-  vec3 mixedColor = mix(uColor,shadowColor,0.3*uShadowAmp);
+  vec3 mixedColor = mix(uColor,shadowColor,0.2*uShadowAmp);
   gl_FragColor = vec4(mixedColor,1.0); 
   
 /*
