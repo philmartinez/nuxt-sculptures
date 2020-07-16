@@ -167,7 +167,6 @@ export default class ColorBG extends O {
         this.material.uniforms.uMeshScale.value.x = this.bounds.width
         this.material.uniforms.uMeshScale.value.y = this.bounds.height
 
-        this.material.uniforms.uViewHeight.value = viewSize.height
         
         // objects are already aligned in the middle, 
         // so we manually caluclate the new Y top move it to the top
@@ -318,6 +317,20 @@ export default class ColorBG extends O {
         if (!this.material) return;
         this.material.uniforms.uMeshSize.value.x = this.bounds.width 
         this.material.uniforms.uMeshSize.value.y = this.bounds.height
+
+
+        if( APP.state.view === 'single' ) {
+           
+            const viewSize = this.GLscene.getViewSize()
+            
+            this.material.uniforms.uMeshScale.value.x = this.bounds.width
+            this.material.uniforms.uMeshScale.value.y = this.bounds.height
+            this.material.uniforms.uEndSize.value = new THREE.Vector2(
+                viewSize.width,
+                viewSize.height
+            )
+        }
+
     }
 
 }

@@ -8,7 +8,7 @@
     <div class="product-meta">
         <div class="inner">
             <span class="collection">{{ fish.type }} Collection <span class="sep"></span> {{ fish.artist}}</span>
-            <h1 :style="`color: ${fish.bg_color};`">Model {{ fish.name }} </h1>
+            <h1>Model {{ fish.name }} </h1>
             <div class="description">{{ fish.description }}</div>
             <div class="buttons">
                 <button>Purchase <span>{{ fish.price }}</span></button>
@@ -72,6 +72,7 @@ export default {
 .single-sculpture {
     display: flex;
     position: relative;
+    align-items: center;
     z-index: 10;
     .product-images {
         width: 50%;
@@ -80,8 +81,10 @@ export default {
         padding: 6%;
         display: flex;
         flex-wrap: wrap;
-        width: 100%;
+        width: 50%;
         font-size: 16px;
+        position: sticky;
+        top: 10px;
         align-items: center;
         .inner {
             width: 100%;

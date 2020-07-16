@@ -126,7 +126,7 @@ export default {
             .color-plane {
                 position: absolute;
                 width: calc(100% + 30vw);
-                height: calc(100vh - 250px);
+                height: 70vh;
                 left: calc(-15vw);
                 top: 50%;
                 transform: translateY(-50%);

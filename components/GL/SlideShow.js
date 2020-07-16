@@ -634,7 +634,8 @@ export default class Slideshow {
         //}
 
         //drag
-        if(!this.state.changingSlides) {
+     
+        if(!this.state.changingSlides || APP.state.view === 'single') {
             this.state.targetX = targetX
              state.offX = state.targetX
              // smoothe harsh velocity diff on drag
@@ -662,7 +663,7 @@ export default class Slideshow {
         this.state.activeSlideIndex = slide.index
         
 
-        if( this.state.activeSlideIndex !== this.state.prevSlideIndex ) {
+        if( this.state.activeSlideIndex !== this.state.prevSlideIndex && !this.state.instant ) {
             this.changeSlide(slide.index,this.state.easing)
         } else {
           //  this.ColorBG.previewColorReset()
