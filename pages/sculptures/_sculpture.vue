@@ -2,8 +2,6 @@
 
 <div class="single-sculpture">
     <div class="product-images">
-
-
     </div>
     <div class="product-meta">
         <div class="inner">
@@ -22,6 +20,7 @@
 <script>
 
 import { mapState } from 'vuex'
+import gsap from 'gsap'
 
 export default {
     data() {
@@ -63,7 +62,40 @@ export default {
             this.fishSet = true
         }
     
-    }
+    },
+    beforeRouteLeave(to, from, next) {
+        /*
+        using beforeRouteLeave
+        instead of leave in transition
+        to prevent route from changing
+        until animation completes
+        */
+       const el = document.querySelector('.single-sculpture') 
+        gsap.to(el,{
+            opacity: 0,
+            duration: 1,
+            ease: 'power1.out'
+        })
+        setTimeout(next,500)
+    },
+    transition: {
+        mode: "out-in",
+        css: false,
+        enter (el, done) {
+            gsap.fromTo(el,{
+                opacity: 0
+            },{
+                delay: 1.2,
+                opacity: 1,
+                duration: 1,
+                 ease: 'power1.out',
+                onComplete: () => { 
+                    done() 
+                }
+            })
+  
+        }
+    },
 }
 </script>
 
