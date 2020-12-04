@@ -2,6 +2,7 @@
   <div>
     <Header></Header>
     <Slideshow></Slideshow>
+    <Splash></Splash>
     <nuxt />
   </div>
 </template>
@@ -9,12 +10,14 @@
 <script>
 import Slideshow from '~/components/Slideshow'
 import Header from '~/components/Header'
+import Splash from '~/components/Splash'
 
 export default {
 
     components: {
         Slideshow,
-        Header
+        Header,
+        Splash
     }
 
 }

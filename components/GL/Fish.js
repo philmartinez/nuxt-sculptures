@@ -80,7 +80,9 @@ export default class Fish extends O {
             this.material.uniforms.uTexture.value = texture;
 
             if(APP.state.view == 'slider') {
-              this.showFishWithDisplacement()
+              //this.showFishWithDisplacement() // moved to splash
+              //  APP.Scene.stopRender(1500) // moved to splash
+              
               // Also show shadows
               APP.Slideshow.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
                 gsap.to(colorBG.material.uniforms.uShadowAmp,{
@@ -91,7 +93,6 @@ export default class Fish extends O {
                
               })
 
-              APP.Scene.stopRender(1500)
             }
 
         })

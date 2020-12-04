@@ -155,7 +155,7 @@ export default class Slideshow {
             )
             tweens.push( 
                 gsap.to(slide.ColorPlane.position,{
-                    z: -40,
+                    z: -30,
                     duration: 0.6,
                     ease: 'power1.inOut'
                 })

@@ -252,22 +252,30 @@ export default {
                 height: 100%;
                 z-index: 10;
                 display: block;
+                pointer-events: none;
                 a:not(.active) {
                     display: none;
                 }
             }
 
             .model {
-                font-family: 'Roboto',sans-serif;
+                font-family: 'Playfair Display',sans-serif;
                 font-weight: 700;
-                font-size: 44px;
-                margin-bottom: 10px;
-                line-height: 44px;
+                font-size: 12vh;
+                margin-bottom: 4vh;
+                line-height: 12vh;
+                @media only screen and (max-width: $breakpoint-tablet) {
+                    font-size: 7vh;
+                    line-height: 7vh;
+                    margin-bottom: 6vh;
+                }
                 .name-wrap {
                     display: inline-block;
-                    height: 54px;
-                    margin-left: 10px;
+                    height: 13.2vh;
                     overflow: hidden;
+                    @media only screen and (max-width: $breakpoint-tablet) {
+                        height: 7.8vh;
+                    }
                     .inner, span {
                         display: block;
                     }
@@ -276,13 +284,15 @@ export default {
                     }
                 }
             }
-            .view-detail {
-                font-size: $meta-font-size;
-            }
+           
             .view-detail, .model {
                 width: 100%;
                 display: flex;
                 justify-content: center;
+            }
+            .view-detail {
+                display: none;
+                font-size: $meta-font-size;
             }
         }
 
@@ -294,12 +304,19 @@ export default {
     }
 
     .progress {
-        position: absolute;
-        left: 50px;
+        position: fixed;
+        right: 10vw;
+        line-height: 20px;
+        font-weight: 700;
+        font-size: 16px;
+        transform: rotate(90deg) translateY(-50%);
+        top: 50%;
         line-height: 20px;
         font-weight: 700;
         font-size: $meta-font-size;
-        
+        @media only screen and (max-width: $breakpoint-tablet) {
+           
+        }
         .indicator {
             height: 2px;
             background-color: rgba(0,0,0,0.3);
