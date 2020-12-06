@@ -127,7 +127,10 @@ export default class Slideshow {
         document.addEventListener('mousedown', this.onDown.bind(this) )
         document.addEventListener('mousemove', this.onMove.bind(this) )
         document.addEventListener('mouseup', this.onUp.bind(this) )
-    
+        
+        document.addEventListener('touchstart', this.onDown.bind(this) )
+        document.addEventListener('touchmove', this.onMove.bind(this))
+        document.addEventListener('touchend', this.onUp.bind(this, false))
         
         this.els.parent.querySelector('.link').addEventListener('mouseover', this.viewDetailOver.bind(this) )
         this.els.parent.querySelector('.link').addEventListener('mouseleave', this.viewDetailLeave.bind(this) )
@@ -237,6 +240,8 @@ export default class Slideshow {
     onDown(e) {
         if( this.state.changingSlides ) return
 
+        this.els.parent.classList.add('dragging')
+
         clearTimeout(this.glAnimation)
 
         APP.Scene.startRender()
@@ -291,6 +296,8 @@ export default class Slideshow {
     onUp() {
 
         if( !this.state.dragging || this.state.changingSlides ) return
+
+        this.els.parent.classList.remove('dragging')
 
         this.state.dragging = false
   

@@ -111,6 +111,7 @@ export default {
     .sculpture-slideshow {
         background-color: #fdf9f4;
         position: fixed;
+        cursor: grab;
         @include expand;
         .sculptures, .sculpture, canvas, .sculpture-bg-color {
             @include expand;
@@ -171,6 +172,10 @@ export default {
             width: auto;
         }
 
+    }
+
+    .sculpture-slideshow.dragging {
+        cursor: grabbing;
     }
 
     .sculpture-shadow {
