@@ -33,19 +33,14 @@
                 this.tl.to('#loading-animation',{
                     x: '100%',
                     ease: "Power4.easeInOut",
-                    duration: 1.8,
-                    onComplete: function() {
-                         APP.Slideshow.slides.map(slide => slide.Fish).forEach((fish, i) => {
-                            fish.showFishWithDisplacement()
-                            APP.Scene.stopRender(1500)
-                        })
-                    }
+                    duration: 1.8
                 }, "-=1.8");
 
-                setTimeout(this.showFish,1850);
+                setTimeout(this.showFish,1650);
                 
             },
             showFish() {
+                APP.Slideshow.startingAnimation()
                 APP.Slideshow.slides.map(slide => slide.Fish).forEach((fish, i) => {
                     fish.showFishWithDisplacement()
                     APP.Scene.stopRender(1500)

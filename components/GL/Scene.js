@@ -1,12 +1,21 @@
 import * as THREE from 'three'
 import gsap from 'gsap'
 
+
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js';
+import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+
+
 import Events from '~/components/GL/events.js'
 
 export default class Scene {
 
     constructor() {
-        
+       
         this.lightsCameraAction()
         this.setup()
         this.resize()
@@ -36,13 +45,22 @@ export default class Scene {
 
         this.renderer.setPixelRatio(gsap.utils.clamp(1, 1.5, window.devicePixelRatio))
         this.renderer.setSize( APP.winW, APP.winH )
-        this.renderer.setClearColor( 0x000000, 0 )
+        this.renderer.setClearColor( 0xfbf7ef, 1 )
         this.renderer.outputEncoding = THREE.sRGBEncoding
 
         this.cameraDistance = 400;
         this.camera.position.set(0, 0, this.cameraDistance)
         this.camera.lookAt(0, 0, 0)
 
+        // postprocessing
+        this.composer = new EffectComposer( this.renderer );
+        this.composer.addPass( new RenderPass( this.scene, this.camera ) );
+                
+        this.filmpass = new FilmPass( 0.45, 0.02, 1600, false )
+
+       // this.composer.addPass( this.filmpass );
+        
+        
         this.shouldRun = true;
         this.clock = new THREE.Clock()
         this.run()
@@ -109,7 +127,8 @@ export default class Scene {
     }
 
     render() {
-        this.renderer.render(this.scene, this.camera);
+        //this.renderer.render(this.scene, this.camera);
+        this.composer.render();
     }
 
 

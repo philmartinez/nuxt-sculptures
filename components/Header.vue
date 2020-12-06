@@ -2,7 +2,7 @@
 <template>
     <header>
         <div class="logo">
-            <nuxt-link to="/">Not Minq</nuxt-link>
+            <nuxt-link to="/">Not Minqh</nuxt-link>
         </div>
         <div class="contact">
             <a href="#">Get in Touch</a>
@@ -38,7 +38,6 @@ export default {
         .contact a {
             font-weight: 700;
             color: #fff;
-            padding: 10px 20px;
             text-decoration: none;
             position: relative;
             display: block;
@@ -46,16 +45,19 @@ export default {
                 display: block;
                 position: absolute;
                 left: 0;
-                top: 0;
+                bottom: 0;
                 width: 100%;
-                height: 100%;
+                height: 1px;
+                background-color: #fff;
                 content: '';
-                border: 1px solid rgba(0,0,0,0.1);
                 z-index: -1;
+                transform-origin: right;
+                transform: scaleX(0);
                 transition: transform 0.5s ease;
             }
             &:hover:before {
-                transform: scale(1.05, 1.1);
+                transform: scaleX(1);
+                transform-origin: left;
             }
         }
     }

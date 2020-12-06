@@ -53,7 +53,7 @@ export default {
     /*
     ** You can extend webpack config here
     */
-    transpile: ['GLTFLoader.js', 'TransformControls.js','TextureLoader.js'],
+    transpile: ['EffectComposer.js','RenderPass.js','RGBShiftShader.js','FilmPass.js','DotScreenShader.js','ShaderPass.js','GLTFLoader.js', 'TransformControls.js','TextureLoader.js'],
     extend (config, ctx) {
       config.module.rules.push(
         {

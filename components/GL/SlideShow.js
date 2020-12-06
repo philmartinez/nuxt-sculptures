@@ -351,8 +351,8 @@ export default class Slideshow {
         // Track Velocity
         this.state.lerpVel += (this.state.targetX - this.state.lerpVel) * ease
 
-        let clampVal  = (this.state.changingSlides) ? 0.8 : 1.1
-        let multVal   = (this.state.changingSlides) ? 0.006 :  0.004
+        let clampVal  = (this.state.changingSlides) ? 0.8 : 1.3
+        let multVal   = (this.state.changingSlides) ? 0.006 :  0.005
         let colorVelD = 2.0
 
         if( APP.onMobile ) {
@@ -373,7 +373,7 @@ export default class Slideshow {
             // Send uniforms
             slide.Fish.material.uniforms.uVelo.value = this.state.velocity
             slide.ColorPlane.material.uniforms.uVelo.value = this.state.velocity/colorVelD
-    
+            //APP.Scene.rgbShift.uniforms[ 'amount' ].value = this.state.velocity/80
         })
         //this.ColorBG.material.uniforms.uVelo.value = this.state.velocity
         
@@ -474,6 +474,16 @@ export default class Slideshow {
         nameTL.play()
      }
 
+     startingAnimation() {
+      
+        gsap.to([this.els.sculptureMetaName,this.els.sculptureTotal], {
+            opacity: 1,
+            stagger: 0.2,
+            y: '0px',
+            duration: 1,
+            ease: "power2.Out"
+        })
+     }
 
      singleSculptureEnter() {
 

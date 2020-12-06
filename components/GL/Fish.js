@@ -208,13 +208,13 @@ export default class Fish extends O {
           value: 0
       }, {
           value: 1,
-          duration: 0.7,
+          duration: 0.9,
           ease: 'power1.in',
       },'start')
       
       this.displacementTL.to(this.material.uniforms.uPreview, {
         value: 0,
-        duration: 0.7,
+        duration: 0.9,
         ease: 'power1.out'
       })
 
@@ -222,9 +222,9 @@ export default class Fish extends O {
         value: 0.22
       }, {
         value: 0.01,
-        duration: 1.4,
+        duration: 1.8,
         ease: 'sine.inOut',
-      },'-=1.7')
+      },'-=2.1')
       
 
 

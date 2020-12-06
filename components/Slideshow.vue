@@ -280,6 +280,8 @@ export default {
                         display: block;
                     }
                     .name {
+                        opacity: 0;
+                        transform: translateY(20px);
                         text-transform: capitalize;
                     }
                 }
@@ -311,6 +313,7 @@ export default {
         font-size: 16px;
         transform: rotate(90deg) translateY(-50%);
         top: 50%;
+        opacity: 0;
         line-height: 20px;
         font-weight: 700;
         font-size: $meta-font-size;
