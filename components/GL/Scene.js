@@ -9,7 +9,7 @@ import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js';
 import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
 
 
-import Events from '~/components/GL/events.js'
+import Events from '~/components/GL/Events.js'
 
 export default class Scene {
 

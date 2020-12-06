@@ -39,7 +39,7 @@
 import preloadImages from '~/components/util/preload.js'
 import Scene from '~/components/GL/Scene.js'
 //import SceneBG from '~/components/GL/SceneBG.js'
-import Slideshow from '~/components/GL/Slideshow.js'
+import Slideshow from '~/components/GL/SlideShow.js'
 import App from '~/components/GL/App.js'
 import { mapState, mapMutations } from 'vuex'
 
