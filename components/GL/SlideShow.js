@@ -56,7 +56,8 @@ export default class Slideshow {
             lerpVel: 0
         }
         this.GLTL = {
-            scene: gsap.timeline({ paused: true })
+            scene: gsap.timeline({ paused: true }),
+            intro: gsap.timeline({ paused: true })
         }
 
 
@@ -167,6 +168,26 @@ export default class Slideshow {
         })
 
         this.GLTL.scene.add(tweens)
+
+        // Intro
+        tweens = []
+        
+        this.slides.forEach((slide) => {
+
+            tweens.push( 
+                gsap.fromTo(slide.ColorPlane.position,{
+                    z: -100
+                },
+                {
+                    z: -1,
+                    duration: 1.0,
+                    ease: 'power1.out'
+                })
+            )
+
+        })
+
+        this.GLTL.intro.add(tweens)
         
     }
     createMarkup() {
@@ -492,6 +513,8 @@ export default class Slideshow {
             duration: 1,
             ease: "power2.Out"
         })
+
+        this.GLTL.intro.play()
      }
 
      singleSculptureEnter() {
