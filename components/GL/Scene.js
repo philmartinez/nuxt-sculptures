@@ -73,8 +73,8 @@ export default class Scene {
 
     resize() {
         
-        this.renderer.setPixelRatio(gsap.utils.clamp(1, 2.5, window.devicePixelRatio))
-        console.log(window.devicePixelRatio)
+        this.renderer.setPixelRatio(gsap.utils.clamp(1, 3, window.devicePixelRatio))
+
         this.renderer.setSize(APP.winW, APP.winH)
         this.camera.aspect = APP.winW / APP.winH;
 
