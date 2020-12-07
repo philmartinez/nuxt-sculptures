@@ -40,11 +40,14 @@
                 
             },
             showFish() {
+
                 APP.Slideshow.startingAnimation()
+
                 APP.Slideshow.slides.map(slide => slide.Fish).forEach((fish, i) => {
                     fish.showFishWithDisplacement()
-                    APP.Scene.stopRender(1500)
+                    APP.Scene.stopRender(2100)
                 })
+
             }
         },
         mounted() {

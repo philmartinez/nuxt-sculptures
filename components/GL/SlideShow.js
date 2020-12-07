@@ -151,14 +151,14 @@ export default class Slideshow {
 
             tweens.push( 
                 gsap.to(slide.Fish.position,{
-                    z: 10,
+                    z: -20,
                     duration: 0.6,
                     ease: 'power1.inOut'
                 })
             )
             tweens.push( 
                 gsap.to(slide.ColorPlane.position,{
-                    z: -30,
+                    z: -50,
                     duration: 0.6,
                     ease: 'power1.inOut'
                 })
@@ -353,7 +353,7 @@ export default class Slideshow {
 
         // Lerp Movement
         this.state.lerpX += (this.state.targetX - this.state.lerpX) * ease
-        this.state.lerpColorX += (this.state.targetX - this.state.lerpColorX) * ease/1.05
+        this.state.lerpColorX += (this.state.targetX - this.state.lerpColorX) * ease/1.13
         
         // Track Velocity
         this.state.lerpVel += (this.state.targetX - this.state.lerpVel) * ease
@@ -380,7 +380,7 @@ export default class Slideshow {
             // Send uniforms
             slide.Fish.material.uniforms.uVelo.value = this.state.velocity
             slide.ColorPlane.material.uniforms.uVelo.value = this.state.velocity/colorVelD
-            //APP.Scene.rgbShift.uniforms[ 'amount' ].value = this.state.velocity/80
+            APP.Scene.rgbShift.uniforms[ 'amount' ].value = this.state.velocity/80
         })
         //this.ColorBG.material.uniforms.uVelo.value = this.state.velocity
         
@@ -659,7 +659,7 @@ export default class Slideshow {
             this.state.lerpVel = targetX - this.state.velocity * 200
             this.state.easing = 'out'
         } else {
-            state.ease = 0.18
+            state.ease = 0.1
             this.state.easing = 'inOut'
             gsap.to(state,{
                 targetX,

@@ -2,7 +2,7 @@
 <template>
     <header>
         <div class="logo">
-            <nuxt-link to="/">Not Minqh</nuxt-link>
+            <nuxt-link to="/">Minqh</nuxt-link>
         </div>
         <div class="contact">
             <a href="#">Get in Touch</a>
@@ -30,13 +30,13 @@ export default {
         .logo a {
             text-decoration: none;
             color: #fff;
-            font-weight: 700;
+            font-weight: 500;
         }
         .contact {
             margin-left: auto;
         }
         .contact a {
-            font-weight: 700;
+            font-weight: 500;
             color: #fff;
             text-decoration: none;
             position: relative;

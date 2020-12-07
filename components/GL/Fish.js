@@ -82,16 +82,7 @@ export default class Fish extends O {
             if(APP.state.view == 'slider') {
               //this.showFishWithDisplacement() // moved to splash
               //  APP.Scene.stopRender(1500) // moved to splash
-              
-              // Also show shadows
-              APP.Slideshow.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
-                gsap.to(colorBG.material.uniforms.uShadowAmp,{
-                  value: 1,
-                  duration: 1,
-                  ease: 'power1.inOut' 
-                });
-               
-              })
+            
 
             }
 
@@ -239,6 +230,15 @@ export default class Fish extends O {
 
     showFishWithDisplacement() {
       this.displacementTL.play()
+        // Also show shadows
+        APP.Slideshow.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
+          gsap.to(colorBG.material.uniforms.uShadowAmp,{
+            value: 1,
+            duration: 1.4,
+            ease: 'power1.inOut' 
+          });
+      
+      })
     }
     hideFishWithDisplacement() {
       this.displacementTL.reverse()

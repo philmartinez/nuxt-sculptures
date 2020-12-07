@@ -55,10 +55,9 @@ export default class Scene {
         this.composer = new EffectComposer( this.renderer );
         this.composer.addPass( new RenderPass( this.scene, this.camera ) );
                 
-        this.filmpass = new FilmPass( 0.45, 0.02, 1600, false )
-
-       // this.composer.addPass( this.filmpass );
-        
+        this.rgbShift = new ShaderPass( RGBShiftShader );
+        this.rgbShift.uniforms[ 'amount' ].value = 0;
+        this.composer.addPass( this.rgbShift );
         
         this.shouldRun = true;
         this.clock = new THREE.Clock()
