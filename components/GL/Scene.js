@@ -42,7 +42,7 @@ export default class Scene {
 
     setup() {
 
-        this.renderer.setPixelRatio(gsap.utils.clamp(1, 1.5, window.devicePixelRatio))
+        this.renderer.setPixelRatio(gsap.utils.clamp(1, 2, window.devicePixelRatio))
         this.renderer.setSize( APP.winW, APP.winH )
         this.renderer.setClearColor( 0xfbf7ef, 1 )
         this.renderer.outputEncoding = THREE.sRGBEncoding
