@@ -361,11 +361,13 @@ export default class Slideshow {
         let clampVal  = (this.state.changingSlides) ? 0.8 : 1.3
         let multVal   = (this.state.changingSlides) ? 0.006 :  0.005
         let colorVelD = 2.0
+        let rgbDamp = 80
 
         if( APP.onMobile ) {
             clampVal = clampVal*2
             multVal =  multVal*2
             colorVelD = 1
+            rgbDamp = 60
         }
         this.state.velocity = clamp((this.state.targetX - this.state.lerpVel ) * multVal, `-${clampVal}`, clampVal)
 
@@ -380,7 +382,7 @@ export default class Slideshow {
             // Send uniforms
             slide.Fish.material.uniforms.uVelo.value = this.state.velocity
             slide.ColorPlane.material.uniforms.uVelo.value = this.state.velocity/colorVelD
-            APP.Scene.rgbShift.uniforms[ 'amount' ].value = this.state.velocity/80
+            APP.Scene.rgbShift.uniforms[ 'amount' ].value = this.state.velocity/rgbDamp
         })
         //this.ColorBG.material.uniforms.uVelo.value = this.state.velocity
         
