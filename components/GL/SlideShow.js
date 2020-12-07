@@ -364,8 +364,8 @@ export default class Slideshow {
         let rgbDamp = 80
 
         if( APP.onMobile ) {
-            clampVal = clampVal*2
-            multVal =  multVal*2
+            clampVal = clampVal*2.5
+            multVal =  multVal*2.5
             colorVelD = 1
             rgbDamp = 60
         }
