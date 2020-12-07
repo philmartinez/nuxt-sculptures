@@ -141,6 +141,7 @@ export default {
             }
             @media only screen and (max-width: $breakpoint-tablet) {
                 flex: 0 0 50%;
+                margin-right: 18%;
                 &:first-child {
                     margin-left: 25%;
                 }
