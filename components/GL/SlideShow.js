@@ -152,14 +152,14 @@ export default class Slideshow {
 
             tweens.push( 
                 gsap.to(slide.Fish.position,{
-                    z: -20,
+                    z: -10,
                     duration: 0.6,
                     ease: 'power1.inOut'
                 })
             )
             tweens.push( 
                 gsap.to(slide.ColorPlane.position,{
-                    z: -50,
+                    z: -70,
                     duration: 0.6,
                     ease: 'power1.inOut'
                 })
@@ -272,6 +272,13 @@ export default class Slideshow {
         this.endMouseX = 0 // reset
 
         //this.ColorBG.constantWaveStart()
+        this.slides.forEach((slide) => {
+            gsap.to(slide.Fish.material.uniforms.uPreview, {
+                value: 0.3,
+                duration: 0.4,
+                ease: "power1.inOut"
+            })
+        })
 
         this.GLTL.scene.play()
         
@@ -325,7 +332,16 @@ export default class Slideshow {
         setTimeout( () => { 
             if(APP.state.view === 'single') return
             this.slideTo(this.getClosestSlide()) 
-        },200)
+
+            this.slides.forEach((slide) => {
+                gsap.to(slide.Fish.material.uniforms.uPreview, {
+                    value: 0,
+                    duration: 0.4,
+                    ease: "power1.inOut"
+                })
+            })
+
+        },300)
         
         
         this.state.offX = this.state.targetX
@@ -342,7 +358,6 @@ export default class Slideshow {
             return
         }
         
-    
     
     }
 
@@ -535,7 +550,6 @@ export default class Slideshow {
         // Transform Color BG
         this.GLTL.scene.reverse()
         
-
        const curPlane = this.slides[this.state.activeSlideIndex].ColorPlane
 
        // objects are already aligned in the middle, 
@@ -551,9 +565,10 @@ export default class Slideshow {
             duration: 1,
             ease: 'power1.inOut'
         }) */
- 
+        
+        
         curPlane.singleView()
-        //this.slides[this.state.activeSlideIndex].Fish.flopStart()
+  
         this.slides[this.state.activeSlideIndex].Fish.hideFishWithDisplacement()
         
      }
@@ -583,11 +598,12 @@ export default class Slideshow {
             el.querySelector('.color-plane').classList.remove('top-aligned')
         })
 
-        this.slides.map(slide => slide.ColorPlane).forEach((colorBG) => {
-            colorBG.singleViewExit()
+        this.slides.map(slide => slide).forEach((slide) => {
+            slide.ColorPlane.singleViewExit()
+            slide.Fish.showFishWithDisplacement()
         })
         //this.slides[this.state.activeSlideIndex].Fish.flopReverse()
-        this.slides[this.state.activeSlideIndex].Fish.showFishWithDisplacement()
+ 
         
      }
 

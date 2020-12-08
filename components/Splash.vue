@@ -35,11 +35,19 @@
                     ease: "Power4.easeInOut",
                     duration: 1.8
                 }, "-=1.8");
-
-                setTimeout(this.showFish,1650);
+                
+                
+                if( 'index' != this.page ) {
+                     APP.Slideshow.slides.map(slide => slide.ColorPlane).forEach((colorplane, i) => {
+                            colorplane.position.z = -1
+                     })
+                } 
+                else {
+                    setTimeout(this.showFish,1650);
+                }
                 
             },
-            showFish() {
+            showFish() {     
 
                 APP.Slideshow.startingAnimation()
 
@@ -63,7 +71,9 @@
             });
 
         },
-         computed: mapState(['page','items','loaded']),
+         computed: { 
+             ...mapState(['page','items','loaded'])
+         },
          watch: {
             loaded(bool) {
                 if( true == bool ) {

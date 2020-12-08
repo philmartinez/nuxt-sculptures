@@ -258,7 +258,6 @@ export default {
                 height: 100%;
                 z-index: 10;
                 display: block;
-                pointer-events: none;
                 a:not(.active) {
                     display: none;
                 }
@@ -299,7 +298,6 @@ export default {
                 justify-content: center;
             }
             .view-detail {
-                display: none;
                 font-size: $meta-font-size;
             }
         }

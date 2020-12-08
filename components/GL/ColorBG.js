@@ -178,8 +178,8 @@ export default class ColorBG extends O {
             )
         } else { */
         this.material.uniforms.uEndSize.value = new THREE.Vector2(
-            viewSize.width,
-            viewSize.height
+            viewSize.width + 4,
+            viewSize.height + 4
         )
 
         // remove shadow

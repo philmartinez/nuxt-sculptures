@@ -33,7 +33,7 @@ export const state = () => ({
             bg_color: '#e4434f',
             font_color: '#ff561a',
             artist: 'Ernesto',
-            id: 4
+            id: 3
         },
         {
             name: 'W9',
@@ -44,7 +44,7 @@ export const state = () => ({
             bg_color: '#8198ff',
             font_color: '#c1c1f1',
             artist: 'Ernesto',
-            id: 3
+            id: 4
         }
     ]
 })
