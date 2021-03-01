@@ -20,7 +20,7 @@
     "lodash": "^4.17.15",
     "nuxt": "^2.0.0",
     "raw-loader": "^4.0.1",
-    "three": "^0.116.1",
+    "three": "^0.125.0",
     "tiny-emitter": "^2.1.0"
   },
   "devDependencies": {
