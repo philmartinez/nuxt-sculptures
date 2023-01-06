@@ -18,7 +18,7 @@
     "gsap": "^3.2.6",
     "imagesloaded": "^4.1.4",
     "lodash": "^4.17.15",
-    "nuxt": "^2.0.0",
+    "nuxt": "^2.15.8",
     "raw-loader": "^4.0.1",
     "three": "^0.116.1",
     "tiny-emitter": "^2.1.0"
